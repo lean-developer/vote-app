@@ -4,7 +4,10 @@
         <div v-for="v in votes" :key="v.id">
         <b-row class="vote-row">
             <b-col cols="6" class="vote-name">
-                <b-link :href="`/estimate/${v.id}`">{{v.name}} ({{v.id}})</b-link>
+                <b-link :href="`/estimate/${v.id}`">
+                    <b-badge variant="warning" pill class="mr-1">x</b-badge>
+                    {{v.name}} ({{v.id}})
+                </b-link>
             </b-col>
             <b-col>
                 <b-link href="" @click="onArchiv(v)"><small>Archivieren</small></b-link>
@@ -46,9 +49,9 @@ export default class VotesComp extends Vue {
         border-radius: 10px;
         border: 2px solid #adadad;
         margin-bottom: 5px;
-        padding-top: 6px;
-        padding-bottom: 6px;
-        background-color: rgb(226, 226, 226);
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        background-color: rgb(235, 235, 235);
     }
     .vote-name {
         text-align: left;

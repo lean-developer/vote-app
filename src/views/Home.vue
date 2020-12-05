@@ -1,5 +1,6 @@
 <template>
     <b-container>
+      <user-chips></user-chips>
       <b-card
         title="Neue Schätzung"
         img-src="https://picsum.photos/600/300/?image=25"
@@ -7,12 +8,10 @@
         img-top
         tag="article"
         style="max-width: 20rem;"
-        class="mb-2"
-      >
+        class="mb-2">
         <b-card-text>
           <b-input type="text" v-model="abstimmung"></b-input>
         </b-card-text>
-
         <b-button href="#" variant="primary" @click="onStartVote()">Starten</b-button>
       </b-card>
   </b-container>
@@ -22,9 +21,11 @@
 import { Component, Vue, Model } from 'vue-property-decorator';
 import VoteService from '@/domain/api/vote.service'
 import { Vote } from '@/domain/models/vote';
+import UserChips from '@/components/UserChips.vue'
 
 @Component({
   components: {
+    UserChips
   },
 })
 export default class Home extends Vue {
