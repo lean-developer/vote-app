@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Model, Prop } from 'vue-property-decorator';
+import { Component, Vue, Model, Prop, Emit } from 'vue-property-decorator';
 import { Vote } from '@/domain/models/vote';
 
 @Component({
@@ -28,17 +28,15 @@ import { Vote } from '@/domain/models/vote';
 })
 export default class VotesComp extends Vue {
     @Prop({ required: true }) votes!: Vote[]
- 
-    created() {
-      console.log('VotesComp created');
-    }
 
+    @Emit('deleteVote')
     onDelete(vote: Vote) {
-        console.log('Delete ' + vote.id);
+        return vote;
     }
 
+    @Emit('archivVote')
     onArchiv(vote: Vote) {
-        console.log('Archiv ' + vote.id);
+        return vote;
     }
 }
 </script>
