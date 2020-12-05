@@ -2,9 +2,17 @@
   <b-container>
       <div v-if="votes">
         <div v-for="v in votes" :key="v.id">
-          <b-link :href="`/estimate/${v.id}`">{{v.name}} ({{v.id}})</b-link> |
-          <b-link href="" @click="onArchiv(v)"><small>Archivieren</small></b-link> |
-          <b-link href="" @click="onDelete(v)"><small>Löschen</small></b-link>
+        <b-row class="vote-row">
+            <b-col cols="6" class="vote-name">
+                <b-link :href="`/estimate/${v.id}`">{{v.name}} ({{v.id}})</b-link>
+            </b-col>
+            <b-col>
+                <b-link href="" @click="onArchiv(v)"><small>Archivieren</small></b-link>
+            </b-col>
+            <b-col>
+                <b-link href="" @click="onDelete(v)"><small>Löschen</small></b-link>
+            </b-col>
+        </b-row>
         </div>
       </div>
   </b-container>
@@ -34,4 +42,18 @@ export default class VotesComp extends Vue {
     }
 }
 </script>
+
+<style scoped>
+    .vote-row {
+        border-radius: 10px;
+        border: 2px solid #adadad;
+        margin-bottom: 5px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        background-color: rgb(226, 226, 226);
+    }
+    .vote-name {
+        text-align: left;
+    }
+</style>
 
