@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
-import Vote from '../views/Vote.vue'
+import Estimates from '../views/Estimates.vue'
+import Estimate from '../views/Estimate.vue'
 
 Vue.use(VueRouter)
 
@@ -12,9 +13,14 @@ const routes: Array<RouteConfig> = [
     component: Home
   },
   {
-    path: '/vote/:voteId',
-    name: 'Vote',
-    component: Vote
+    path: '/estimates',
+    name: 'Estimates',
+    component: Estimates
+  },
+  {
+    path: '/estimate/:voteId',
+    name: 'Estimate',
+    component: Estimate
   },
   {
     path: '/about',

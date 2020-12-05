@@ -1,7 +1,7 @@
 <template>
     <b-container>
       <b-card
-        title="Neue Abstimmung"
+        title="Neue Schätzung"
         img-src="https://picsum.photos/600/300/?image=25"
         img-alt="Image"
         img-top
@@ -13,25 +13,33 @@
           <b-input type="text" v-model="abstimmung"></b-input>
         </b-card-text>
 
-        <b-button href="#" variant="primary" @click="onStartVote()">Abstimmung starten</b-button>
+        <b-button href="#" variant="primary" @click="onStartVote()">Starten</b-button>
       </b-card>
   </b-container>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import { Component, Vue, Model } from 'vue-property-decorator';
+import VoteService from '@/domain/api/vote.service'
+import { Vote } from '@/domain/models/vote';
 
 @Component({
   components: {
   },
 })
 export default class Home extends Vue {
-  private abstimmung: string = ''
+  @Model() private votes: Vote[] | undefined;
+  private abstimmung: string = '';
 
-  onStartVote() {
-    console.log('VOTE', this.abstimmung);
-    this.$router.push({ name: 'Vote', params: { voteId: "1" } })
+  async created() {
+    this.votes = await VoteService.getVotes();
+  }
+
+  async onStartVote() {
+    const newVote: Vote | undefined = await VoteService.createVote(this.abstimmung);
+    if (newVote) {
+      this.$router.push({ name: 'Estimate', params: { voteId: newVote.id.toString() } })
+    }
   }
 }
 </script>
