@@ -1,19 +1,12 @@
 <template>
     <b-container>
-      <user-chips></user-chips>
-      <b-card
-        title="Neue Schätzung"
-        img-src="https://picsum.photos/600/300/?image=25"
-        img-alt="Image"
-        img-top
-        tag="article"
-        style="max-width: 20rem;"
-        class="mb-2">
-        <b-card-text>
-          <b-input type="text" v-model="abstimmung"></b-input>
-        </b-card-text>
-        <b-button href="#" variant="primary" @click="onStartVote()">Starten</b-button>
-      </b-card>
+      <div v-if="users">
+         <div v-for="u in users" :key="u">
+           <user-chips :name=u></user-chips>
+         </div>
+      </div>
+      <new-vote-comp></new-vote-comp>
+      <new-user-comp @createMember="onCreateMember"></new-user-comp>
   </b-container>
 </template>
 
@@ -21,26 +14,23 @@
 import { Component, Vue, Model } from 'vue-property-decorator';
 import VoteService from '@/domain/api/vote.service'
 import { Vote } from '@/domain/models/vote';
-import UserChips from '@/components/UserChips.vue'
+import UserChips from '@/components/UserChips.vue';
+import NewVoteComp from '@/components/NewVoteComp.vue';
+import NewUserComp from '@/components/NewUserComp.vue';
 
 @Component({
   components: {
-    UserChips
+    UserChips,
+    NewVoteComp,
+    NewUserComp,
   },
 })
 export default class Home extends Vue {
-  @Model() private votes: Vote[] | undefined;
-  private abstimmung: string = '';
+  private users: string[] = [];
 
-  async created() {
-    this.votes = await VoteService.getVotes();
-  }
-
-  async onStartVote() {
-    const newVote: Vote | undefined = await VoteService.createVote(this.abstimmung);
-    if (newVote) {
-      this.$router.push({ name: 'Estimate', params: { voteId: newVote.id.toString() } })
-    }
+  onCreateMember(username: string) {
+    console.log('NewMember ' + username);  
+    this.users.push(username);
   }
 }
 </script>
