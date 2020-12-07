@@ -1,18 +1,15 @@
 <template>
   <b-container>
-       <b-card
-        title="Neue Schätzung"
-        img-src="https://picsum.photos/600/300/?image=25"
-        img-alt="Image"
-        img-top
-        tag="article"
-        style="max-width: 20rem;"
-        class="mb-2">
-        <b-card-text>
-          <b-input type="text" v-model="abstimmung"></b-input>
-        </b-card-text>
-        <b-button href="#" variant="primary" @click="onCreate()">Speichern</b-button>
-      </b-card>
+    <div>
+      <b-row class="mt-3">
+        <b-col>
+          <b-input-group>
+            <b-input type="text" v-model="abstimmung"></b-input>
+            <b-button variant="primary" @click="onCreate()">Speichern</b-button>
+          </b-input-group>
+        </b-col>
+      </b-row>
+    </div>
   </b-container>
 </template>
 

@@ -3,11 +3,14 @@
     <b-navbar toogleable="lg" type="dark" variant="dark">
       <b-navbar-nav>
         <b-navbar-brand href="#">NavBar</b-navbar-brand>
-        <b-nav-item v-if="isMaster" to="/">Home</b-nav-item> |
+        <b-nav-item v-if="isMaster" to="/">
+          Team
+          <b-badge variant="success">{{members}}</b-badge>
+        </b-nav-item>
         <b-nav-item v-if="votes" to="/estimates">
-          <b-badge variant="danger">{{votes}}</b-badge>
           Schätzungen
-        </b-nav-item> |
+          <b-badge variant="danger">{{votes}}</b-badge>
+        </b-nav-item>
         <!-- <b-nav-item v-if="isMaster" to="/about">About</b-nav-item> -->
       </b-navbar-nav>
       <!-- Right aligned nav items -->
@@ -42,8 +45,9 @@ import { User } from './domain/models/user';
 import { Master } from './domain/models/master';
 import MasterService from './domain/api/master.service';
 import { StoreActions } from './store';
-import loginService from './domain/api/login.service';
+import LoginService from './domain/api/login.service';
 import StoreModel from './store/storeModel';
+import StoreService from './domain/api/store.service';
 
 @Component({
   components: {
@@ -52,16 +56,14 @@ import StoreModel from './store/storeModel';
 export default class App extends Vue {
 
   async created() {
+    StoreService.$store = this.$store;
     if (!this.isMaster) {
       this.$router.push({ name: 'Login' })
     }
     else {
       /** wenn die App geladen wird (und Login=True), Master neu laden und im Store speichern;
        * damit werden Daten die evtl. auf anderen Endgeräten gespeichert wurden, synchronisiert */
-      const m: Master | undefined = await MasterService.getMaster(this.master.id);
-      if (m) {
-        await this.$store.commit(StoreActions.SaveMaster, m);
-      }
+      await StoreService.reloadMaster();
     }
   }
   
@@ -73,6 +75,15 @@ export default class App extends Vue {
     if (this.isMaster) {
       if (this.master.votes.length > 0) {
         return this.master.votes.length.toString();
+      }
+    }
+    return '';
+  }
+
+  @Model() get members(): string {
+    if (this.isMaster) {
+      if (this.master.members.length > 0) {
+        return this.master.members.length.toString();
       }
     }
     return '';
