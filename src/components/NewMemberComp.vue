@@ -7,6 +7,9 @@
             <b-input type="text" v-model="username"></b-input>
             <b-button variant="primary" @click="onCreate()"><b-icon-plus></b-icon-plus></b-button>
           </b-input-group>
+          <div class="ml-2" style="text-align: left">
+           <small>Team-Member anlegen</small>
+          </div>
         </b-col>
       </b-row>
     </div>

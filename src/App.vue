@@ -7,7 +7,7 @@
           Team
           <b-badge variant="success">{{members}}</b-badge>
         </b-nav-item>
-        <b-nav-item to="/estimates">
+        <b-nav-item v-if="isMaster" to="/estimates">
           Schätzungen
           <b-badge v-if="votes" variant="danger">{{votes}}</b-badge>
         </b-nav-item>
