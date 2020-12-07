@@ -1,7 +1,7 @@
 <template>
   <b-container>
-      <div>
-          <votes-comp :votes=votes @deleteVote="onDeleteVote" @archivVote="onArchivVote"></votes-comp>
+      <div class="mt-3" v-if="master.votes">
+          <votes-comp :votes=master.votes @deleteVote="onDeleteVote" @archivVote="onArchivVote"></votes-comp>
       </div>
   </b-container>
 </template>
@@ -12,6 +12,7 @@ import VoteService from '@/domain/api/vote.service'
 import { Vote } from '@/domain/models/vote';
 import VotesComp from '@/components/VotesComp.vue';
 import { DeleteResult } from '@/domain/models/deleteResult';
+import { Master } from '@/domain/models/master';
 
 @Component({
   components: {
@@ -19,14 +20,9 @@ import { DeleteResult } from '@/domain/models/deleteResult';
   },
 })
 export default class Estimates extends Vue {
-    @Model() private votes: Vote[] | undefined
-
-    async created() {
-      await this.loadVotes();
-    }
-
-    async loadVotes() {
-        this.votes = await VoteService.getVotes();
+    
+    @Model() get master(): Master {
+        return this.$store.getters.master;
     }
 
     async onDeleteVote(vote: Vote) {
@@ -34,7 +30,7 @@ export default class Estimates extends Vue {
         const deleteResult: DeleteResult | undefined = await VoteService.deleteVote(vote.id);
         if (deleteResult && deleteResult.affected) {
             if (deleteResult.affected > 0) {
-                await this.loadVotes();
+                // TODO ?
             }
         }
     }

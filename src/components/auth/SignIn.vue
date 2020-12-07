@@ -64,13 +64,13 @@ export default class SignIn extends Vue {
                     }
                     const newMaster: Master | undefined = await MasterService.createMaster(name, this.loginResult.user.uid);
                     if (newMaster) {
-                        this.$store.commit(StoreActions.SaveMaster, newMaster);
+                        await this.$store.commit(StoreActions.SaveMaster, newMaster);
                     }
                 } else {
-                    this.$store.commit(StoreActions.SaveMaster, master);
+                    await this.$store.commit(StoreActions.SaveMaster, master);
                 }
             }
-          this.$store.commit(StoreActions.SaveUser, this.loginResult.user)
+          await this.$store.commit(StoreActions.SaveUser, this.loginResult.user)
           this.loading = false;
           this.$router.push({ name: 'Home' })
         }

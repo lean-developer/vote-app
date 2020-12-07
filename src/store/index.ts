@@ -31,8 +31,8 @@ export default new Vuex.Store({
       localStorage.setItem('user', JSON.stringify(user))
     },
     [StoreActions.SaveMaster] (state, master: Master) {
-      state.storeModel.master = master
-      localStorage.setItem('master', JSON.stringify(master))
+      state.storeModel.master = master;
+      localStorage.setItem('master', JSON.stringify(master));
     },
   },
   getters: {

@@ -96,10 +96,10 @@ export default class SignUp extends Vue {
                 // Master anlegen
                 const master: Master | undefined = await MasterService.createMaster(this.name, this.loginResult.user.uid);
                 if (master) {
-                    this.$store.commit(StoreActions.SaveMaster, master);
+                    await this.$store.commit(StoreActions.SaveMaster, master);
                 }
             }
-            this.$store.commit(StoreActions.SaveUser, this.loginResult.user)
+            await this.$store.commit(StoreActions.SaveUser, this.loginResult.user)
             this.disabled = false;
             this.loading = false;
             this.$router.push({ name: 'Home' })
