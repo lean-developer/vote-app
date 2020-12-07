@@ -1,18 +1,15 @@
 <template>
   <b-container>
-       <b-card
-        title="Neues Teammitglied"
-        img-src="https://picsum.photos/600/300/?image=24"
-        img-alt="Image"
-        img-top
-        tag="article"
-        style="max-width: 20rem;"
-        class="mb-2">
-        <b-card-text>
-          <b-input type="text" v-model="username"></b-input>
-        </b-card-text>
-        <b-button href="#" variant="primary" @click="onCreate()">Speichern</b-button>
-      </b-card>
+    <div>
+      <b-row class="mt-3 mb-2">
+        <b-col>
+          <b-input-group>
+            <b-input type="text" v-model="username"></b-input>
+            <b-button variant="primary" @click="onCreate()"><b-icon-plus></b-icon-plus></b-button>
+          </b-input-group>
+        </b-col>
+      </b-row>
+    </div>
   </b-container>
 </template>
 

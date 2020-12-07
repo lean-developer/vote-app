@@ -1,6 +1,7 @@
 import http from './server/http'
 import { Master } from '../models/master'
 import { Member } from '../models/member';
+import { DeleteResult } from '../models/deleteResult';
 
 class MasterService {
     async getMaster (id: number): Promise<Master | undefined> {
@@ -45,6 +46,16 @@ class MasterService {
         name: resp.data.name
       }
       return member;
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  async deleteMemberOfMaster(masterId: number, memberId: number): Promise<DeleteResult | undefined> {
+    try {
+      const api = 'member/' + memberId + '/master/' + masterId;
+      const resp = await http.delete(api);
+      return resp.data as DeleteResult;
     } catch (e) {
       console.error(e)
     }

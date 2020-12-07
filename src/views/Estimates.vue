@@ -1,7 +1,7 @@
 <template>
   <b-container>
       <new-vote-comp @createVote="onCreateVote"></new-vote-comp>
-      <div class="mt-3" v-if="master.votes">
+      <div v-if="master.votes">
           <votes-comp :votes=master.votes @deleteVote="onDeleteVote" @archivVote="onArchivVote"></votes-comp>
       </div>
   </b-container>

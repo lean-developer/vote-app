@@ -10,24 +10,33 @@
 
 <script lang="ts">
 import { Component, Vue, Model, Prop } from 'vue-property-decorator';
+import MasterService from '@/domain/api/master.service';
+import StoreService from '@/domain/api/store.service';
+import { DeleteResult } from '@/domain/models/deleteResult';
+import { Member } from '@/domain/models/member';
 
 @Component({
   components: {
   },
 })
 export default class UserChips extends Vue {
-    @Prop({ required: true }) name!: string;
+    @Prop({ required: true }) member!: Member;
 
-    async created() {
-      console.log('UserChips created...')
+    async onClose() {
+        const deleteResult: DeleteResult | undefined = await MasterService.deleteMemberOfMaster(StoreService.master.id, this.member.id);
+        if(deleteResult?.affected) {
+            if(deleteResult.affected) {
+                await StoreService.reloadMaster();
+            }
+        }
     }
 
-    onClose() {
-        console.log('UserChips close');
+    get name(): string {
+        return this.member.name;
     }
 
     get initials(): string {
-        return this.name.substring(0, 2).toUpperCase();
+        return this.member.name.substring(0, 2).toUpperCase();
     }
 }
 </script>

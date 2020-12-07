@@ -4,7 +4,7 @@
         <new-member-comp @createMember="onCreateMember"></new-member-comp>
         <div v-if="master.members">
           <div v-for="m in master.members" :key="m.id">
-            <user-chips :name=m.name></user-chips>
+            <user-chips :member=m></user-chips>
           </div>
         </div>
       </div>
