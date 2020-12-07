@@ -4,7 +4,10 @@
       <b-navbar-nav>
         <b-navbar-brand href="#">NavBar</b-navbar-brand>
         <b-nav-item v-if="isMaster" to="/">Home</b-nav-item> |
-        <b-nav-item v-if="isMaster" to="/estimates">Schätzungen</b-nav-item> |
+        <b-nav-item v-if="votes" to="/estimates">
+          <b-badge variant="danger">{{votes}}</b-badge>
+          Schätzungen
+        </b-nav-item> |
         <!-- <b-nav-item v-if="isMaster" to="/about">About</b-nav-item> -->
       </b-navbar-nav>
       <!-- Right aligned nav items -->
@@ -64,6 +67,15 @@ export default class App extends Vue {
   
   @Model() get master(): Master {
     return this.$store.getters.master
+  }
+
+  @Model() get votes(): string {
+    if (this.isMaster) {
+      if (this.master.votes.length > 0) {
+        return this.master.votes.length.toString();
+      }
+    }
+    return '';
   }
 
   @Model() get isMaster(): boolean {
