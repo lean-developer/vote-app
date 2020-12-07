@@ -26,9 +26,12 @@ class VoteService {
     }
   }
 
-  async createVote (name: string): Promise<Vote | undefined> {
+  async createVoteForMaster (masterId: number, name: string): Promise<Vote | undefined> {
     try {
-      const api = 'vote?name=' + name
+      if (!name) {
+        return;
+      }
+      const api = 'vote/master/' + masterId + '?name=' + name
       const resp = await http.post(api)
       console.log('RESP', resp)
       return resp.data as Vote

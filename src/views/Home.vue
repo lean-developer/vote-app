@@ -7,7 +7,7 @@
           </div>
         </div>
       </div>
-      <new-vote-comp></new-vote-comp>
+      <new-vote-comp @createVote="onCreateVote"></new-vote-comp>
       <new-member-comp @createMember="onCreateMember"></new-member-comp>
   </b-container>
 </template>
@@ -22,6 +22,7 @@ import NewMemberComp from '@/components/NewMemberComp.vue';
 import { Master } from '@/domain/models/master';
 import { StoreActions } from '../store';
 import { Member } from '@/domain/models/member';
+import voteService from '@/domain/api/vote.service';
 
 @Component({
   components: {
@@ -37,16 +38,37 @@ export default class Home extends Vue {
     return this.$store.getters.master
   }
 
+  private get isLogin(): boolean {
+    return this.master.uid !== '';
+  }
+
   async onCreateMember(membername: string) {
     console.log('NewMember ' + membername);  
-    if (this.master) {
+    if (this.isLogin) {
       const newMember: Member | undefined = await MasterService.createMemberOfMaster(this.master.id, membername);
       if (newMember) {
-        const savedMaster: Master = this.master;
-        savedMaster.members.push(newMember);
-        await this.$store.commit(StoreActions.SaveMaster, savedMaster);
-        console.log('Push Member', membername, savedMaster);
+        await this.refreshMaster();
       }
+    }
+  }
+
+  async onCreateVote(votename: string) {
+    console.log('NewVote' + votename);
+    if (this.isLogin) {
+      const newVote: Vote | undefined = await voteService.createVoteForMaster(this.master.id, votename);
+      if (newVote) {
+        const savedMaster: Master | undefined = await MasterService.getMaster(this.master.id);
+        if (savedMaster) {
+          await this.refreshMaster();
+        }
+      }
+    }
+  }
+
+  async refreshMaster() {
+    const savedMaster: Master | undefined = await MasterService.getMaster(this.master.id);
+    if (savedMaster) {
+      await this.$store.commit(StoreActions.SaveMaster, savedMaster);
     }
   }
 }

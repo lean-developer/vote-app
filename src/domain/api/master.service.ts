@@ -35,6 +35,9 @@ class MasterService {
 
   async createMemberOfMaster (masterId: number, memberName: string): Promise<Member | undefined> {
     try {
+      if (!memberName) {
+        return;
+      }
       const api = 'member/master/' + masterId + '?name=' + memberName;
       const resp = await http.post(api);
       const member: Member = {

@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Model, Prop } from 'vue-property-decorator';
+import { Component, Vue, Model, Prop, Emit } from 'vue-property-decorator';
 import VoteService from '@/domain/api/vote.service'
 import { Vote } from '@/domain/models/vote';
 
@@ -32,10 +32,12 @@ export default class NewVoteComp extends Vue {
       console.log('NewVoteComp created...')
     }
 
+    @Emit('createVote')
     async onCreate() {
-        const newVote: Vote | undefined = await VoteService.createVote(this.abstimmung);
+        const newVote: string = this.abstimmung;
         if (newVote) {
-        this.$router.push({ name: 'Estimate', params: { voteId: newVote.id.toString() } })
+          this.abstimmung = '';
+          return newVote;
         }
     }
 }

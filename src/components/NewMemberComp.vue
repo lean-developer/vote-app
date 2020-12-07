@@ -26,7 +26,7 @@ import { Vote } from '@/domain/models/vote';
   },
 })
 export default class NewMemberComp extends Vue {
-    private username: string = '';
+    @Model() private username: string = '';
 
     async created() {
       console.log('NewMemberComp created...')
@@ -34,7 +34,11 @@ export default class NewMemberComp extends Vue {
 
     @Emit('createMember')
     async onCreate() {
-       return this.username;
+        const newMember: string = this.username;
+        if (newMember) {
+          this.username = '';
+          return newMember;
+        }
     }
 }
 </script>
