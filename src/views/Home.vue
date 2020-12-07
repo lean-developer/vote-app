@@ -1,36 +1,53 @@
 <template>
     <b-container>
-      <div v-if="users">
-         <div v-for="u in users" :key="u">
-           <user-chips :name=u></user-chips>
-         </div>
+      <div v-if="master">
+        <div v-if="master.members">
+          <div v-for="m in master.members" :key="m.id">
+            <user-chips :name=m.name></user-chips>
+          </div>
+        </div>
       </div>
       <new-vote-comp></new-vote-comp>
-      <new-user-comp @createMember="onCreateMember"></new-user-comp>
+      <new-member-comp @createMember="onCreateMember"></new-member-comp>
   </b-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Model } from 'vue-property-decorator';
-import VoteService from '@/domain/api/vote.service'
+import MasterService from '@/domain/api/master.service'
 import { Vote } from '@/domain/models/vote';
 import UserChips from '@/components/UserChips.vue';
 import NewVoteComp from '@/components/NewVoteComp.vue';
-import NewUserComp from '@/components/NewUserComp.vue';
+import NewMemberComp from '@/components/NewMemberComp.vue';
+import { Master } from '@/domain/models/master';
+import { StoreActions } from '../store';
+import { Member } from '@/domain/models/member';
 
 @Component({
   components: {
     UserChips,
     NewVoteComp,
-    NewUserComp,
+    NewMemberComp,
   },
 })
 export default class Home extends Vue {
   private users: string[] = [];
 
-  onCreateMember(username: string) {
-    console.log('NewMember ' + username);  
-    this.users.push(username);
+  @Model() get master(): Master {
+    return this.$store.getters.master
+  }
+
+  async onCreateMember(membername: string) {
+    console.log('NewMember ' + membername);  
+    if (this.master) {
+      const newMember: Member | undefined = await MasterService.createMemberOfMaster(this.master.id, membername);
+      if (newMember) {
+        const savedMaster: Master = this.master;
+        savedMaster.members.push(newMember);
+        await this.$store.commit(StoreActions.SaveMaster, savedMaster);
+        console.log('Push Member', membername, savedMaster);
+      }
+    }
   }
 }
 </script>

@@ -1,9 +1,9 @@
 <template>
-    <div class="chip">
+    <div class="chip" v-if="name">
         <b-avatar>
-            JD
+            {{initials}}
         </b-avatar>
-        John Doo
+        {{name}}
         <span class="closebtn" @click="onClose()">&times;</span>
     </div>
 </template>
@@ -16,6 +16,7 @@ import { Component, Vue, Model, Prop } from 'vue-property-decorator';
   },
 })
 export default class UserChips extends Vue {
+    @Prop({ required: true }) name!: string;
 
     async created() {
       console.log('UserChips created...')
@@ -23,6 +24,10 @@ export default class UserChips extends Vue {
 
     onClose() {
         console.log('UserChips close');
+    }
+
+    get initials(): string {
+        return this.name.substring(0, 2).toUpperCase();
     }
 }
 </script>

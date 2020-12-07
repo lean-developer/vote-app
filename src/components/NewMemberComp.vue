@@ -25,11 +25,11 @@ import { Vote } from '@/domain/models/vote';
   components: {
   },
 })
-export default class NewUserComp extends Vue {
+export default class NewMemberComp extends Vue {
     private username: string = '';
 
     async created() {
-      console.log('NewUserComp created...')
+      console.log('NewMemberComp created...')
     }
 
     @Emit('createMember')

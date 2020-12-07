@@ -36,6 +36,8 @@
 import { Component, Vue, Model } from 'vue-property-decorator';
 import { User } from './domain/models/user';
 import { Master } from './domain/models/master';
+import MasterService from './domain/api/master.service';
+import { StoreActions } from './store';
 
 @Component({
   components: {
@@ -43,9 +45,17 @@ import { Master } from './domain/models/master';
 })
 export default class App extends Vue {
 
-  created() {
+  async created() {
     if (!this.isMaster) {
       this.$router.push({ name: 'Login' })
+    }
+    else {
+      /** wenn die App geladen wird (und Login=True), Master neu laden und im Store speichern;
+       * damit werden Daten die evtl. auf anderen Endgeräten gespeichert wurden, synchronisiert */
+      const m: Master | undefined = await MasterService.getMaster(this.master.id);
+      if (m) {
+        await this.$store.commit(StoreActions.SaveMaster, m);
+      }
     }
   }
   
