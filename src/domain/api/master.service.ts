@@ -15,7 +15,7 @@ class MasterService {
 
   async getMasterByUid (uid: string): Promise<Master | undefined> {
     try {
-      const api = 'master/uid' + uid;
+      const api = 'master/uid/' + uid;
       const resp = await http.get(api)
       return resp.data as Master
     } catch (e) {

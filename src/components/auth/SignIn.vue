@@ -53,6 +53,7 @@ export default class SignIn extends Vue {
              if (this.loginResult.user) {
                 // Master laden 
                 const master: Master | undefined = await MasterService.getMasterByUid(this.loginResult.user.uid);
+                console.log('LoginMaster', master);
                 if (!master) {
                     // kein Master gefunden -> neu anlegen
                     let name: string = this.loginResult.user.name;
