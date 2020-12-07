@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Estimates from '../views/Estimates.vue'
 import Estimate from '../views/Estimate.vue'
 import Login from '../views/Login.vue'
+import Profile from '../views/Profile.vue'
 
 Vue.use(VueRouter)
 
@@ -17,6 +18,11 @@ const routes: Array<RouteConfig> = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile
   },
   {
     path: '/estimates',

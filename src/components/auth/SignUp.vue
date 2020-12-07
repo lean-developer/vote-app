@@ -1,5 +1,6 @@
 <template>
 <div class="header">
+  <div v-if="loading" class="lds-ripple"><div></div><div></div></div>
   <b-form @submit="onSubmit" @reset="onReset">
     <!-- Name -->
     <b-row>
@@ -57,6 +58,7 @@ export default class SignUp extends Vue {
     @Model() private _pw = ''
     @Model() private _pw2 = ''
     private disabled: boolean = false;
+    private loading = false;
 
     async onRegister () {
         if (this.pw !== this.pw2) {
@@ -70,6 +72,7 @@ export default class SignUp extends Vue {
             return;
         }
         this.disabled = true;
+        this.loading = true;
         const result = await LoginService.register(this.email, this.pw);
         if (result) {
             this.loginResult = result;
@@ -98,10 +101,12 @@ export default class SignUp extends Vue {
             }
             this.$store.commit(StoreActions.SaveUser, this.loginResult.user)
             this.disabled = false;
+            this.loading = false;
             this.$router.push({ name: 'Home' })
         }
       }
       this.disabled = false;
+      this.loading = false;
     }
 
     onSubmit () {

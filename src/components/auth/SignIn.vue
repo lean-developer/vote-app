@@ -1,5 +1,6 @@
 <template>
 <div class="header">
+    <div v-if="loading" class="lds-ripple"><div></div><div></div></div>
     <b-form @submit="onSubmit" @reset="onReset">
      <!-- Email -->
     <b-row>
@@ -42,10 +43,12 @@ export default class SignIn extends Vue {
     @Model() private _loginResult!: LoginResult;
     @Model() private _email = '';
     @Model() private _pw = '';
-    private disabled: boolean = false
+    private disabled: boolean = false;
+    private loading = false;
 
     async onLogin (): Promise<void> {
       this.disabled = true;
+      this.loading = true;
       const result = await LoginService.login(this.email, this.pw)
       if (result) {
         this.loginResult = result
@@ -53,7 +56,6 @@ export default class SignIn extends Vue {
              if (this.loginResult.user) {
                 // Master laden 
                 const master: Master | undefined = await MasterService.getMasterByUid(this.loginResult.user.uid);
-                console.log('LoginMaster', master);
                 if (!master) {
                     // kein Master gefunden -> neu anlegen
                     let name: string = this.loginResult.user.name;
@@ -69,9 +71,11 @@ export default class SignIn extends Vue {
                 }
             }
           this.$store.commit(StoreActions.SaveUser, this.loginResult.user)
+          this.loading = false;
           this.$router.push({ name: 'Home' })
         }
         this.disabled = false;
+        this.loading = false;
       }
     }
 

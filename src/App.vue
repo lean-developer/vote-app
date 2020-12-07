@@ -19,8 +19,8 @@
             <template #button-content>
               <em>{{name}}</em>
             </template>
-            <b-dropdown-item href="#">Profil</b-dropdown-item>
-            <b-dropdown-item href="#">Logout</b-dropdown-item>
+            <b-dropdown-item to="/profile">Profil</b-dropdown-item>
+            <b-dropdown-item @click="onLogout()">Logout</b-dropdown-item>
         </b-nav-item-dropdown>
         
         <b-nav-item-dropdown right v-if="!isMaster">
@@ -38,6 +38,8 @@ import { User } from './domain/models/user';
 import { Master } from './domain/models/master';
 import MasterService from './domain/api/master.service';
 import { StoreActions } from './store';
+import loginService from './domain/api/login.service';
+import StoreModel from './store/storeModel';
 
 @Component({
   components: {
@@ -73,6 +75,13 @@ export default class App extends Vue {
     }
     return '';
   }
+
+  async onLogout() {
+    const initStoreModel: StoreModel = new StoreModel();
+    await this.$store.commit(StoreActions.SaveUser, initStoreModel.user);
+    await this.$store.commit(StoreActions.SaveMaster, initStoreModel.master);
+    this.$router.push({ name: 'Login' })
+  }
 }
 </script>
 
@@ -96,5 +105,39 @@ export default class App extends Vue {
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+
+.lds-ripple {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ripple div {
+  position: absolute;
+  border: 4px solid blue;
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+@keyframes lds-ripple {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+  }
 }
 </style>
