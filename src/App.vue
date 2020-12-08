@@ -57,13 +57,19 @@ export default class App extends Vue {
 
   async created() {
     StoreService.$store = this.$store;
-    if (!this.isMaster) {
-      this.$router.push({ name: 'Login' })
+    console.log('URL', this.$route.path, this.$route.name);
+    if (this.$route.name === 'MemberLogin') {
+          // hier als Member einloggen!
     }
     else {
-      /** wenn die App geladen wird (und Login=True), Master neu laden und im Store speichern;
-       * damit werden Daten die evtl. auf anderen Endgeräten gespeichert wurden, synchronisiert */
-      await StoreService.reloadMaster();
+      if (!this.isMaster) {
+          this.$router.push({ name: 'Login' })
+      }
+      else {
+        /** wenn die App geladen wird (und Login=True), Master neu laden und im Store speichern;
+         * damit werden Daten die evtl. auf anderen Endgeräten gespeichert wurden, synchronisiert */
+        await StoreService.reloadMaster();
+      }
     }
   }
   

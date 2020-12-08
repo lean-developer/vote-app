@@ -9,7 +9,7 @@
                 <span class="closebtn" @click="onClose()">&times;</span>
             </div>
             <div v-if="pin" class="link">
-                <b-link>{{pin}}</b-link>
+                <b-link :to=link>{{pin}}</b-link>
             </div>
         </b-col>
     </div>
@@ -47,6 +47,10 @@ export default class UserChips extends Vue {
             return this.member.pin;
         }
         return 0;
+    }
+
+    get link(): string {
+        return '/member/' + this.pin + '/login/' + StoreService.master.uid;
     }
 
     get initials(): string {

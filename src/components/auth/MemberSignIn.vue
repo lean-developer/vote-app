@@ -1,0 +1,80 @@
+<template>
+    <div class="header">
+         <div v-if="member">
+            <h5>Hallo {{member.name}}</h5>
+            <small>Melde dich an mit PIN und Key</small>
+            <b-input class="mt-2" type="number" v-model=memberPin @focus="onChange()"></b-input>
+            <b-input class="mt-2" type="text" v-model=memberKey @focus="onChange()"></b-input>
+            <div class="mt-2">
+                <b-button block variant="success" @click="onLogin()">Login</b-button>
+            </div>
+            <div v-if="errorMsg" class="message-error mt-2">
+                <small>{{errorMsg}}</small>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script lang="ts">
+import { Component, Vue, Model, Prop } from 'vue-property-decorator'
+import MasterService from '@/domain/api/master.service'
+import { Master } from '@/domain/models/master';
+import { Member } from '@/domain/models/member';
+
+@Component({
+  components: {
+  }
+})
+export default class MemberSignIn extends Vue {
+    private disabled: boolean = false;
+    private loading = false;
+    private memberPin!: number;
+    private memberKey!: string;
+    private masterUid!: string;
+    @Model() private errorMsg: string = '';
+    private master: Master | undefined;
+    @Model() private member: Member | undefined;
+
+    async created() {
+        this.memberPin = +this.$route.params.nr;
+        this.masterUid = this.$route.params.masterUid;
+        this.master = await MasterService.getMasterByUid(this.masterUid);
+        this.findMasterMember();
+    }
+
+    findMasterMember() {
+        if (this.master) {
+            for (let m of this.master.members) {
+                if (m.pin === this.memberPin) {
+                    this.member = m;
+                }
+            }
+        }
+    }
+
+    onChange() {
+        this.errorMsg = '';
+    }
+
+    async onLogin (): Promise<void> {
+        if (this.member?.pin === this.memberPin) {
+            if (this.member.key === this.memberKey) {
+                return;
+            }
+        }
+        this.errorMsg = 'Anmeldung fehlgeschlagen: Falsche Pin und/oder Key!'
+    }
+}
+</script>
+
+<style scoped>
+    .header {
+        margin-top: 2rem;
+    }
+     .message-ok {
+      color: blue;
+    }
+    .message-error {
+      color: red;
+    }
+</style>
