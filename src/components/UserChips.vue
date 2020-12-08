@@ -1,10 +1,17 @@
 <template>
-    <div class="chip" v-if="name">
-        <b-avatar>
-            {{initials}}
-        </b-avatar>
-        {{name}}
-        <span class="closebtn" @click="onClose()">&times;</span>
+    <div>
+        <b-col>
+            <div class="chip" v-if="name">
+                <b-avatar>
+                    {{initials}}
+                </b-avatar>
+                {{name}}
+                <span class="closebtn" @click="onClose()">&times;</span>
+            </div>
+            <div v-if="pin" class="link">
+                <b-link>{{pin}}</b-link>
+            </div>
+        </b-col>
     </div>
 </template>
 
@@ -35,6 +42,13 @@ export default class UserChips extends Vue {
         return this.member.name;
     }
 
+    get pin(): number {
+        if(this.member.pin) {
+            return this.member.pin;
+        }
+        return 0;
+    }
+
     get initials(): string {
         return this.member.name.substring(0, 2).toUpperCase();
     }
@@ -44,12 +58,20 @@ export default class UserChips extends Vue {
 <style scoped>
     .chip {
         display: inline-block;
+        text-align: left;
         padding-right: 25px;
+        margin-bottom: 5px;
         height: 50px;
+        min-width: 250px;
         font-size: 16px;
         line-height: 50px;
         border-radius: 25px;
         background-color: #f1f1f1;
+    }
+
+    .link {
+        padding-left: 2rem;
+        display: inline-block;
     }
 
     .chip img {
