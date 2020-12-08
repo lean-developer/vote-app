@@ -41,6 +41,7 @@
       </b-navbar-nav>
     </b-navbar>
     <router-view/>
+    <div v-if="loading" class="lds-ripple"><div></div><div></div></div>
   </div>
 </template>
 
@@ -61,6 +62,7 @@ import { Member } from './domain/models/member';
   },
 })
 export default class App extends Vue {
+  private loading: boolean = false;
 
   async created() {
     StoreService.$store = this.$store;
@@ -72,7 +74,9 @@ export default class App extends Vue {
         /** wenn die App geladen wird (und Login=True), Master neu laden und im Store speichern;
          * damit werden Daten die evtl. auf anderen Endgeräten gespeichert wurden, synchronisiert.
          * Darf nur ausgeführt werden, wenn isMaster=True! */
+        this.loading = true;
         await StoreService.reloadMaster();
+        this.loading = false;
       }
       else {
         if (this.storeMember) {
@@ -169,7 +173,7 @@ export default class App extends Vue {
   animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
 }
 .lds-ripple div:nth-child(2) {
-  animation-delay: -0.5s;
+  animation-delay: -0.3s;
 }
 @keyframes lds-ripple {
   0% {

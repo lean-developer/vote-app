@@ -3,6 +3,11 @@ import { Vote } from '../models/vote'
 import { DeleteResult } from '../models/deleteResult'
 
 class VoteService {
+  static STATUS_OPEN = 'OPEN';
+  static STATUS_CLOSE = '';
+  static STATUS_RUNNING = 'RUNNING';
+  static STATUS_DONE = 'DONE';
+
   async getVotes (status?: string): Promise<Vote[] | undefined> {
     try {
       let api = 'vote'
@@ -48,6 +53,32 @@ class VoteService {
     } catch (e) {
       console.error(e)
     }
+  }
+
+  async setOpen(vote: Vote): Promise<Vote | undefined> {
+    let v: Vote = vote;
+    v.status = VoteService.STATUS_OPEN;
+    return await this.updateVote(v);
+  }
+
+  async setClose(vote: Vote): Promise<Vote | undefined> {
+    let v: Vote = vote;
+    v.status = VoteService.STATUS_CLOSE;
+    return await this.updateVote(v);
+  }
+
+  async setRunning(vote: Vote): Promise<Vote | undefined> {
+    let v: Vote = vote;
+    v.status = VoteService.STATUS_RUNNING;
+    // TODO: MemberVotes für jeden MasterMember speichern
+    return await this.updateVote(v);
+  }
+
+  async setDone(vote: Vote): Promise<Vote | undefined> {
+    let v: Vote = vote;
+    v.status = VoteService.STATUS_DONE;
+    // TODO: Points der Members sammeln und in Vote speichern ?
+    return await this.updateVote(v);
   }
 
   async deleteVote (id: number): Promise<DeleteResult | undefined> {

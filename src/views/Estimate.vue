@@ -61,12 +61,10 @@ export default class Estimate extends Vue {
         if (!this.vote) {
             return;
         }
-        let v: Vote = this.vote;
-        v.status = 'OPEN';
-        const newVote = await VoteService.updateVote(v);
+        const newVote = await VoteService.setOpen(this.vote);
         if (newVote) {
             this.isOpen = true;
-            StoreService.reloadMaster();
+            await StoreService.reloadMaster();
         }
     }
 }

@@ -2,22 +2,14 @@
   <b-container>
       <div v-if="votes">
         <div v-for="v in votes" :key="v.id">
-        <b-row class="vote-row">
-            <b-col cols="6" class="vote-name">
+        <b-row>
+            <b-button class="row-mb row-mr" :variant=checkState @click="onCheck(v)"><i class="fas fa-check"></i></b-button>
+            <b-col class="row-mb row-mr vote-row vote-name">
                 <b-link :href="`/estimate/${v.id}`">
-                    <b-badge variant="warning" pill class="mr-1">x</b-badge>
                     {{v.name}} ({{v.id}})
                 </b-link>
             </b-col>
-            <b-col>
-                {{v.status}}
-            </b-col>
-            <b-col>
-                <b-link href="" @click="onArchiv(v)"><small>Archivieren</small></b-link>
-            </b-col>
-            <b-col>
-                <b-link href="" @click="onDelete(v)"><small>Löschen</small></b-link>
-            </b-col>
+            <b-button class="row-mb" variant="light" @click="onDelete(v)"><i class="fas fa-ban"></i></b-button>
         </b-row>
         </div>
       </div>
@@ -35,6 +27,13 @@ import { Vote } from '@/domain/models/vote';
 export default class VotesComp extends Vue {
     @Prop({ required: true }) votes!: Vote[]
 
+    onCheck(vote: Vote) {
+    }
+
+    get checkState(): string {
+        return 'success';
+    }
+
     @Emit('deleteVote')
     onDelete(vote: Vote) {
         return vote;
@@ -49,12 +48,16 @@ export default class VotesComp extends Vue {
 
 <style scoped>
     .vote-row {
-        border-radius: 10px;
-        border: 2px solid #adadad;
-        margin-bottom: 5px;
+        border-radius: 8px;
         padding-top: 1rem;
         padding-bottom: 1rem;
-        background-color: rgb(235, 235, 235);
+        background-color: rgb(237, 237, 237);
+    }
+    .row-mb {
+        margin-bottom: 5px;
+    }
+    .row-mr {
+        margin-right: 3px;
     }
     .vote-name {
         text-align: left;
