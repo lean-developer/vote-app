@@ -5,6 +5,7 @@ import Estimates from '../views/Estimates.vue'
 import Estimate from '../views/Estimate.vue'
 import Login from '../views/Login.vue'
 import MemberLogin from '../views/MemberLogin.vue'
+import Member from '../views/Member.vue'
 import Profile from '../views/Profile.vue'
 
 Vue.use(VueRouter)
@@ -29,6 +30,11 @@ const routes: Array<RouteConfig> = [
     path: '/profile',
     name: 'Profile',
     component: Profile
+  },
+  {
+    path: '/member',
+    name: 'Member',
+    component: Member
   },
   {
     path: '/estimates',

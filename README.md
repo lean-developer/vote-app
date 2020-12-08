@@ -24,5 +24,6 @@ See https://vercel.com/dashboard
 https://vote-alpha.vercel.app/
 GITHUB Integration: ingoclohs1/vote-app
 
+
 # To update your Production Deployment, push to the "master" branch.
 $ git push -u origin main

@@ -1,10 +1,11 @@
 <template>
     <div class="header">
+        <div v-if="loading" class="lds-ripple"><div></div><div></div></div>
          <div v-if="member">
             <h5>Hallo {{member.name}}</h5>
             <small>Melde dich an mit PIN und Key</small>
             <b-input class="mt-2" type="number" v-model=memberPin @focus="onChange()"></b-input>
-            <b-input class="mt-2" type="text" v-model=memberKey @focus="onChange()"></b-input>
+            <b-input class="mt-2" type="password" v-model=memberKey @focus="onChange()"></b-input>
             <div class="mt-2">
                 <b-button block variant="success" @click="onLogin()">Login</b-button>
             </div>
@@ -38,8 +39,10 @@ export default class MemberSignIn extends Vue {
     async created() {
         this.memberPin = +this.$route.params.nr;
         this.masterUid = this.$route.params.masterUid;
+        this.loading = true;
         this.master = await MasterService.getMasterByUid(this.masterUid);
         this.findMasterMember();
+        this.loading = false;
     }
 
     findMasterMember() {
@@ -58,8 +61,8 @@ export default class MemberSignIn extends Vue {
 
     async onLogin (): Promise<void> {
         if (this.member?.pin === this.memberPin) {
-            if (this.member.key === this.memberKey) {
-                return;
+            if (this.memberKey === this.member.name) {
+                this.$router.push({ name: 'Member' })
             }
         }
         this.errorMsg = 'Anmeldung fehlgeschlagen: Falsche Pin und/oder Key!'
