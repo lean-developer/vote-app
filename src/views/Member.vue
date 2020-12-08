@@ -10,11 +10,13 @@
               </b-col>
               <div class="line"></div>
           </b-row>
-          <b-row v-if="master">
+          <div v-if="master">
                <div v-for="v in master.votes" :key="v.id">
-                   {{v.name}}
+                   <div>
+                    {{v.name}}
+                   </div>
                </div>
-          </b-row>
+          </div>
       </div>
       
   </b-container>
