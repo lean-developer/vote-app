@@ -3,12 +3,14 @@ import Vuex from 'vuex'
 import StoreModel from './storeModel'
 import { User } from '@/domain/models/user'
 import { Master } from '@/domain/models/master'
+import { StoreMember } from '@/domain/models/storeMember'
 
 Vue.use(Vuex)
 
 export enum StoreActions {
   SaveUser = 'SAVE_USER',
   SaveMaster = 'SAVE_MASTER',
+  SaveMember = 'SAVE_MEMBER',
 }
 
 export default new Vuex.Store({
@@ -25,6 +27,10 @@ export default new Vuex.Store({
       if (masterState) {
         state.storeModel.master = JSON.parse(masterState)
       }
+      const memberState = localStorage.getItem('member')
+      if (memberState) {
+        state.storeModel.member = JSON.parse(memberState);
+      }
     },
     [StoreActions.SaveUser] (state, user: User) {
       state.storeModel.user = user
@@ -34,6 +40,10 @@ export default new Vuex.Store({
       state.storeModel.master = master;
       localStorage.setItem('master', JSON.stringify(master));
     },
+    [StoreActions.SaveMember] (state, member: StoreMember) {
+      state.storeModel.member = member;
+      localStorage.setItem('member', JSON.stringify(member));
+    }
   },
   getters: {
     user: (state) => {
@@ -41,6 +51,9 @@ export default new Vuex.Store({
     },
     master: (state) => {
       return state.storeModel.master
+    },
+    member: (state) => {
+      return state.storeModel.member
     }
   },
   actions: {

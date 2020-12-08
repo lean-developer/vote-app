@@ -10,6 +10,9 @@
                 </b-link>
             </b-col>
             <b-col>
+                {{v.status}}
+            </b-col>
+            <b-col>
                 <b-link href="" @click="onArchiv(v)"><small>Archivieren</small></b-link>
             </b-col>
             <b-col>

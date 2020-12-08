@@ -21,6 +21,8 @@ import { Component, Vue, Model, Prop } from 'vue-property-decorator'
 import MasterService from '@/domain/api/master.service'
 import { Master } from '@/domain/models/master';
 import { Member } from '@/domain/models/member';
+import { StoreActions } from '@/store';
+import { StoreMember } from '@/domain/models/storeMember';
 
 @Component({
   components: {
@@ -62,6 +64,8 @@ export default class MemberSignIn extends Vue {
     async onLogin (): Promise<void> {
         if (this.member?.pin === this.memberPin) {
             if (this.memberKey === this.member.name) {
+                const storeMember: StoreMember = { pin: this.member.pin, uid: this.masterUid, name: this.member.name };
+                await this.$store.commit(StoreActions.SaveMember, storeMember);
                 this.$router.push({ name: 'Member' })
             }
         }

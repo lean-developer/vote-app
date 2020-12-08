@@ -2,7 +2,9 @@
   <div id="app">
     <b-navbar toogleable="lg" type="dark" variant="dark">
       <b-navbar-nav>
-        <b-navbar-brand href="#">NavBar</b-navbar-brand>
+        <b-navbar-brand href="#">
+          Vote
+        </b-navbar-brand>
         <b-nav-item v-if="isMaster" to="/">
           Team
           <b-badge variant="success">{{members}}</b-badge>
@@ -10,6 +12,9 @@
         <b-nav-item v-if="isMaster" to="/estimates">
           Schätzungen
           <b-badge v-if="votes" variant="danger">{{votes}}</b-badge>
+        </b-nav-item>
+        <b-nav-item to="/member">
+          <em>{{storeMember.name}}</em>
         </b-nav-item>
         <!-- <b-nav-item v-if="isMaster" to="/about">About</b-nav-item> -->
       </b-navbar-nav>
@@ -27,7 +32,7 @@
               <em>{{name}}</em>
             </template>
             <b-dropdown-item to="/profile">Profil</b-dropdown-item>
-            <b-dropdown-item @click="onLogout()">Logout</b-dropdown-item>
+            <b-dropdown-item @click="onMasterLogout()">Logout</b-dropdown-item>
         </b-nav-item-dropdown>
         
         <b-nav-item-dropdown right v-if="!isMaster">
@@ -48,6 +53,8 @@ import { StoreActions } from './store';
 import LoginService from './domain/api/login.service';
 import StoreModel from './store/storeModel';
 import StoreService from './domain/api/store.service';
+import { StoreMember } from './domain/models/storeMember';
+import { Member } from './domain/models/member';
 
 @Component({
   components: {
@@ -57,24 +64,33 @@ export default class App extends Vue {
 
   async created() {
     StoreService.$store = this.$store;
-    console.log('URL', this.$route.path, this.$route.name);
     if (this.$route.name === 'MemberLogin') {
           // hier als Member einloggen!
     }
     else {
-      if (!this.isMaster) {
-          this.$router.push({ name: 'Login' })
+      if (this.isMaster) {
+        /** wenn die App geladen wird (und Login=True), Master neu laden und im Store speichern;
+         * damit werden Daten die evtl. auf anderen Endgeräten gespeichert wurden, synchronisiert.
+         * Darf nur ausgeführt werden, wenn isMaster=True! */
+        await StoreService.reloadMaster();
       }
       else {
-        /** wenn die App geladen wird (und Login=True), Master neu laden und im Store speichern;
-         * damit werden Daten die evtl. auf anderen Endgeräten gespeichert wurden, synchronisiert */
-        await StoreService.reloadMaster();
+        if (this.storeMember) {
+          this.$router.push({ name: 'Member' })
+        }
+        else {
+          this.$router.push({ name: 'Login' })
+        }
       }
     }
   }
+
+  @Model() get storeMember(): StoreMember {
+    return this.$store.getters.member;
+  }
   
   @Model() get master(): Master {
-    return this.$store.getters.master
+    return this.$store.getters.master;
   }
 
   @Model() get votes(): string {
@@ -82,6 +98,7 @@ export default class App extends Vue {
       if (this.master.votes.length > 0) {
         return this.master.votes.length.toString();
       }
+
     }
     return '';
   }
@@ -106,7 +123,7 @@ export default class App extends Vue {
     return '';
   }
 
-  async onLogout() {
+  async onMasterLogout() {
     const initStoreModel: StoreModel = new StoreModel();
     await this.$store.commit(StoreActions.SaveUser, initStoreModel.user);
     await this.$store.commit(StoreActions.SaveMaster, initStoreModel.master);

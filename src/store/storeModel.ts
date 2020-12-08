@@ -1,9 +1,11 @@
 import { User } from '@/domain/models/user'
 import { Master } from '@/domain/models/master'
+import { StoreMember } from '@/domain/models/storeMember';
 
 export default class StoreModel {
     user: User;
     master: Master;
+    member: StoreMember;
 
     constructor () {
       this.user = {
@@ -22,6 +24,11 @@ export default class StoreModel {
           uid: '',
           members: [],
           votes: []
+      }
+      this.member = {
+        pin: 0,
+        name: '',
+        uid: ''
       }
     }
 }
