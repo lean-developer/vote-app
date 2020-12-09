@@ -2,7 +2,13 @@
   <b-container>
       <new-vote-comp @createVote="onCreateVote"></new-vote-comp>
       <div v-if="master.votes">
-          <votes-comp :votes=master.votes @deleteVote="onDeleteVote" @archivVote="onArchivVote"></votes-comp>
+          <div v-for="v in master.votes" :key="v.id">
+            <vote-row-comp :vote=v 
+                @checkVote="onCheckVote"
+                @deleteVote="onDeleteVote" 
+                @archivVote="onArchivVote">
+            </vote-row-comp>
+          </div>
       </div>
   </b-container>
 </template>
@@ -12,15 +18,15 @@ import { Component, Model, Vue } from 'vue-property-decorator';
 import VoteService from '@/domain/api/vote.service';
 import StoreService from '@/domain/api/store.service';
 import { Vote } from '@/domain/models/vote';
-import VotesComp from '@/components/VotesComp.vue';
 import NewVoteComp from '@/components/NewVoteComp.vue';
+import VoteRowComp from '@/components/VoteRowComp.vue';
 import { DeleteResult } from '@/domain/models/deleteResult';
 import { Master } from '@/domain/models/master';
 
 @Component({
   components: {
-      VotesComp,
       NewVoteComp,
+      VoteRowComp
   },
 })
 export default class Estimates extends Vue {
@@ -45,6 +51,21 @@ export default class Estimates extends Vue {
             await StoreService.reloadMaster();
         }
         }
+    }
+
+    async onCheckVote(vote: Vote) {
+        if (VoteService.isClose(vote)) {
+            await VoteService.setOpen(vote);
+            await StoreService.reloadMaster();
+        }
+        else if (VoteService.isOpen(vote)) {
+            await VoteService.setClose(vote);
+            await StoreService.reloadMaster();
+        }
+    }
+
+    async onVoteOpen(vote: Vote) {
+        await VoteService.setOpen(vote);
     }
 
     onArchivVote(vote: Vote) {

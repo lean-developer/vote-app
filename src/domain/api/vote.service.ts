@@ -55,6 +55,22 @@ class VoteService {
     }
   }
 
+  isOpen (vote: Vote): boolean {
+    return vote.status === VoteService.STATUS_OPEN;
+  }
+
+  isRunning (vote: Vote): boolean {
+    return vote.status === VoteService.STATUS_RUNNING;
+  }
+
+  isClose (vote: Vote): boolean {
+    return vote.status === VoteService.STATUS_CLOSE;
+  }
+
+  isDone (vote: Vote): boolean {
+    return vote.status === VoteService.STATUS_DONE;
+  }
+
   async setOpen(vote: Vote): Promise<Vote | undefined> {
     let v: Vote = vote;
     v.status = VoteService.STATUS_OPEN;

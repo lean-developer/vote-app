@@ -10,15 +10,14 @@
               </b-col>
               <div class="line"></div>
           </b-row>
-          <div v-if="master">
-               <div v-for="v in master.votes" :key="v.id">
+          <div v-if="votes">
+               <div v-for="v in votes" :key="v.id">
                    <div>
                     {{v.name}}
                    </div>
                </div>
           </div>
       </div>
-      
   </b-container>
 </template>
 
@@ -31,12 +30,44 @@ import { Master } from '@/domain/models/master';
 import StoreModel from '@/store/storeModel';
 import { StoreActions } from '@/store';
 import { StoreMember } from '@/domain/models/storeMember';
+import MasterService from '@/domain/api/master.service';
 
 @Component({
   components: {
   },
 })
 export default class Member extends Vue {
+    @Model() private votes: Vote[] = [];
+
+    async created() {
+        if (this.isMaster) {
+            this.setMemberVotes(this.master.votes);        
+        }
+        else {
+            await this.loadMasterVotes();
+        }
+    }
+
+    setMemberVotes(allVotes: Vote[]) {
+        this.votes = [];
+        for (let v of allVotes) {
+            if (VoteService.isOpen(v)) {
+                this.votes.push(v);
+            }
+        }
+    }
+
+    async loadMasterVotes() {
+        const master: Master | undefined = await MasterService.getMasterByUid(this.member.uid);
+        if (master) {
+            this.setMemberVotes(master.votes);
+        }
+    }
+
+    async loadMemberVotes() {
+        // TODO
+    }
+
     async onMemberLogout() {
         const initStoreModel: StoreModel = new StoreModel();
         await this.$store.commit(StoreActions.SaveMember, initStoreModel.member);
@@ -54,6 +85,13 @@ export default class Member extends Vue {
 
     get master(): Master {
         return this.$store.getters.master;
+    }
+
+    get isMaster(): boolean {
+        if (this.master && this.master.uid) {
+            return true;
+        }
+        return false;
     }
 }
 </script>
