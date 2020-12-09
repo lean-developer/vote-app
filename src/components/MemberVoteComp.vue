@@ -1,15 +1,14 @@
 <template>
-    <b-row v-if="vote">
-        <b-button class="row-mb row-mr" :disabled=disabled :variant=stateVariant @click="onCheck()"><i class="fas fa-check"></i></b-button>
-        <b-col class="row-mb row-mr vote-row vote-name" :style=rowState @click="onClickVote()">
+    <b-row>
+        <b-col class="row-mb row-mr vote-row vote-name" :style=rowState>
             <div class="text-head">
-                 {{vote.name}} ({{vote.id}})
+                 {{vote.name}} 
             </div>
             <div class="text-sub">
                 <em>{{vote.status}}</em>
             </div>
         </b-col>
-        <b-button :disabled=disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
+        <b-button class="row-mb" variant="outline-success"><i class="fas fa-check"></i></b-button>
     </b-row>
 </template>
 
@@ -22,43 +21,8 @@ import VoteService from '@/domain/api/vote.service';
   components: {
   },
 })
-export default class VoteRowComp extends Vue {
+export default class MemberVoteComp extends Vue {
     @Prop({ required: true }) vote!: Vote;
-    @Model() disabled: boolean = false;
-
-    get stateVariant(): string {
-        if (this.vote) {
-             if (VoteService.isOpen(this.vote)) {
-                 return 'success';
-             }
-             else if (this.isRunning) {
-                 this.disabled = true;
-                 return 'outline-success';
-             }
-        }
-        return 'light';
-    }
-
-    @Emit('deleteVote')
-    onDelete() {
-        return this.vote;
-    }
-
-    @Emit('archivVote')
-    onArchiv() {
-        return this.vote;
-    }
-
-    @Emit('checkVote')
-    onCheck() {
-        return this.vote;
-    }
-
-    onClickVote() {
-        if (this.isOpen || this.isRunning) {
-            this.$router.push("/estimate/" + this.vote.id);
-        }
-    }
 
     get isOpen(): boolean {
         return VoteService.isOpen(this.vote);
@@ -115,4 +79,3 @@ export default class VoteRowComp extends Vue {
         font-size: 10px;
     }
 </style>
-

@@ -12,9 +12,7 @@
           </b-row>
           <div v-if="votes">
                <div v-for="v in votes" :key="v.id">
-                   <div>
-                    {{v.name}}
-                   </div>
+                   <member-vote-comp class="ml-1 mr-3" :vote=v></member-vote-comp>
                </div>
           </div>
       </div>
@@ -31,9 +29,11 @@ import StoreModel from '@/store/storeModel';
 import { StoreActions } from '@/store';
 import { StoreMember } from '@/domain/models/storeMember';
 import MasterService from '@/domain/api/master.service';
+import MemberVoteComp from '@/components/MemberVoteComp.vue';
 
 @Component({
   components: {
+      MemberVoteComp
   },
 })
 export default class Member extends Vue {
@@ -51,7 +51,7 @@ export default class Member extends Vue {
     setMemberVotes(allVotes: Vote[]) {
         this.votes = [];
         for (let v of allVotes) {
-            if (VoteService.isOpen(v)) {
+            if (VoteService.isOpen(v) || VoteService.isRunning(v)) {
                 this.votes.push(v);
             }
         }
