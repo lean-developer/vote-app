@@ -7,7 +7,7 @@
             </b-card-title>
               <b-card-text style="text-align: right;">
               </b-card-text>
-              <b-button variant="success" @click="onStartVote()">Starten</b-button>
+              <b-button v-if="isOpen" variant="success" @click="onStartVote()">Schätzrunde starten</b-button>
           </b-card>
           <div v-if="isOpen">
                 <div v-for="m in master.members" :key="m.id">
@@ -33,12 +33,10 @@ import { Master } from '@/domain/models/master';
 export default class Estimate extends Vue {
     private voteId!: number;
     private vote: Vote | undefined;
-    private isOpen: boolean = false;
 
     async created() {
         this.voteId = +this.$route.params.voteId;
         this.vote = this.getStoreVote();
-        this.isOpen = this.vote?.status === 'OPEN';
     }
 
     getStoreVote(): Vote | undefined {
@@ -47,6 +45,10 @@ export default class Estimate extends Vue {
                 return v;
             }
         }
+    }
+
+    get isOpen(): boolean {
+        return VoteService.isOpen(this.vote);
     }
 
     get master(): Master {
@@ -61,10 +63,12 @@ export default class Estimate extends Vue {
         if (!this.vote) {
             return;
         }
-        const newVote = await VoteService.setOpen(this.vote);
-        if (newVote) {
-            this.isOpen = true;
-            await StoreService.reloadMaster();
+        if (VoteService.isOpen(this.vote)) {
+            const newVote = await VoteService.setRunning(this.vote);
+            if (newVote) {
+                this.vote = newVote;
+                await StoreService.reloadMaster();
+            }
         }
     }
 }

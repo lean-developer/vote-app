@@ -55,19 +55,31 @@ class VoteService {
     }
   }
 
-  isOpen (vote: Vote): boolean {
+  isOpen (vote?: Vote): boolean {
+    if (!vote) {
+      return false;
+    }
     return vote.status === VoteService.STATUS_OPEN;
   }
 
-  isRunning (vote: Vote): boolean {
+  isRunning (vote?: Vote): boolean {
+    if (!vote) {
+      return false;
+    }
     return vote.status === VoteService.STATUS_RUNNING;
   }
 
-  isClose (vote: Vote): boolean {
+  isClose (vote?: Vote): boolean {
+    if (!vote) {
+      return false;
+    }
     return vote.status === VoteService.STATUS_CLOSE;
   }
 
-  isDone (vote: Vote): boolean {
+  isDone (vote?: Vote): boolean {
+    if (!vote) {
+      return false;
+    }
     return vote.status === VoteService.STATUS_DONE;
   }
 

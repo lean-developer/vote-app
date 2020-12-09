@@ -3,7 +3,7 @@
       <new-vote-comp @createVote="onCreateVote"></new-vote-comp>
       <div v-if="master.votes">
           <div v-for="v in master.votes" :key="v.id">
-            <vote-row-comp :vote=v 
+            <vote-row-comp class="ml-1 mr-1" :vote=v 
                 @checkVote="onCheckVote"
                 @deleteVote="onDeleteVote" 
                 @archivVote="onArchivVote">
