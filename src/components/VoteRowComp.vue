@@ -95,8 +95,8 @@ export default class VoteRowComp extends Vue {
 <style scoped>
     .vote-row {
         border-radius: 8px;
-        padding-top: 1rem;
-        padding-bottom: 1rem;
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
     }
     .row-mb {
         margin-bottom: 5px;

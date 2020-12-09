@@ -2,10 +2,10 @@
   <div id="app">
     <b-navbar toogleable="lg" type="dark" variant="dark">
       <b-navbar-nav>
-        <b-navbar-brand href="#">
+        <b-navbar-brand href="/">
           Vote
         </b-navbar-brand>
-        <b-nav-item v-if="isMaster" to="/">
+        <b-nav-item v-if="isMaster" to="/team">
           Team
           <b-badge variant="success">{{members}}</b-badge>
         </b-nav-item>

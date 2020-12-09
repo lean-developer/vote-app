@@ -12,7 +12,7 @@
           </b-row>
           <div v-if="votes">
                <div v-for="v in votes" :key="v.id">
-                   <member-vote-comp class="ml-1 mr-3" :vote=v></member-vote-comp>
+                   <member-vote-comp class="ml-4 mr-4" :vote=v></member-vote-comp>
                </div>
           </div>
       </div>

@@ -13,6 +13,10 @@ Vue.use(VueRouter)
 const routes: Array<RouteConfig> = [
   {
     path: '/',
+    redirect: '/estimates',
+  },
+  {
+    path: '/team',
     name: 'Home',
     component: Home
   },
