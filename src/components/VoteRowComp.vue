@@ -1,6 +1,6 @@
 <template>
     <b-row v-if="vote">
-        <b-button  class="row-mb row-mr" :disabled=disabled :variant=stateVariant @click="onCheck()"><i class="fas fa-check"></i></b-button>
+        <b-button  class="row-mb row-mr" :disabled=Disabled :variant=stateVariant @click="onCheck()"><i class="fas fa-check"></i></b-button>
         <b-col class="row-mb row-mr vote-row vote-name" :style=rowState @click="onClickVote()">
             <div class="text-head">
                  {{vote.name}} ({{vote.id}})
@@ -9,7 +9,7 @@
                 <em>{{vote.status}}</em>
             </div>
         </b-col>
-        <b-button v-if="!isRunning" :disabled=disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
+        <b-button v-if="!isRunning" :disabled=Disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
     </b-row>
 </template>
 
@@ -24,7 +24,7 @@ import VoteService from '@/domain/api/vote.service';
 })
 export default class VoteRowComp extends Vue {
     @Prop({ required: true }) vote!: Vote;
-    @Model() disabled: boolean = false;
+    private disabled: boolean = false;
 
     get stateVariant(): string {
         if (this.vote) {
@@ -37,6 +37,10 @@ export default class VoteRowComp extends Vue {
              }
         }
         return 'light';
+    }
+
+    get Disabled(): boolean {
+        return this.disabled;
     }
 
     @Emit('deleteVote')

@@ -5,18 +5,18 @@
         <b-navbar-brand href="/">
           Vote
         </b-navbar-brand>
-        <b-nav-item v-if="isMaster" to="/team">
+        <b-nav-item v-if="IsMaster" to="/team">
           Team
-          <b-badge variant="success">{{members}}</b-badge>
+          <b-badge variant="success">{{Members}}</b-badge>
         </b-nav-item>
-        <b-nav-item v-if="isMaster" to="/estimates">
+        <b-nav-item v-if="IsMaster" to="/estimates">
           Schätzungen
-          <b-badge v-if="votes" variant="danger">{{votes}}</b-badge>
+          <b-badge v-if="Votes" variant="danger">{{Votes}}</b-badge>
         </b-nav-item>
         <b-nav-item to="/member">
-          <em>{{storeMember.name}}</em>
+          <em>{{StoreMember.name}}</em>
         </b-nav-item>
-        <!-- <b-nav-item v-if="isMaster" to="/about">About</b-nav-item> -->
+        <!-- <b-nav-item v-if="IsMaster" to="/about">About</b-nav-item> -->
       </b-navbar-nav>
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
@@ -26,16 +26,16 @@
           <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
         </b-nav-form>
         -->
-        <b-nav-item-dropdown right v-if="isMaster">
+        <b-nav-item-dropdown right v-if="IsMaster">
             <!-- Using 'button-content' slot -->
             <template #button-content>
-              <em>{{name}}</em>
+              <em>{{Name}}</em>
             </template>
             <b-dropdown-item to="/profile">Profil</b-dropdown-item>
             <b-dropdown-item @click="onMasterLogout()">Logout</b-dropdown-item>
         </b-nav-item-dropdown>
         
-        <b-nav-item-dropdown right v-if="!isMaster">
+        <b-nav-item-dropdown right v-if="!IsMaster">
             <b-dropdown-item to="/login">Login</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -70,7 +70,7 @@ export default class App extends Vue {
           // hier als Member einloggen!
     }
     else {
-      if (this.isMaster) {
+      if (this.IsMaster) {
         /** wenn die App geladen wird (und Login=True), Master neu laden und im Store speichern;
          * damit werden Daten die evtl. auf anderen Endgeräten gespeichert wurden, synchronisiert.
          * Darf nur ausgeführt werden, wenn isMaster=True! */
@@ -79,7 +79,7 @@ export default class App extends Vue {
         this.loading = false;
       }
       else {
-        if (this.storeMember) {
+        if (this.StoreMember) {
           this.$router.push({ name: 'Member' })
         }
         else {
@@ -89,40 +89,40 @@ export default class App extends Vue {
     }
   }
 
-  @Model() get storeMember(): StoreMember {
+  get StoreMember(): StoreMember {
     return this.$store.getters.member;
   }
   
-  @Model() get master(): Master {
+  get Master(): Master {
     return this.$store.getters.master;
   }
 
-  @Model() get votes(): string {
-    if (this.isMaster) {
-      if (this.master.votes.length > 0) {
-        return this.master.votes.length.toString();
+  get Votes(): string {
+    if (this.IsMaster) {
+      if (this.Master.votes.length > 0) {
+        return this.Master.votes.length.toString();
       }
 
     }
     return '';
   }
 
-  @Model() get members(): string {
-    if (this.isMaster) {
-      if (this.master.members.length > 0) {
-        return this.master.members.length.toString();
+  get Members(): string {
+    if (this.IsMaster) {
+      if (this.Master.members.length > 0) {
+        return this.Master.members.length.toString();
       }
     }
     return '';
   }
 
-  @Model() get isMaster(): boolean {
-    return this.master.uid !== '';
+  get IsMaster(): boolean {
+    return this.Master.uid !== '';
   }
 
-  @Model() get name(): string {
-    if (this.master) {
-      return this.master.name;
+  get Name(): string {
+    if (this.Master) {
+      return this.Master.name;
     }
     return '';
   }

@@ -2,7 +2,7 @@
     <div>
         <b-row>
             <!--
-            <b-button :disabled=disabled class="row-mb row-mr" size="lg" variant="success" @click="onExpand()"><i class="fas fa-angle-double-down"></i></b-button>
+            <b-button :disabled=Disabled class="row-mb row-mr" size="lg" variant="success" @click="onExpand()"><i class="fas fa-angle-double-down"></i></b-button>
             -->
             <b-col class="row-mb row-mr vote-row vote-name" :style=rowState @click="onExpand()">
                 <div style="display: inline;" class="text-head">
@@ -12,12 +12,12 @@
                     <em>{{vote.status}}</em>
                 </div>
             </b-col>
-            <b-col v-if="showPoints" cols="2" @click="onExpand()" class="row-mb row-mr vote-row vote-name align-items-center" :style=rowState>
+            <b-col v-if="ShowPoints" cols="2" @click="onExpand()" class="row-mb row-mr vote-row vote-name align-items-center" :style=rowState>
                 <div class="center">
-                    <p>{{points}}</p>
+                    <p>{{Points}}</p>
                 </div>
             </b-col>
-            <b-button v-if="showPoints" :disabled=disabled  :style=saveBtnState class="row-mb" variant="outline-success" @click="onSave()"><i class="fas fa-check"></i></b-button>
+            <b-button v-if="ShowPoints" :disabled=Disabled  :style=saveBtnState class="row-mb" variant="outline-success" @click="onSave()"><i class="fas fa-check"></i></b-button>
         </b-row>
         <b-row v-if="showVoting">
             <member-voting @clickPoints=onClickPoints></member-voting>
@@ -28,9 +28,12 @@
 <script lang="ts">
 import { Component, Vue, Model, Prop, Emit } from 'vue-property-decorator';
 import { Vote } from '@/domain/models/vote';
+import { SaveVotePoints } from '@/domain/models/saveVotePoints';
 import VoteService from '@/domain/api/vote.service';
 import MemberService from '@/domain/api/member.service';
 import MemberVoting from '@/components/MemberVoting.vue';
+import { MemberVote } from '@/domain/models/memberVote';
+import { Member } from '@/domain/models/member';
 
 @Component({
   components: {
@@ -41,7 +44,7 @@ export default class MemberVoteComp extends Vue {
     @Prop({ required: true }) vote!: Vote;
     private showVoting: boolean = false;
     private points: string = '';
-    @Model() disabled: boolean = false;
+    private disabled: boolean = false;
 
     created() {
         if (this.isOpen) {
@@ -49,16 +52,63 @@ export default class MemberVoteComp extends Vue {
         }
     }
 
+    get MemberVotes(): MemberVote[] | undefined {
+        return this.$store.getters.memberVotes;
+    }
+
+    get Disabled(): boolean {
+        return this.disabled;
+    }
+
+    get Points(): string {
+        return this.points;
+    }
+
+    get Vote(): Vote {
+        return this.vote;
+    }
+
+    mounted() {
+         console.log('MyMemberVotes', this.MemberVotes);
+        if (this.vote) {
+            let memberVote: MemberVote | undefined = this.getMemberVote(this.Vote);
+            if (memberVote) {
+                console.log('SET-POINTS', memberVote);
+                this.points = memberVote.points;
+            } else {
+                console.warn('MemberVote undefined!')
+            }
+        } else {
+            console.warn('Vote undefined!');
+        }
+    }
+
     get isOpen(): boolean {
-        return VoteService.isOpen(this.vote);
+        return VoteService.isOpen(this.Vote);
     }
 
     get isRunning(): boolean {
-        return VoteService.isRunning(this.vote);
+        return VoteService.isRunning(this.Vote);
     }
 
-    get showPoints(): boolean {
-        return (this.isRunning && this.points.length > 0);
+    getMemberVote(v: Vote): MemberVote | undefined {
+        if (this.MemberVotes && this.MemberVotes.length > 0) {
+            for (let mv of this.MemberVotes) {
+                if (mv.vote.id === v.id) {
+                    return mv;
+                }
+            }
+        }
+    }
+
+    get ShowPoints(): boolean {
+        if (!this.isRunning) {
+            return false;
+        }
+        if (!this.points) {
+            return false;
+        }
+        return (this.points.length > 0);
     }
 
     onExpand() {
@@ -68,13 +118,14 @@ export default class MemberVoteComp extends Vue {
     }
 
     @Emit('save')
-    onSave() {
+    onSave(): SaveVotePoints {
         this.showVoting = false;
         this.disabled = true;
-        return {
+        let saveVotePoints = {
             vote: this.vote,
             points: this.points 
         }
+        return saveVotePoints;
     }
 
     onClickPoints(p: string) {

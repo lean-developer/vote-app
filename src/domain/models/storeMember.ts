@@ -1,5 +1,8 @@
+import { MemberVote } from './memberVote';
+
 export interface StoreMember {
-    pin: number;
+    pin?: number;
     name: string;
     uid: string;
+    memberVotes?: MemberVote[];
 }

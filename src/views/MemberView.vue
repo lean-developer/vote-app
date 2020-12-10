@@ -1,9 +1,9 @@
 <template>
   <b-container>
-      <div v-if="member">
+      <div v-if="Member">
           <b-row class="head">
               <b-col class="ml-4" style="text-align: left;">
-                  <h4>{{member.name}}</h4>
+                  <h4>{{Member.name}}</h4>
               </b-col>
               <b-col style="text-align: right;" class="mb-1">
                   <b-button pill variant="light" @click="onMemberLogout()"><i class="fas fa-sign-out-alt"></i></b-button>
@@ -11,9 +11,9 @@
               <div class="line"></div>
           </b-row>
           <div v-if="loading" class="lds-ripple"><div></div><div></div></div>
-          <div v-if="!loaing">
-            <div v-if="votes">
-                <div v-for="v in votes" :key="v.id">
+          <div v-if="!loading">
+            <div v-if="Votes">
+                <div v-for="v in Votes" :key="v.id">
                     <member-vote-comp @save=onMemberVoteSave class="ml-4 mr-4" :vote=v></member-vote-comp>
                 </div>
             </div>
@@ -37,6 +37,7 @@ import MemberService from '../domain/api/member.service';
 import { MemberVoteValue } from '../domain/models/memberVoteValue';
 import { Member } from '@/domain/models/member';
 import { MemberVote } from '@/domain/models/memberVote';
+import { SaveVotePoints } from '@/domain/models/saveVotePoints';
 
 @Component({
   components: {
@@ -44,25 +45,28 @@ import { MemberVote } from '@/domain/models/memberVote';
   },
 })
 export default class MemberView extends Vue {
-    @Model() private votes: Vote[] = [];
+    private votes: Vote[] = [];
     private loading: boolean = false;
     private myMember!: Member | undefined;
     private myMaster!: Master;
+    private memberVotes: MemberVote[] | undefined;
 
     async created() {
-        if (this.isMaster) {
-            this.setMemberVotes(this.master.votes);        
-            this.myMember = this.getMemberByMaster(this.master);
-            console.log('MYMEMBER', this.myMember);
+        if (this.IsMaster) {
+            this.setVotes(this.Master.votes);        
+            this.myMember = this.getMemberByMaster(this.Master);
         }
         else {
             await this.loadMaster();
             this.myMember = this.getMemberByMaster(this.myMaster);
-            console.log('MYMEMBER', this.myMember);
         }
     }
 
-    setMemberVotes(allVotes: Vote[]) {
+    get Votes(): Vote[] {
+        return this.votes;
+    }
+
+    setVotes(allVotes: Vote[]) {
         this.votes = [];
         for (let v of allVotes) {
             if (VoteService.isOpen(v) || VoteService.isRunning(v)) {
@@ -74,7 +78,7 @@ export default class MemberView extends Vue {
     getMemberByMaster(theMaster: Master): Member | undefined {
         for (let m of theMaster.members) {
             if (m.pin) {
-                if (this.member.pin === m.pin) {
+                if (this.Member.pin === m.pin) {
                     return m;
                 }
             }
@@ -83,33 +87,38 @@ export default class MemberView extends Vue {
 
     async loadMaster() {
         this.loading = true;
-        const master: Master | undefined = await MasterService.getMasterByUid(this.member.uid);
+        const master: Master | undefined = await MasterService.getMasterByUid(this.Member.uid);
         if (master) {
-            this.setMemberVotes(master.votes);
+            this.setVotes(master.votes);
             this.myMaster = master;
         }
         this.loading = false;
     }
-
-    async loadMemberVotes() {
-        // TODO
-    }
-
-    async onMemberVoteSave(vote: Vote, points: string) {
-        console.log('SAVE VOTE, POINTS', vote, points);
-        if (this.myMember && vote) {
+    
+    async onMemberVoteSave(saveVotePoints: SaveVotePoints) {
+        console.log('SAVE VOTE-POINTS', saveVotePoints);
+        if (this.myMember && saveVotePoints.vote) {
             let memberVoteValue: MemberVoteValue = {
-                points: points,
+                points: saveVotePoints.points,
                 note: ''
             }
-            const memberVote: MemberVote | undefined = await MemberService.saveMemberVote(this.myMember.id, vote.id, memberVoteValue);
+            await MemberService.saveMemberVote(this.myMember, saveVotePoints.vote, memberVoteValue);
+            const updatedMemberVotes: MemberVote[] | undefined = await MemberService.getMemberVotes(this.myMember);
+            if (updatedMemberVotes) {
+                if (this.IsMaster) {
+                    await StoreService.setStoreMember(this.myMember, this.Master, updatedMemberVotes);
+                }
+                else {
+                    await StoreService.setStoreMember(this.myMember, this.myMaster, updatedMemberVotes);
+                }
+            }
         }
     }
 
     async onMemberLogout() {
         const initStoreModel: StoreModel = new StoreModel();
         await this.$store.commit(StoreActions.SaveMember, initStoreModel.member);
-        if (this.master) {
+        if (this.Master) {
             this.$router.push({ name: 'Estimates' })
         }
         else {
@@ -117,16 +126,16 @@ export default class MemberView extends Vue {
         }
     }
 
-    get member(): StoreMember {
+    get Member(): StoreMember {
         return this.$store.getters.member;
     }
 
-    get master(): Master {
+    get Master(): Master {
         return this.$store.getters.master;
     }
 
-    get isMaster(): boolean {
-        if (this.master && this.master.uid) {
+    get IsMaster(): boolean {
+        if (this.Master && this.Master.uid) {
             return true;
         }
         return false;

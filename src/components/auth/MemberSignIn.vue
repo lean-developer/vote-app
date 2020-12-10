@@ -23,6 +23,9 @@ import { Master } from '@/domain/models/master';
 import { Member } from '@/domain/models/member';
 import { StoreActions } from '@/store';
 import { StoreMember } from '@/domain/models/storeMember';
+import MemberService from '@/domain/api/member.service';
+import { MemberVote } from '@/domain/models/memberVote';
+import StoreService from '@/domain/api/store.service';
 
 @Component({
   components: {
@@ -62,14 +65,28 @@ export default class MemberSignIn extends Vue {
     }
 
     async onLogin (): Promise<void> {
-        if (this.member?.pin === this.memberPin) {
-            if (this.memberKey === this.member.name) {
-                const storeMember: StoreMember = { pin: this.member.pin, uid: this.masterUid, name: this.member.name };
-                await this.$store.commit(StoreActions.SaveMember, storeMember);
-                this.$router.push({ name: 'Member' })
+        if (this.master) {
+            if (this.member?.pin === this.memberPin) {
+                if (this.memberKey === this.member.name) {
+                    let memberVotes: MemberVote[] | undefined = await this.loadMemberVotes();
+                    if (!memberVotes) {
+                        memberVotes = [];
+                    }
+                    await StoreService.setStoreMember(this.member, this.master, memberVotes);
+                    this.$router.push({ name: 'Member' })
+                }
             }
         }
-        this.errorMsg = 'Anmeldung fehlgeschlagen: Falsche Pin und/oder Key!'
+        this.errorMsg = 'Anmeldung fehlgeschlagen: Falsche Pin und/oder Key!';
+    }
+
+    async loadMemberVotes(): Promise<MemberVote[] | undefined> {
+        if (this.member) {
+            const result = await MemberService.getMemberVotes(this.member);
+            if (result) {
+                return result;
+            }
+        }
     }
 }
 </script>

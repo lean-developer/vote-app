@@ -43,7 +43,7 @@ export default new Vuex.Store({
     [StoreActions.SaveMember] (state, member: StoreMember) {
       state.storeModel.member = member;
       localStorage.setItem('member', JSON.stringify(member));
-    }
+    },
   },
   getters: {
     user: (state) => {
@@ -54,6 +54,9 @@ export default new Vuex.Store({
     },
     member: (state) => {
       return state.storeModel.member
+    },
+    memberVotes: (state) => {
+      return state.storeModel.member.memberVotes;
     }
   },
   actions: {

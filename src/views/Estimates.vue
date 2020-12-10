@@ -1,8 +1,8 @@
 <template>
   <b-container>
       <new-vote-comp @createVote="onCreateVote"></new-vote-comp>
-      <div v-if="master.votes">
-          <div v-for="v in master.votes" :key="v.id">
+      <div v-if="Master.votes">
+          <div v-for="v in Master.votes" :key="v.id">
             <vote-row-comp class="ml-1 mr-1" :vote=v 
                 @checkVote="onCheckVote"
                 @deleteVote="onDeleteVote" 
@@ -31,7 +31,7 @@ import { Master } from '@/domain/models/master';
 })
 export default class Estimates extends Vue {
     
-    @Model() get master(): Master {
+    get Master(): Master {
         return this.$store.getters.master;
     }
 
@@ -46,7 +46,7 @@ export default class Estimates extends Vue {
 
     async onCreateVote(votename: string) {
         if (StoreService.isLogin) {
-        const newVote: Vote | undefined = await VoteService.createVoteForMaster(this.master.id, votename);
+        const newVote: Vote | undefined = await VoteService.createVoteForMaster(this.Master.id, votename);
         if (newVote) {
             await StoreService.reloadMaster();
         }
