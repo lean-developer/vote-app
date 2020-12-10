@@ -72,7 +72,7 @@ export default class MemberSignIn extends Vue {
                     if (!memberVotes) {
                         memberVotes = [];
                     }
-                    await StoreService.setStoreMember(this.member, this.master, memberVotes);
+                    await StoreService.setStoreMember(this.member, this.master.uid, memberVotes);
                     this.$router.push({ name: 'Member' })
                 }
             }

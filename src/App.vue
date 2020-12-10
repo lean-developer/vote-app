@@ -71,15 +71,27 @@ export default class App extends Vue {
     }
     else {
       if (this.IsMaster) {
-        /** wenn die App geladen wird (und Login=True), Master neu laden und im Store speichern;
+        /** Wenn die App geladen wird (und Login=True), Master neu laden und im Store speichern;
          * damit werden Daten die evtl. auf anderen Endgeräten gespeichert wurden, synchronisiert.
          * Darf nur ausgeführt werden, wenn isMaster=True! */
         this.loading = true;
         await StoreService.reloadMaster();
         this.loading = false;
+        /** Wenn man als Master eingeloggt ist, kann man gleichzeitig auch als Member eingeloggt sein; 
+         * d.h. MemberDaten neu laden wg. Synchronisierung verschiedener Endgeräte.
+        */
+        if (this.IsMember) {
+          this.loading = true;
+          await StoreService.reloadMember();
+          this.loading = false;
+        }
       }
       else {
-        if (this.StoreMember) {
+        if (this.IsMember) {
+          /* MemberDaten neu laden wg. Synchronisierung verschiedener Endgeräte. */
+          this.loading = true;
+          await StoreService.reloadMember();
+          this.loading = false;
           this.$router.push({ name: 'Member' })
         }
         else {
@@ -118,6 +130,10 @@ export default class App extends Vue {
 
   get IsMaster(): boolean {
     return this.Master.uid !== '';
+  }
+
+  get IsMember(): boolean {
+    return this.StoreMember.uid !== '';
   }
 
   get Name(): string {

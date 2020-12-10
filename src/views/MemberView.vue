@@ -106,10 +106,10 @@ export default class MemberView extends Vue {
             const updatedMemberVotes: MemberVote[] | undefined = await MemberService.getMemberVotes(this.myMember);
             if (updatedMemberVotes) {
                 if (this.IsMaster) {
-                    await StoreService.setStoreMember(this.myMember, this.Master, updatedMemberVotes);
+                    await StoreService.setStoreMember(this.myMember, this.Master.uid, updatedMemberVotes);
                 }
                 else {
-                    await StoreService.setStoreMember(this.myMember, this.myMaster, updatedMemberVotes);
+                    await StoreService.setStoreMember(this.myMember, this.myMaster.uid, updatedMemberVotes);
                 }
             }
         }
