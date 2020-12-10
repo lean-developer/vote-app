@@ -17,7 +17,7 @@
                     <p>{{points}}</p>
                 </div>
             </b-col>
-            <b-button :disabled=disabled  :style=saveBtnState class="row-mb" variant="outline-success" @click="onSave()"><i class="fas fa-check"></i></b-button>
+            <b-button v-if="showPoints" :disabled=disabled  :style=saveBtnState class="row-mb" variant="outline-success" @click="onSave()"><i class="fas fa-check"></i></b-button>
         </b-row>
         <b-row v-if="showVoting">
             <member-voting @clickPoints=onClickPoints></member-voting>
@@ -29,6 +29,7 @@
 import { Component, Vue, Model, Prop, Emit } from 'vue-property-decorator';
 import { Vote } from '@/domain/models/vote';
 import VoteService from '@/domain/api/vote.service';
+import MemberService from '@/domain/api/member.service';
 import MemberVoting from '@/components/MemberVoting.vue';
 
 @Component({
@@ -66,9 +67,14 @@ export default class MemberVoteComp extends Vue {
         }
     }
 
+    @Emit('save')
     onSave() {
         this.showVoting = false;
         this.disabled = true;
+        return {
+            vote: this.vote,
+            points: this.points 
+        }
     }
 
     onClickPoints(p: string) {

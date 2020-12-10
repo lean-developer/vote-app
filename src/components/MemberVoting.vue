@@ -30,7 +30,6 @@ export default class MemberVoting extends Vue {
     
     initPoints() {
         this.points = [];
-        this.points.push('0');
         this.points.push('1');
         this.points.push('2');
         this.points.push('3');
@@ -40,6 +39,7 @@ export default class MemberVoting extends Vue {
         this.points.push('20');
         this.points.push('40');
         this.points.push('100');
+        this.points.push('?');
         this.points.push('-');
     }
 

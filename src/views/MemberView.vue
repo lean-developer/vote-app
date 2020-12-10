@@ -14,7 +14,7 @@
           <div v-if="!loaing">
             <div v-if="votes">
                 <div v-for="v in votes" :key="v.id">
-                    <member-vote-comp class="ml-4 mr-4" :vote=v></member-vote-comp>
+                    <member-vote-comp @save=onMemberVoteSave class="ml-4 mr-4" :vote=v></member-vote-comp>
                 </div>
             </div>
           </div>
@@ -33,22 +33,32 @@ import { StoreActions } from '@/store';
 import { StoreMember } from '@/domain/models/storeMember';
 import MasterService from '@/domain/api/master.service';
 import MemberVoteComp from '@/components/MemberVoteComp.vue';
+import MemberService from '../domain/api/member.service';
+import { MemberVoteValue } from '../domain/models/memberVoteValue';
+import { Member } from '@/domain/models/member';
+import { MemberVote } from '@/domain/models/memberVote';
 
 @Component({
   components: {
       MemberVoteComp
   },
 })
-export default class Member extends Vue {
+export default class MemberView extends Vue {
     @Model() private votes: Vote[] = [];
     private loading: boolean = false;
+    private myMember!: Member | undefined;
+    private myMaster!: Master;
 
     async created() {
         if (this.isMaster) {
             this.setMemberVotes(this.master.votes);        
+            this.myMember = this.getMemberByMaster(this.master);
+            console.log('MYMEMBER', this.myMember);
         }
         else {
-            await this.loadMasterVotes();
+            await this.loadMaster();
+            this.myMember = this.getMemberByMaster(this.myMaster);
+            console.log('MYMEMBER', this.myMember);
         }
     }
 
@@ -61,17 +71,39 @@ export default class Member extends Vue {
         }
     }
 
-    async loadMasterVotes() {
+    getMemberByMaster(theMaster: Master): Member | undefined {
+        for (let m of theMaster.members) {
+            if (m.pin) {
+                if (this.member.pin === m.pin) {
+                    return m;
+                }
+            }
+        }
+    }
+
+    async loadMaster() {
         this.loading = true;
         const master: Master | undefined = await MasterService.getMasterByUid(this.member.uid);
         if (master) {
             this.setMemberVotes(master.votes);
+            this.myMaster = master;
         }
         this.loading = false;
     }
 
     async loadMemberVotes() {
         // TODO
+    }
+
+    async onMemberVoteSave(vote: Vote, points: string) {
+        console.log('SAVE VOTE, POINTS', vote, points);
+        if (this.myMember && vote) {
+            let memberVoteValue: MemberVoteValue = {
+                points: points,
+                note: ''
+            }
+            const memberVote: MemberVote | undefined = await MemberService.saveMemberVote(this.myMember.id, vote.id, memberVoteValue);
+        }
     }
 
     async onMemberLogout() {

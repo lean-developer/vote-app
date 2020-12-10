@@ -98,7 +98,7 @@ class VoteService {
   async setRunning(vote: Vote): Promise<Vote | undefined> {
     let v: Vote = vote;
     v.status = VoteService.STATUS_RUNNING;
-    // TODO: MemberVotes für jeden MasterMember speichern
+    // TODO: MemberVotes für jeden MasterMember speichern ?
     return await this.updateVote(v);
   }
 
