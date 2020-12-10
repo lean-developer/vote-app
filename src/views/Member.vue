@@ -10,10 +10,13 @@
               </b-col>
               <div class="line"></div>
           </b-row>
-          <div v-if="votes">
-               <div v-for="v in votes" :key="v.id">
-                   <member-vote-comp class="ml-4 mr-4" :vote=v></member-vote-comp>
-               </div>
+          <div v-if="loading" class="lds-ripple"><div></div><div></div></div>
+          <div v-if="!loaing">
+            <div v-if="votes">
+                <div v-for="v in votes" :key="v.id">
+                    <member-vote-comp class="ml-4 mr-4" :vote=v></member-vote-comp>
+                </div>
+            </div>
           </div>
       </div>
   </b-container>
@@ -38,6 +41,7 @@ import MemberVoteComp from '@/components/MemberVoteComp.vue';
 })
 export default class Member extends Vue {
     @Model() private votes: Vote[] = [];
+    private loading: boolean = false;
 
     async created() {
         if (this.isMaster) {
@@ -58,10 +62,12 @@ export default class Member extends Vue {
     }
 
     async loadMasterVotes() {
+        this.loading = true;
         const master: Master | undefined = await MasterService.getMasterByUid(this.member.uid);
         if (master) {
             this.setMemberVotes(master.votes);
         }
+        this.loading = false;
     }
 
     async loadMemberVotes() {

@@ -1,6 +1,6 @@
 <template>
     <b-row v-if="vote">
-        <b-button class="row-mb row-mr" :disabled=disabled :variant=stateVariant @click="onCheck()"><i class="fas fa-check"></i></b-button>
+        <b-button  class="row-mb row-mr" :disabled=disabled :variant=stateVariant @click="onCheck()"><i class="fas fa-check"></i></b-button>
         <b-col class="row-mb row-mr vote-row vote-name" :style=rowState @click="onClickVote()">
             <div class="text-head">
                  {{vote.name}} ({{vote.id}})
@@ -9,7 +9,7 @@
                 <em>{{vote.status}}</em>
             </div>
         </b-col>
-        <b-button :disabled=disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
+        <b-button v-if="!isRunning" :disabled=disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
     </b-row>
 </template>
 
@@ -95,8 +95,8 @@ export default class VoteRowComp extends Vue {
 <style scoped>
     .vote-row {
         border-radius: 8px;
-        padding-top: 0.6rem;
-        padding-bottom: 0.6rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
     }
     .row-mb {
         margin-bottom: 5px;

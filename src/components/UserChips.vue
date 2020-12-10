@@ -5,7 +5,9 @@
                 <b-avatar>
                     {{initials}}
                 </b-avatar>
+                <div class="ml-2" style="display: inline;">
                 {{name}}
+                </div>
                 <span class="closebtn" @click="onClose()">&times;</span>
             </div>
             <div v-if="pin" class="link">
@@ -63,6 +65,7 @@ export default class UserChips extends Vue {
     .chip {
         display: inline-block;
         text-align: left;
+        margin-left: 20px;
         padding-right: 25px;
         margin-bottom: 5px;
         height: 50px;
