@@ -69,15 +69,11 @@ export default class MemberVoteComp extends Vue {
     }
 
     mounted() {
-         console.log('MyMemberVotes', this.MemberVotes);
         if (this.vote) {
             let memberVote: MemberVote | undefined = this.getMemberVote(this.Vote);
             if (memberVote) {
-                console.log('SET-POINTS', memberVote);
                 this.points = memberVote.points;
-            } else {
-                console.warn('MemberVote undefined!')
-            }
+            } 
         } else {
             console.warn('Vote undefined!');
         }
@@ -94,8 +90,10 @@ export default class MemberVoteComp extends Vue {
     getMemberVote(v: Vote): MemberVote | undefined {
         if (this.MemberVotes && this.MemberVotes.length > 0) {
             for (let mv of this.MemberVotes) {
-                if (mv.vote.id === v.id) {
-                    return mv;
+                if (mv.vote) {
+                    if (mv.vote.id === v.id) {
+                        return mv;
+                    }
                 }
             }
         }
