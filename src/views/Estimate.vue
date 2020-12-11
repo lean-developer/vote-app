@@ -3,9 +3,12 @@
     <div v-if="loading" class="lds-ripple"><div></div><div></div></div>
     <div v-if="!loading">
       <div v-if="vote">
-           <div class="head-status">
-                <em><small>{{vote.status}}</small></em>
-           </div>
+          <b-row>
+              <b-button variant="light" @click="onBack()"><i class="fas fa-chevron-left"></i></b-button>
+            <div class="head-status">
+                    <em><small>{{vote.status}}</small></em>
+            </div>
+          </b-row>
            <b-card class="mb-4 text-left" bg-variant="dark" text-variant="white">
            <b-card-title class="ml-2">{{vote.name}}
                <b-badge v-if="Points" class="ml-2 mb-2" pill variant="info">{{Points}}</b-badge>
@@ -15,7 +18,7 @@
               <b-button v-if="isOpen" class="ml-2" variant="success" @click="onStartVote()">Schätzrunde starten</b-button>
               <b-button v-if="isRunning && hasMemberVotes" class="ml-2" variant="secondary" @click="onNeuSchaetzen()">neu schätzen</b-button>
               <b-button v-if="isDone" class="ml-2" variant="secondary" @click="onNeuSchaetzen()">neu schätzen</b-button>
-              <b-button v-if="isRunning" class="ml-2" :disabled=!hasPoints variant="success" @click="onSaveStoryPoints()">Übernehmen</b-button>
+              <b-button v-if="isRunning" class="ml-2" :disabled=!hasPoints variant="success" @click="onSaveStoryPoints()">Abschließen</b-button>
           </b-card>
           <div v-if="isOpen">
                  <b-card v-if="MembersOhneVote" bg-variant="secondary" text-variant="white" class="mb-4" title="offen">
@@ -85,6 +88,10 @@ export default class Estimate extends Vue {
         this.loading = false;
     }
 
+    onBack() {
+        this.$router.go(-1);
+    }
+
     get Points(): string {
         return this.points;
     }
@@ -136,8 +143,9 @@ export default class Estimate extends Vue {
                 if (newStateVote) {
                     // 3) Store updaten
                     await StoreService.reloadMember();
-                    // 4) aktuelle Vote updaten
-                    await this.init();
+                    // 4) Schätzungen anzeigen
+                    // -this.$router.push({ name: 'Estimates' })            
+                    this.$router.go(0); // relaod Page
                 }
             }
         }
