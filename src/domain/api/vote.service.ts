@@ -98,14 +98,20 @@ class VoteService {
   async setRunning(vote: Vote): Promise<Vote | undefined> {
     let v: Vote = vote;
     v.status = VoteService.STATUS_RUNNING;
-    // TODO: MemberVotes für jeden MasterMember speichern ?
     return await this.updateVote(v);
   }
 
-  async setDone(vote: Vote): Promise<Vote | undefined> {
+  async setRunningAndDeletePoints(vote: Vote): Promise<Vote | undefined> {
+    let v: Vote = vote;
+    v.points = '';
+    v.status = VoteService.STATUS_RUNNING;
+    return await this.updateVote(v);
+  }
+
+  async setDone(vote: Vote, points: string): Promise<Vote | undefined> {
     let v: Vote = vote;
     v.status = VoteService.STATUS_DONE;
-    // TODO: Points der Members sammeln und in Vote speichern ?
+    v.points = points;
     return await this.updateVote(v);
   }
 

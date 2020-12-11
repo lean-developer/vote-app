@@ -2,7 +2,7 @@
   <b-container>
       <new-vote-comp @createVote="onCreateVote"></new-vote-comp>
       <div v-if="Master.votes">
-          <div v-for="v in Master.votes" :key="v.id">
+          <div v-for="v in SortedVotes" :key="v.id">
             <vote-row-comp class="ml-1 mr-1" :vote=v 
                 @checkVote="onCheckVote"
                 @deleteVote="onDeleteVote" 
@@ -42,6 +42,26 @@ export default class Estimates extends Vue {
                 await StoreService.reloadMaster();
             }
         }
+    }
+
+    get SortedVotes(): Vote[] | undefined {
+        return this.Master.votes.sort((a, b) => 
+            (this.getStatusSortOrder(a) > this.getStatusSortOrder(b)) ? 1 : (
+                    (this.getStatusSortOrder(a) < this.getStatusSortOrder(b) ? -1 : 0)
+                ));
+    }
+
+    getStatusSortOrder(vote: Vote): number {
+        if (VoteService.isOpen(vote)) {
+            return 1;
+        }
+        if (VoteService.isRunning(vote)) {
+            return 2;
+        }
+        if (VoteService.isDone(vote)) {
+            return 3;
+        }
+        return 0;
     }
 
     async onCreateVote(votename: string) {

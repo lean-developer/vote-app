@@ -9,19 +9,19 @@
                     <span>{{memberVote.points}}</span>
                 </b-col>
                 <b-col class="right" cols="2">
-                    <b-button variant="light" @click=onAcceptVote><i class="fas fa-chevron-right"></i></b-button>
+                    <b-button v-if="ShowAcceptButton" variant="light" @click=onAcceptVote><i class="fas fa-chevron-right"></i></b-button>
                 </b-col>
             </b-row>
         </div>
         <div class="mt-1" v-if="member">
             <b-row class="m">
-                <b-col class="m-no">
+                <b-col class="left m-no" cols="6">
                     <span>{{member.name}}</span>
                 </b-col>
-                <b-col class="m-no">
+                <b-col class="right m-no" cols="4">
                     <span>-</span>
                 </b-col>
-                <b-col>
+                <b-col cols="2">
                 </b-col>
             </b-row>
         </div>
@@ -46,10 +46,15 @@ import { Master } from '@/domain/models/master';
 export default class EstimateRowComp extends Vue {
     @Prop({ required: false }) memberVote!: MemberVote;
     @Prop({ required: false }) member!: Member;
+    @Prop({ required: false }) isDone!: boolean;
 
     @Emit('acceptVote')
     onAcceptVote() {
         return this.memberVote.points;
+    }
+
+    get ShowAcceptButton(): boolean {
+        return !this.isDone;
     }
 }
 </script>

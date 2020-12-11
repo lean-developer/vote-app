@@ -3,15 +3,19 @@
     <div v-if="loading" class="lds-ripple"><div></div><div></div></div>
     <div v-if="!loading">
       <div v-if="vote">
-           <b-card class="mt-4 mb-4 text-left" bg-variant="dark" text-variant="white">
+           <div class="head-status">
+                <em><small>{{vote.status}}</small></em>
+           </div>
+           <b-card class="mb-4 text-left" bg-variant="dark" text-variant="white">
            <b-card-title class="ml-2">{{vote.name}}
                <b-badge v-if="Points" class="ml-2 mb-2" pill variant="info">{{Points}}</b-badge>
             </b-card-title>
               <b-card-text style="text-align: right;">
               </b-card-text>
               <b-button v-if="isOpen" class="ml-2" variant="success" @click="onStartVote()">Schätzrunde starten</b-button>
-              <b-button v-if="isRunning" class="ml-2" variant="secondary" @click="onNeuSchaetzen()">neu schätzen</b-button>
-              <b-button v-if="isRunning" class="ml-2" :disabled=!hasPoints variant="success" @click="onBeenden()">Beenden</b-button>
+              <b-button v-if="isRunning && hasMemberVotes" class="ml-2" variant="secondary" @click="onNeuSchaetzen()">neu schätzen</b-button>
+              <b-button v-if="isDone" class="ml-2" variant="secondary" @click="onNeuSchaetzen()">neu schätzen</b-button>
+              <b-button v-if="isRunning" class="ml-2" :disabled=!hasPoints variant="success" @click="onSaveStoryPoints()">Übernehmen</b-button>
           </b-card>
           <div v-if="isOpen">
                  <b-card v-if="MembersOhneVote" bg-variant="secondary" text-variant="white" class="mb-4" title="offen">
@@ -20,11 +24,11 @@
                     </div>
                 </b-card>
           </div>
-          <div v-if="isRunning">
-              <div v-if="MemberVoteResult">
-                  <b-card bg-variant="success" text-variant="white" class="mb-4" title="geschätzt">
+          <div v-if="MemberVoteResult && !isOpen">
+              <div>
+                  <b-card v-if="hasMemberVotes" bg-variant="success" text-variant="white" class="mb-4" title="geschätzt">
                     <div v-for="mv in MemberVoteResult.memberVotes" :key="mv.member.id">
-                        <estimate-row-comp :memberVote=mv @acceptVote=onAcceptVote></estimate-row-comp>
+                        <estimate-row-comp :memberVote=mv :isDone=isDone @acceptVote=onAcceptVote></estimate-row-comp>
                     </div>
                   </b-card>
                   <b-card v-if="MembersOhneVote" bg-variant="secondary" text-variant="white" class="mb-4" title="offen">
@@ -65,7 +69,17 @@ export default class Estimate extends Vue {
 
     async created() {
         this.voteId = +this.$route.params.voteId;
+        await this.init();
+    }
+
+    async init() {
         this.vote = this.getStoreVote();
+        if (!this.vote) {
+            console.warn('Vote is undefined; not found in store (master.votes)!', this.master.votes);
+        }
+        if (this.vote?.points) {
+            this.points = this.vote.points;
+        }
         this.loading = true;
         await this.loadMemberVoteResult();
         this.loading = false;
@@ -90,6 +104,13 @@ export default class Estimate extends Vue {
         return membersOhneVote;
     }
 
+    get hasMemberVotes(): boolean {
+        if (this.MemberVoteResult.memberVotes && this.MemberVoteResult.memberVotes.length > 0) {
+            return true;
+        }
+        return false;
+    }
+
     private hasMemberVoted(member: Member): boolean {
          for (let mv of this.MemberVoteResult.memberVotes) {
             if (mv.member) {
@@ -103,6 +124,29 @@ export default class Estimate extends Vue {
 
     onAcceptVote(points: string) {
         this.points = points;
+    }
+
+    async onNeuSchaetzen() {
+        if (this.vote) {
+            // 1) memberVotes löschen!
+            const isDeleted: boolean | undefined = await MemberService.deleteMemberVotesByVote(this.vote);
+            if (isDeleted) {
+                // 2) Vote: Status auf running setzen und StoryPoints löschen!
+                const newStateVote: Vote | undefined = await VoteService.setRunningAndDeletePoints(this.vote);
+                if (newStateVote) {
+                    // 3) Store updaten
+                    await StoreService.reloadMember();
+                    // 4) aktuelle Vote updaten
+                    await this.init();
+                }
+            }
+        }
+    }
+
+    async onSaveStoryPoints() {
+        if (this.vote) {
+            await VoteService.setDone(this.vote, this.points);
+        }
     }
 
     getStoreVote(): Vote | undefined {
@@ -134,6 +178,10 @@ export default class Estimate extends Vue {
         return VoteService.isRunning(this.vote);
     }
 
+    get isDone(): boolean {
+        return VoteService.isDone(this.vote);
+    }
+
     get master(): Master {
         return this.$store.getters.master;
     }
@@ -156,3 +204,10 @@ export default class Estimate extends Vue {
     }
 }
 </script>
+
+<style scoped>
+    .head-status {
+        margin-top: 1rem;
+        text-align: left;
+    }
+</style>

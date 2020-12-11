@@ -69,7 +69,7 @@ export default class MemberView extends Vue {
     setVotes(allVotes: Vote[]) {
         this.votes = [];
         for (let v of allVotes) {
-            if (VoteService.isOpen(v) || VoteService.isRunning(v)) {
+            if (VoteService.isOpen(v) || VoteService.isRunning(v) || VoteService.isDone(v)) {
                 this.votes.push(v);
             }
         }

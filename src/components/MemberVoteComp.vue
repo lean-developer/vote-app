@@ -12,8 +12,11 @@
                     <em>{{vote.status}}</em>
                 </div>
             </b-col>
-            <b-col v-if="ShowPoints" cols="2" @click="onExpand()" class="row-mb row-mr vote-row vote-name align-items-center" :style=rowState>
-                <div class="center">
+            <b-col v-if="ShowPoints || isDone" cols="2" @click="onExpand()" class="row-mb row-mr vote-row vote-name align-items-center" :style=rowState>
+                <div v-if="isDone" class="points-done">
+                    <p>{{Points}}</p>
+                </div>
+                <div v-if="!isDone" class="points">
                     <p>{{Points}}</p>
                 </div>
             </b-col>
@@ -99,6 +102,10 @@ export default class MemberVoteComp extends Vue {
         }
     }
 
+    get isDone(): boolean {
+        return VoteService.isDone(this.vote);
+    }
+
     get ShowPoints(): boolean {
         if (!this.isRunning) {
             return false;
@@ -164,6 +171,13 @@ export default class MemberVoteComp extends Vue {
                 'cursor': 'auto'
             }
         }
+        if (this.isDone) {
+            return { 
+                'color': 'darkgrey',
+                'background-color': 'rgb(237, 237, 237)',
+                'cursor': 'auto'
+            }
+        }
         return { 
             'color': 'darkgrey',
             'background-color': 'rgb(237, 237, 237)',
@@ -195,13 +209,27 @@ export default class MemberVoteComp extends Vue {
     .text-sub {
         font-size: 10px;
     }
-    .center { 
+    .points { 
         height: 40px;
         color: rgb(249, 245, 130);
-        font-weight: bolder;
+        font-weight: 900;
         position: relative;
     }
-    .center p {
+    .points-done {
+        height: 40px;
+        color: darkgray;
+        font-weight: 900;
+        position: relative;
+    }
+    .points p {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+    .points-done p {
         margin: 0;
         position: absolute;
         top: 50%;

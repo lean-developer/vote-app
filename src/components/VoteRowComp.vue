@@ -1,15 +1,17 @@
 <template>
     <b-row v-if="vote">
-        <b-button  class="row-mb row-mr" :disabled=Disabled :variant=stateVariant @click="onCheck()"><i class="fas fa-check"></i></b-button>
+        <b-button v-if="ShowCheckButton" class="btn-min row-mb row-mr" :disabled=Disabled :variant=stateVariant @click="onCheck()"><i class="fas fa-check"></i></b-button>
+        <b-button v-if="isDone" variant="danger" class="btn-min row-mb row-mr" disabled>{{StoryPoints}}</b-button>
         <b-col class="row-mb row-mr vote-row vote-name" :style=rowState @click="onClickVote()">
             <div class="text-head">
-                 {{vote.name}} ({{vote.id}})
+                 {{vote.name}}
             </div>
             <div class="text-sub">
                 <em>{{vote.status}}</em>
             </div>
         </b-col>
-        <b-button v-if="!isRunning" :disabled=Disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
+        <b-button v-if="!isRunning && !isDone" :disabled=Disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
+        <b-button v-if="isDone" class="row-mb" variant="secondary" @click="onArchiv()"><i class="fas fa-archive"></i></b-button>
     </b-row>
 </template>
 
@@ -39,8 +41,22 @@ export default class VoteRowComp extends Vue {
         return 'light';
     }
 
+    get StoryPoints(): string {
+        if (this.vote && this.vote.points) {
+            return this.vote.points;
+        }
+        return '';
+    }
+
     get Disabled(): boolean {
         return this.disabled;
+    }
+
+    get ShowCheckButton(): boolean {
+        if (this.isOpen || this.isNew) {
+            return true;
+        }
+        return false;
     }
 
     @Emit('deleteVote')
@@ -59,7 +75,7 @@ export default class VoteRowComp extends Vue {
     }
 
     onClickVote() {
-        if (this.isOpen || this.isRunning) {
+        if (this.isOpen || this.isRunning || this.isDone) {
             this.$router.push("/estimate/" + this.vote.id);
         }
     }
@@ -72,7 +88,22 @@ export default class VoteRowComp extends Vue {
         return VoteService.isRunning(this.vote);
     }
 
+    get isDone(): boolean {
+        return VoteService.isDone(this.vote);
+    }
+
+    get isNew(): boolean {
+        return this.vote.status === '';
+    }
+
     get rowState() {
+         if (this.isDone) {
+            return { 
+                'color': 'white',
+                'background-color': '#6c757d',
+                'cursor': 'pointer'
+            }    
+        }
         if (this.isRunning) {
             return { 
                 'color': 'white',
@@ -117,6 +148,9 @@ export default class VoteRowComp extends Vue {
     }
     .text-sub {
         font-size: 10px;
+    }
+    .btn-min {
+        width: 50px;
     }
 </style>
 

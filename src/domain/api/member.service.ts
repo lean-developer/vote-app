@@ -31,12 +31,22 @@ class MemberService {
 
     async saveMemberVote (member: Member, vote: Vote, memberVoteValue: MemberVoteValue): Promise<MemberVote | undefined> {
         try {
-        const api = 'member/' + member.id + '/vote/' + vote.id;
-        const resp = await http.post(api, memberVoteValue);
-        console.log('RESP', resp);
-        return resp.data as MemberVote;
+            const api = 'member/' + member.id + '/vote/' + vote.id;
+            const resp = await http.post(api, memberVoteValue);
+            return resp.data as MemberVote;
         } catch (e) {
-        console.error(e)
+            console.error(e)
+        }
+    }
+
+    async deleteMemberVotesByVote(vote: Vote): Promise<boolean | undefined> {
+        try {
+            const api = 'member/membervote/' + vote.id;
+            const resp = await http.delete(api);
+            console.log('DELETED', resp);
+            return (resp.status === 200);
+        } catch (e) {
+            console.error(e)
         }
     }
 }
