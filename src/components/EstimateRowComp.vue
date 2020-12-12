@@ -69,12 +69,12 @@ export default class EstimateRowComp extends Vue {
     .m-success {
         color: green;
         font-weight:800;
-        font-size: 20px;
+        font-size: 18px;
     }
      .m-no {
         color: darkgray;
         font-weight:800;
-        font-size: 20px;
+        font-size: 18px;
     }
     .left {
         text-align: left;

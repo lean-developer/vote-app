@@ -118,7 +118,7 @@ export default class MemberView extends Vue {
     async onMemberLogout() {
         const initStoreModel: StoreModel = new StoreModel();
         await this.$store.commit(StoreActions.SaveMember, initStoreModel.member);
-        if (this.Master) {
+        if (this.IsMaster) {
             this.$router.push({ name: 'Estimates' })
         }
         else {

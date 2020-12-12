@@ -1,6 +1,6 @@
 <template>
   <b-container>
-      <new-vote-comp @createVote="onCreateVote"></new-vote-comp>
+      <new-vote-comp v-if="IsMaster" @createVote="onCreateVote"></new-vote-comp>
       <div v-if="Master.votes">
           <div v-for="v in SortedVotes" :key="v.id">
             <vote-row-comp class="ml-1 mr-1" :vote=v 
@@ -33,6 +33,10 @@ export default class Estimates extends Vue {
     
     get Master(): Master {
         return this.$store.getters.master;
+    }
+
+    get IsMaster(): boolean {
+        return this.Master.uid !== '';
     }
 
     async onDeleteVote(vote: Vote) {
