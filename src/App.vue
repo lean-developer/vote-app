@@ -7,14 +7,15 @@
         </b-navbar-brand>
         <b-nav-item v-if="IsMaster" to="/team">
           Team
-          <b-badge variant="success">{{Members}}</b-badge>
+          <b-badge variant="primary">{{Members}}</b-badge>
         </b-nav-item>
         <b-nav-item v-if="IsMaster" to="/estimates">
-          Schätzungen
-          <b-badge v-if="Votes" variant="danger">{{Votes}}</b-badge>
+          Stories
+          <b-badge v-if="Votes" variant="success">{{Votes}}</b-badge>
         </b-nav-item>
-        <b-nav-item to="/member">
-          <em>{{StoreMember.name}}</em>
+        <b-nav-item v-if="IsMember" to="/member">
+          {{StoreMember.name}}
+          <b-badge v-if="Votes" variant="danger">{{MemberVotesRunning}}</b-badge>
         </b-nav-item>
         <!-- <b-nav-item v-if="IsMaster" to="/about">About</b-nav-item> -->
       </b-navbar-nav>
@@ -56,6 +57,9 @@ import StoreModel from './store/storeModel';
 import StoreService from './domain/api/store.service';
 import { StoreMember } from './domain/models/storeMember';
 import { Member } from './domain/models/member';
+import voteService from './domain/api/vote.service';
+import { Vote } from './domain/models/vote';
+import { MemberVote } from './domain/models/memberVote';
 
 @Component({
   components: {
@@ -63,6 +67,8 @@ import { Member } from './domain/models/member';
 })
 export default class App extends Vue {
   private loading: boolean = false;
+  private memberMaster!: Master | undefined;
+  private memberVotesRunning: string = '';
 
   async created() {
     StoreService.$store = this.$store;
@@ -83,6 +89,8 @@ export default class App extends Vue {
         if (this.IsMember) {
           this.loading = true;
           await StoreService.reloadMember();
+          this.memberMaster = await MasterService.getMasterByUid(this.StoreMember.uid);
+          this.setMemberVotesRunning();
           this.loading = false;
         }
       }
@@ -91,6 +99,8 @@ export default class App extends Vue {
           /* MemberDaten neu laden wg. Synchronisierung verschiedener Endgeräte. */
           this.loading = true;
           await StoreService.reloadMember();
+          this.memberMaster = await MasterService.getMasterByUid(this.StoreMember.uid);
+          this.setMemberVotesRunning();
           this.loading = false;
           this.$router.push({ name: 'Member' })
         }
@@ -114,9 +124,28 @@ export default class App extends Vue {
       if (this.Master.votes.length > 0) {
         return this.Master.votes.length.toString();
       }
-
     }
     return '';
+  }
+
+  get MemberVotesRunning(): string {
+    return this.memberVotesRunning;
+  }
+
+  setMemberVotesRunning() {
+    let cnt: number = 0;
+    if (this.memberMaster) {
+      for (let v of this.memberMaster.votes) {
+        if (voteService.isRunning(v)) {
+          cnt++;
+        }
+      }
+    }
+    if (cnt > 0) {
+      this.memberVotesRunning = cnt.toString();
+    } else {
+      this.memberVotesRunning = '';
+    }
   }
 
   get Members(): string {

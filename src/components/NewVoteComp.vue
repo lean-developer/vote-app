@@ -8,7 +8,7 @@
             <b-button variant="primary" @click="onCreate()"><b-icon-plus></b-icon-plus></b-button>
           </b-input-group>
           <div class="ml-2" style="text-align: left">
-            <small>Neue Schätzung anlegen</small>
+            <small>Story anlegen</small>
           </div>
         </b-col>
       </b-row>

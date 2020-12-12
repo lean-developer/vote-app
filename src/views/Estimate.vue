@@ -15,7 +15,7 @@
             </b-card-title>
               <b-card-text style="text-align: right;">
               </b-card-text>
-              <b-button v-if="isOpen" class="ml-2" variant="success" @click="onStartVote()">Schätzrunde starten</b-button>
+              <b-button v-if="isOpen" class="ml-2" variant="success" @click="onStartVote()">Planning Poker starten</b-button>
               <b-button v-if="isRunning && hasMemberVotes" class="ml-2" variant="secondary" @click="onNeuSchaetzen()">neu schätzen</b-button>
               <b-button v-if="isDone" class="ml-2" variant="secondary" @click="onNeuSchaetzen()">neu schätzen</b-button>
               <b-button v-if="isRunning" class="ml-2" :disabled=!hasPoints variant="success" @click="onSaveStoryPoints()">Abschließen</b-button>
@@ -143,8 +143,7 @@ export default class Estimate extends Vue {
                 if (newStateVote) {
                     // 3) Store updaten
                     await StoreService.reloadMember();
-                    // 4) Schätzungen anzeigen
-                    // -this.$router.push({ name: 'Estimates' })            
+                    // 4) Stories anzeigen          
                     this.$router.go(0); // relaod Page
                 }
             }
