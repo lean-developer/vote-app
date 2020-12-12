@@ -6,6 +6,7 @@ export default class StoreModel {
     user: User;
     master: Master;
     member: StoreMember;
+    votesIsRunning: string;
 
     constructor () {
       this.user = {
@@ -24,11 +25,12 @@ export default class StoreModel {
           uid: '',
           members: [],
           votes: []
-      }
+      };
       this.member = {
         pin: 0,
         name: '',
         uid: ''
-      }
+      };
+      this.votesIsRunning = '';
     }
 }

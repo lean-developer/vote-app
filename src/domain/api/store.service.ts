@@ -1,6 +1,7 @@
 import { Master } from '../models/master';
 import MasterService from './master.service';
 import MemberService from './member.service';
+import VoteService from './vote.service';
 import { StoreActions } from '@/store';
 import { StoreMember } from '../models/storeMember';
 import { MemberVote } from '../models/memberVote';
@@ -8,6 +9,7 @@ import { Member } from '../models/member';
 
 class StoreService {
     public $store: any;
+    private memberMaster!: Master;
 
     public get master(): Master {
         return this.$store.getters.master;
@@ -19,6 +21,10 @@ class StoreService {
 
     public get isLogin(): boolean {
         return this.master.uid !== '';
+    }
+
+    public get MemberMaster(): Master {
+        return this.memberMaster;
     }
 
     /**
@@ -57,6 +63,7 @@ class StoreService {
                     memberVotes = [];
                 }
                 await this.setStoreMember(member, this.storeMember.uid, memberVotes);
+                await this.reloadMemberVotesIsRunning();
             }
         }
     }
@@ -65,12 +72,29 @@ class StoreService {
         if (this.storeMember && this.storeMember.uid) {
             const memberMaster: Master | undefined = await MasterService.getMasterByUid(this.storeMember.uid);
             if (memberMaster) {
+                this.memberMaster = memberMaster;
                 for (let m of memberMaster.members) {
                     if (m.pin === this.storeMember.pin) {
                         return m;
                     }
                 }
             }
+        }
+    }
+
+    public async reloadMemberVotesIsRunning() {
+        let cnt: number = 0;
+        if (this.MemberMaster) {
+          for (let v of this.MemberMaster.votes) {
+            if (VoteService.isRunning(v)) {
+              cnt++;
+            }
+          }
+        }
+        if (cnt > 0) {
+            await this.$store.commit(StoreActions.SaveVotesIsRunning, cnt.toString());
+        } else {
+            await this.$store.commit(StoreActions.SaveVotesIsRunning, '');
         }
     }
 

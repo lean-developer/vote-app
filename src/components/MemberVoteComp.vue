@@ -64,6 +64,9 @@ export default class MemberVoteComp extends Vue {
     }
 
     get Points(): string {
+        if (this.isDone) {
+            return this.vote.points;
+        }
         return this.points;
     }
 

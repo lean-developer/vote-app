@@ -1,9 +1,9 @@
 <template>
     <b-container>
-      <div v-if="master">
+      <div v-if="Master">
         <new-member-comp @createMember="onCreateMember"></new-member-comp>
-        <div v-if="master.members">
-          <div v-for="m in master.members" :key="m.id">
+        <div v-if="Master.members">
+          <div v-for="m in Master.members" :key="m.id">
             <b-row>
               <user-chips :member=m></user-chips>
             </b-row>
@@ -36,13 +36,13 @@ import StoreService from '@/domain/api/store.service';
 export default class Home extends Vue {
   private users: string[] = [];
 
-  @Model() get master(): Master {
+  get Master(): Master {
     return this.$store.getters.master
   }
 
   async onCreateMember(membername: string) {
     if (StoreService.isLogin) {
-      const newMember: Member | undefined = await MasterService.createMemberOfMaster(this.master.id, membername);
+      const newMember: Member | undefined = await MasterService.createMemberOfMaster(this.Master.id, membername);
       if (newMember) {
         await StoreService.reloadMaster();
       }

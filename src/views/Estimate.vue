@@ -153,6 +153,7 @@ export default class Estimate extends Vue {
     async onSaveStoryPoints() {
         if (this.vote) {
             await VoteService.setDone(this.vote, this.points);
+            await StoreService.reloadMemberVotesIsRunning();
         }
     }
 

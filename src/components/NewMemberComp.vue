@@ -26,7 +26,7 @@ import { Vote } from '@/domain/models/vote';
   },
 })
 export default class NewMemberComp extends Vue {
-    @Model() private username: string = '';
+    private username: string = '';
 
     async created() {
       console.log('NewMemberComp created...')

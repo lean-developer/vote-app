@@ -15,7 +15,7 @@
         </b-nav-item>
         <b-nav-item v-if="IsMember" to="/member">
           {{StoreMember.name}}
-          <b-badge v-if="Votes" variant="danger">{{MemberVotesRunning}}</b-badge>
+          <b-badge v-if="Votes" variant="danger">{{VotesIsRunning}}</b-badge>
         </b-nav-item>
         <!-- <b-nav-item v-if="IsMaster" to="/about">About</b-nav-item> -->
       </b-navbar-nav>
@@ -67,8 +67,6 @@ import { MemberVote } from './domain/models/memberVote';
 })
 export default class App extends Vue {
   private loading: boolean = false;
-  private memberMaster!: Master | undefined;
-  private memberVotesRunning: string = '';
 
   async created() {
     StoreService.$store = this.$store;
@@ -89,8 +87,6 @@ export default class App extends Vue {
         if (this.IsMember) {
           this.loading = true;
           await StoreService.reloadMember();
-          this.memberMaster = await MasterService.getMasterByUid(this.StoreMember.uid);
-          this.setMemberVotesRunning();
           this.loading = false;
         }
       }
@@ -99,8 +95,6 @@ export default class App extends Vue {
           /* MemberDaten neu laden wg. Synchronisierung verschiedener Endgeräte. */
           this.loading = true;
           await StoreService.reloadMember();
-          this.memberMaster = await MasterService.getMasterByUid(this.StoreMember.uid);
-          this.setMemberVotesRunning();
           this.loading = false;
           this.$router.push({ name: 'Member' })
         }
@@ -109,6 +103,10 @@ export default class App extends Vue {
         }
       }
     }
+  }
+
+  get VotesIsRunning(): string {
+    return this.$store.getters.votesIsRunning;
   }
 
   get StoreMember(): StoreMember {
@@ -127,27 +125,7 @@ export default class App extends Vue {
     }
     return '';
   }
-
-  get MemberVotesRunning(): string {
-    return this.memberVotesRunning;
-  }
-
-  setMemberVotesRunning() {
-    let cnt: number = 0;
-    if (this.memberMaster) {
-      for (let v of this.memberMaster.votes) {
-        if (voteService.isRunning(v)) {
-          cnt++;
-        }
-      }
-    }
-    if (cnt > 0) {
-      this.memberVotesRunning = cnt.toString();
-    } else {
-      this.memberVotesRunning = '';
-    }
-  }
-
+  
   get Members(): string {
     if (this.IsMaster) {
       if (this.Master.members.length > 0) {

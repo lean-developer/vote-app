@@ -11,6 +11,7 @@ export enum StoreActions {
   SaveUser = 'SAVE_USER',
   SaveMaster = 'SAVE_MASTER',
   SaveMember = 'SAVE_MEMBER',
+  SaveVotesIsRunning = 'SAVE_VOTES_ISRUNNING',
 }
 
 export default new Vuex.Store({
@@ -44,6 +45,10 @@ export default new Vuex.Store({
       state.storeModel.member = member;
       localStorage.setItem('member', JSON.stringify(member));
     },
+    /** nicht im localStorage! */
+    [StoreActions.SaveVotesIsRunning] (state, votesCnt: string) {
+      state.storeModel.votesIsRunning = votesCnt;
+    }
   },
   getters: {
     user: (state) => {
@@ -57,6 +62,9 @@ export default new Vuex.Store({
     },
     memberVotes: (state) => {
       return state.storeModel.member.memberVotes;
+    },
+    votesIsRunning: (state) => {
+      return state.storeModel.votesIsRunning;
     }
   },
   actions: {
