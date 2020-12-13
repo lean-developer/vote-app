@@ -6,6 +6,7 @@ import { StoreActions } from '@/store';
 import { StoreMember } from '../models/storeMember';
 import { MemberVote } from '../models/memberVote';
 import { Member } from '../models/member';
+import StoreModel from '@/store/storeModel';
 
 class StoreService {
     public $store: any;
@@ -49,6 +50,11 @@ class StoreService {
     public async setStoreMember(member: Member, masterUid: string, memberVotes: MemberVote[]) {
         const storeMember: StoreMember = { pin: member.pin, uid: masterUid, name: member.name, memberVotes: memberVotes };
         await this.$store.commit(StoreActions.SaveMember, storeMember);
+    }
+
+    public async logoutMember() {
+        const initStoreModel: StoreModel = new StoreModel();
+        await this.$store.commit(StoreActions.SaveMember, initStoreModel.member);
     }
 
     /**

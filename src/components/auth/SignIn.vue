@@ -34,6 +34,7 @@ import { LoginResult } from '@/domain/models/loginResult'
 import { User } from '@/domain/models/user'
 import { StoreActions } from '@/store'
 import { Master } from '@/domain/models/master'
+import StoreService from '../../domain/api/store.service'
 
 @Component({
   components: {
@@ -49,6 +50,7 @@ export default class SignIn extends Vue {
     async onLogin (): Promise<void> {
       this.disabled = true;
       this.loading = true;
+      await StoreService.logoutMember();
       const result = await LoginService.login(this.email, this.pw)
       if (result) {
         this.loginResult = result
