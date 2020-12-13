@@ -26,6 +26,7 @@ import { StoreMember } from '@/domain/models/storeMember';
 import MemberService from '@/domain/api/member.service';
 import { MemberVote } from '@/domain/models/memberVote';
 import StoreService from '@/domain/api/store.service';
+import SocketService from '../../domain/api/socket.service';
 
 @Component({
   components: {
@@ -73,6 +74,7 @@ export default class MemberSignIn extends Vue {
                         memberVotes = [];
                     }
                     await StoreService.setStoreMember(this.member, this.master.uid, memberVotes);
+                    SocketService.emitMemberLogin(this.member);
                     this.$router.push({ name: 'Member' })
                 }
             }

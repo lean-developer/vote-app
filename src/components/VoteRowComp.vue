@@ -28,6 +28,35 @@ import VoteService from '@/domain/api/vote.service';
 export default class VoteRowComp extends Vue {
     @Prop({ required: true }) vote!: Vote;
     private disabled: boolean = false;
+    private touchstartX!: number;
+    private touchstartY!: number;
+    private touchendX!: number;
+    private touchendY!: number;
+
+    mounted() {
+        window.addEventListener('touchstart', this.touchstartEventHandler, false);
+        window.addEventListener('touchend', this.touchendEventHandler, false);
+    }
+
+    destroyed() {
+        window.removeEventListener('touchstart', this.touchstartEventHandler, false);
+        window.removeEventListener('touchend', this.touchendEventHandler, false);
+    }
+
+    touchstartEventHandler(event: TouchEvent) {
+        this.touchstartX = event.changedTouches[0].screenX;
+        this.touchstartY = event.changedTouches[0].screenY;
+    }
+
+    touchendEventHandler(event: TouchEvent) {
+        this.touchendX = event.changedTouches[0].screenY;
+        this.touchstartY = event.changedTouches[0].screenY;
+        this.handleGesture();
+    }
+
+    handleGesture() {
+        // TODO ?
+    }
 
     get stateVariant(): string {
         if (this.vote) {

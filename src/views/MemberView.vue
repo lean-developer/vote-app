@@ -38,6 +38,8 @@ import { MemberVoteValue } from '../domain/models/memberVoteValue';
 import { Member } from '@/domain/models/member';
 import { MemberVote } from '@/domain/models/memberVote';
 import { SaveVotePoints } from '@/domain/models/saveVotePoints';
+import SocketService from '../domain/api/socket.service';
+import { Socket } from 'vue-socket.io-extended';
 
 @Component({
   components: {
@@ -85,6 +87,11 @@ export default class MemberView extends Vue {
         }
     }
 
+    @Socket('masterVoteChanged')
+    onMasterVoteChanged(currentMaster: Master, currentVote: Vote) {
+        console.log('## Socket.masterVoteChanged', currentMaster, currentVote);
+    }
+
     async loadMaster() {
         this.loading = true;
         const master: Master | undefined = await MasterService.getMasterByUid(this.Member.uid);
@@ -96,13 +103,13 @@ export default class MemberView extends Vue {
     }
     
     async onMemberVoteSave(saveVotePoints: SaveVotePoints) {
-        console.log('SAVE VOTE-POINTS', saveVotePoints);
         if (this.myMember && saveVotePoints.vote) {
             let memberVoteValue: MemberVoteValue = {
                 points: saveVotePoints.points,
                 note: ''
             }
             await MemberService.saveMemberVote(this.myMember, saveVotePoints.vote, memberVoteValue);
+            SocketService.emitMemberVoteChanged(this.myMember, saveVotePoints.vote);
             const updatedMemberVotes: MemberVote[] | undefined = await MemberService.getMemberVotes(this.myMember);
             if (updatedMemberVotes) {
                 if (this.IsMaster) {
@@ -118,6 +125,7 @@ export default class MemberView extends Vue {
     async onMemberLogout() {
         const initStoreModel: StoreModel = new StoreModel();
         await this.$store.commit(StoreActions.SaveMember, initStoreModel.member);
+        SocketService.emitMemberLogout(this.myMember);
         if (this.IsMaster) {
             this.$router.push({ name: 'Estimates' })
         }

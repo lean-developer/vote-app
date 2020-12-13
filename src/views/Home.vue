@@ -25,6 +25,7 @@ import { StoreActions } from '../store';
 import { Member } from '@/domain/models/member';
 import VoteService from '@/domain/api/vote.service';
 import StoreService from '@/domain/api/store.service';
+import { Socket } from 'vue-socket.io-extended';
 
 @Component({
   components: {
@@ -40,6 +41,15 @@ export default class Home extends Vue {
     return this.$store.getters.master
   }
 
+  @Socket('memberlogin')
+  onMemberLogin(member: Member) {
+    console.log('### Socket.memberlogin', member);
+  }
+  @Socket('memberlogout')
+  onMemberLogout(member: Member) {
+    console.log('### Socket.memberlogout', member);
+  }
+  
   async onCreateMember(membername: string) {
     if (StoreService.isLogin) {
       const newMember: Member | undefined = await MasterService.createMemberOfMaster(this.Master.id, membername);

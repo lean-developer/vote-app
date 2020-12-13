@@ -55,6 +55,7 @@ import { StoreActions } from './store';
 import LoginService from './domain/api/login.service';
 import StoreModel from './store/storeModel';
 import StoreService from './domain/api/store.service';
+import SocketService from './domain/api/socket.service';
 import { StoreMember } from './domain/models/storeMember';
 import { Member } from './domain/models/member';
 import voteService from './domain/api/vote.service';
@@ -70,6 +71,7 @@ export default class App extends Vue {
 
   async created() {
     StoreService.$store = this.$store;
+    SocketService.$socket = this.$socket;
     if (this.$route.name === 'MemberLogin') {
           // hier als Member einloggen!
     }

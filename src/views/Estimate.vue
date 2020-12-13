@@ -53,6 +53,7 @@ import MemberService from '@/domain/api/member.service';
 import { Vote } from '@/domain/models/vote';
 import EstimateRowComp from '@/components/EstimateRowComp.vue';
 import StoreService from '@/domain/api/store.service';
+import SocketService from '@/domain/api/socket.service';
 import { Master } from '@/domain/models/master';
 import { MemberVoteValue } from '@/domain/models/memberVoteValue';
 import { MemberVoteResult } from '@/domain/models/memberVoteResult';
@@ -205,6 +206,7 @@ export default class Estimate extends Vue {
         if (VoteService.isOpen(this.vote)) {
             const newVote = await VoteService.setRunning(this.vote);
             if (newVote) {
+                SocketService.emitMasterVoteChanged(this.master, this.vote);
                 this.vote = newVote;
                 await StoreService.reloadMaster();
             }
