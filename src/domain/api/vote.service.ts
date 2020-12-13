@@ -101,10 +101,10 @@ class VoteService {
     return await this.updateVote(v);
   }
 
-  async setRunningAndDeletePoints(vote: Vote): Promise<Vote | undefined> {
+  async setOpenAndDeletePoints(vote: Vote): Promise<Vote | undefined> {
     let v: Vote = vote;
     v.points = '';
-    v.status = VoteService.STATUS_RUNNING;
+    v.status = VoteService.STATUS_OPEN;
     return await this.updateVote(v);
   }
 

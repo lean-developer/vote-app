@@ -139,12 +139,14 @@ export default class Estimate extends Vue {
             // 1) memberVotes löschen!
             const isDeleted: boolean | undefined = await MemberService.deleteMemberVotesByVote(this.vote);
             if (isDeleted) {
-                // 2) Vote: Status auf running setzen und StoryPoints löschen!
-                const newStateVote: Vote | undefined = await VoteService.setRunningAndDeletePoints(this.vote);
+                // 2) Vote: Status auf open setzen und StoryPoints löschen!
+                const newStateVote: Vote | undefined = await VoteService.setOpenAndDeletePoints(this.vote);
                 if (newStateVote) {
-                    // 3) Store updaten
+                    // 3) Clients benachrichtigen
+                    SocketService.emitMasterVoteChanged(this.master, this.vote);
+                    // 4) Store updaten
                     await StoreService.reloadMember();
-                    // 4) Stories anzeigen          
+                    // 5) Stories anzeigen          
                     this.$router.go(0); // relaod Page
                 }
             }
@@ -155,6 +157,7 @@ export default class Estimate extends Vue {
         if (this.vote) {
             await VoteService.setDone(this.vote, this.points);
             await StoreService.reloadMemberVotesIsRunning();
+            SocketService.emitMasterVoteChanged(this.master, this.vote);
         }
     }
 

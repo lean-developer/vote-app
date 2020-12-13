@@ -11,7 +11,6 @@ class MemberService {
         try {
             const api = 'member/' + member.id + '/membervote'
             const resp = await http.get(api)
-            console.log('MemberService.getMemberVotes', resp);
             return resp.data as MemberVote[];
         } catch (e) {
             console.error(e)
@@ -22,7 +21,6 @@ class MemberService {
         try {
             const api = 'member/membervote/' + vote.id;
             const resp = await http.get(api)
-            console.log('MemberService.getMemberVotes', resp);
             return resp.data as MemberVoteResult;
         } catch (e) {
             console.error(e)

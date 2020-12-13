@@ -11,14 +11,14 @@ import '@fortawesome/fontawesome-free/js/all.js'
 import VueSocketIOExt from 'vue-socket.io-extended'
 import io from 'socket.io-client';
 
-// export const socket = io('http://localhost:3200');
-export const socket = io('https://icl-vote-service.herokuapp.com/');
+// export const socketIo = io('http://localhost:3200/');
+export const socketIo = io('https://icl-vote-service.herokuapp.com/');
 
 Vue.config.productionTip = false;
 
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
-Vue.use(VueSocketIOExt, socket);
+Vue.use(VueSocketIOExt, socketIo);
 
 new Vue({
   router,

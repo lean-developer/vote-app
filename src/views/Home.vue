@@ -41,11 +41,11 @@ export default class Home extends Vue {
     return this.$store.getters.master
   }
 
-  @Socket('memberlogin')
+  @Socket('memberLogin')
   onMemberLogin(member: Member) {
     console.log('### Socket.memberlogin', member);
   }
-  @Socket('memberlogout')
+  @Socket('memberLogout')
   onMemberLogout(member: Member) {
     console.log('### Socket.memberlogout', member);
   }
