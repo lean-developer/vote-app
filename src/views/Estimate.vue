@@ -58,6 +58,8 @@ import { Master } from '@/domain/models/master';
 import { MemberVoteValue } from '@/domain/models/memberVoteValue';
 import { MemberVoteResult } from '@/domain/models/memberVoteResult';
 import { Member } from '@/domain/models/member';
+import { Socket } from 'vue-socket.io-extended';
+import { MemberVote } from '@/domain/models/memberVote';
 
 @Component({
   components: {
@@ -68,7 +70,7 @@ export default class Estimate extends Vue {
     private voteId!: number;
     private vote: Vote | undefined;
     private loading: boolean = false;
-    private memberVoteResult!: MemberVoteResult;
+    private memberVoteResult!: MemberVoteResult | undefined;
     private points: string = '';
 
     async created() {
@@ -113,6 +115,9 @@ export default class Estimate extends Vue {
     }
 
     get hasMemberVotes(): boolean {
+        if (!this.MemberVoteResult) {
+            return false;
+        }
         if (this.MemberVoteResult.memberVotes && this.MemberVoteResult.memberVotes.length > 0) {
             return true;
         }
@@ -120,6 +125,9 @@ export default class Estimate extends Vue {
     }
 
     private hasMemberVoted(member: Member): boolean {
+        if (!this.MemberVoteResult) {
+            return false;
+        }
          for (let mv of this.MemberVoteResult.memberVotes) {
             if (mv.member) {
                 if (mv.member.id === member.id) {
@@ -128,6 +136,40 @@ export default class Estimate extends Vue {
             }
         }
         return false;
+    }
+
+    @Socket('memberVoteChanged')
+    async onMemberVoteChanged(result: any) {
+        let currentMember: Member = result[0];
+        let currentVote: Vote = result[1];
+        let newPoints: string = result[2];
+        console.log('## Socket.membeVoteChanged'); 
+        this.loading = true;
+        if (this.master && this.vote) {
+            if (this.vote.id === currentVote.id) {
+                this.updateChangedVote(currentMember, currentVote, newPoints);
+            }
+        }
+        this.loading = false;
+    }
+
+    updateChangedVote(currentMember: Member, changedVote: Vote, newPoints: string) {
+        let newMemberVotes: MemberVote[] = [];
+        if (!this.memberVoteResult) {
+            return;
+        }
+        console.log('updateChangedVote', changedVote);
+        console.log('memberVotes', this.memberVoteResult.memberVotes);
+        for(let mv of this.memberVoteResult.memberVotes) {
+            if (mv.member) {
+                if (mv.member.id === currentMember.id) {
+                    console.log('Update ', changedVote.name, newPoints);
+                    mv.points = newPoints;
+                }
+            }
+            newMemberVotes.push(mv);
+        }
+        this.memberVoteResult.memberVotes = newMemberVotes;
     }
 
     onAcceptVote(points: string) {
@@ -174,11 +216,12 @@ export default class Estimate extends Vue {
             const result = await MemberService.getMemberVotesResult(this.vote);
             if (result) {
                 this.memberVoteResult = result;
+                console.log('LoadMemberVoteResult: ', this.memberVoteResult);
             }
         }
     }
 
-    get MemberVoteResult(): MemberVoteResult {
+    get MemberVoteResult(): MemberVoteResult | undefined {
         return this.memberVoteResult;
     }
 

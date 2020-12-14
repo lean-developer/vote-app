@@ -30,8 +30,8 @@ class SocketService {
         this.$socket.client.emit('masterVoteChanged', master, vote);
     }
 
-    emitMemberVoteChanged(member: Member, vote: Vote) {
-        this.$socket.client.emit('memberVoteChanged', member, vote);
+    emitMemberVoteChanged(member: Member, vote: Vote, points: string) {
+        this.$socket.client.emit('memberVoteChanged', member, vote, points);
     }
 
     emitMemberVotingStart(member: Member, vote: Vote) {

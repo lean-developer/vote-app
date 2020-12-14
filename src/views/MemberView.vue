@@ -91,14 +91,13 @@ export default class MemberView extends Vue {
     async onMasterVoteChanged(result: any) {
         let currentMaster: Master = result[0];
         let currentVote: Vote = result[1];
-        console.log('## Socket.masterVoteChanged', currentMaster, currentVote);
+        console.log('## Socket.masterVoteChanged');
         this.loading = true;
         if (this.IsMaster && this.Master.id === currentMaster.id) {
             this.updateChangedVote(currentVote);
         }
         else if (this.myMaster.id === currentMaster.id) {
             this.updateChangedVote(currentVote);
-            // StoreService.reloadMember();
         }
         this.loading = false;
     }
@@ -133,7 +132,7 @@ export default class MemberView extends Vue {
                 note: ''
             }
             await MemberService.saveMemberVote(this.myMember, saveVotePoints.vote, memberVoteValue);
-            SocketService.emitMemberVoteChanged(this.myMember, saveVotePoints.vote);
+            SocketService.emitMemberVoteChanged(this.myMember, saveVotePoints.vote, saveVotePoints.points);
             const updatedMemberVotes: MemberVote[] | undefined = await MemberService.getMemberVotes(this.myMember);
             if (updatedMemberVotes) {
                 if (this.IsMaster) {
