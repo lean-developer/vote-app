@@ -139,7 +139,7 @@ export default class Estimate extends Vue {
     }
 
     @Socket('memberVoteChanged')
-    async onMemberVoteChanged(result: any) {
+    onMemberVoteChanged(result: any) {
         let currentMember: Member = result[0];
         let currentVote: Vote = result[1];
         let newPoints: string = result[2];
@@ -147,19 +147,18 @@ export default class Estimate extends Vue {
         this.loading = true;
         if (this.master && this.vote) {
             if (this.vote.id === currentVote.id) {
-                this.updateChangedVote(currentMember, currentVote, newPoints);
+                this.$router.go(0);
             }
         }
         this.loading = false;
     }
 
+    /** ist diese Methode noch nötig? -> aktuell wird bei einer Änderung einfach die Seite neu geladen */
     updateChangedVote(currentMember: Member, changedVote: Vote, newPoints: string) {
         let newMemberVotes: MemberVote[] = [];
         if (!this.memberVoteResult) {
             return;
         }
-        console.log('updateChangedVote', changedVote);
-        console.log('memberVotes', this.memberVoteResult.memberVotes);
         for(let mv of this.memberVoteResult.memberVotes) {
             if (mv.member) {
                 if (mv.member.id === currentMember.id) {
