@@ -34,7 +34,7 @@
                         <estimate-row-comp :memberVote=mv :isDone=isDone @acceptVote=onAcceptVote></estimate-row-comp>
                     </div>
                   </b-card>
-                  <b-card v-if="MembersOhneVote" bg-variant="secondary" text-variant="white" class="mb-4" title="offen">
+                  <b-card v-if="hasMemberUnvoted" bg-variant="secondary" text-variant="white" class="mb-4" title="offen">
                       <div v-for="m in MembersOhneVote" :key="m.id">
                           <estimate-row-comp :member=m></estimate-row-comp>
                       </div>
@@ -112,6 +112,10 @@ export default class Estimate extends Vue {
             membersOhneVote.push(m);
         }
         return membersOhneVote;
+    }
+
+    get hasMemberUnvoted(): boolean {
+        return this.MembersOhneVote.length > 0;
     }
 
     get hasMemberVotes(): boolean {

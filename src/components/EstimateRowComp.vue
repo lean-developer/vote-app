@@ -61,18 +61,20 @@ export default class EstimateRowComp extends Vue {
 
 <style scoped>
     .m {
-        padding: 1rem;
+        padding: 0.6rem;
         background-color: whitesmoke;
         border: darkgray;
         border-radius: 10px;
     }
     .m-success {
+        margin-top: 5px;
         color: green;
         font-weight:800;
         font-size: 18px;
     }
      .m-no {
         color: darkgray;
+        margin-top: 5px;
         font-weight:800;
         font-size: 18px;
     }
