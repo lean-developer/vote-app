@@ -3,7 +3,9 @@
         <b-row class="voting">
             <div v-for="p in points" :key="p">
                 <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-2">
-                    <b-button pill variant="secondary" @click="onClickPoints(p)" style="width: 50px;">{{p}}</b-button>
+                    <b-button pill variant="secondary" @click="onClickPoints(p)" style="width: 65px;">
+                        <p class="point">{{p}}</p>
+                    </b-button>
                 </div>
             </div>
         </b-row>
@@ -59,5 +61,11 @@ export default class MemberVoting extends Vue {
         border-radius: 20px;
         padding-top: 1rem;
         padding-bottom: 1rem;
+    }
+    .point {
+        margin: 0;
+        font-weight: 900;
+        font-size: 24px;
+        font-family: Helvetica, sans-serif;
     }
 </style>

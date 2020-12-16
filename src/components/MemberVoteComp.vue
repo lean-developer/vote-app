@@ -22,9 +22,11 @@
             </b-col>
             <b-button v-if="ShowPoints" :disabled=Disabled  :style=saveBtnState class="row-mb" variant="outline-success" @click="onSave()"><i class="fas fa-check"></i></b-button>
         </b-row>
-        <b-row v-if="showVoting">
-            <member-voting @clickPoints=onClickPoints></member-voting>
-        </b-row>
+        <transition name="fade" :duration="{ enter: 1200, leave: 200 }">
+            <b-row v-if="showVoting">
+                <member-voting @clickPoints=onClickPoints></member-voting>
+            </b-row>
+        </transition>
     </div>
 </template>
 
@@ -40,7 +42,7 @@ import { Member } from '@/domain/models/member';
 
 @Component({
   components: {
-      MemberVoting
+      MemberVoting,
   },
 })
 export default class MemberVoteComp extends Vue {
@@ -239,5 +241,11 @@ export default class MemberVoteComp extends Vue {
         left: 50%;
         -ms-transform: translate(-50%, -50%);
         transform: translate(-50%, -50%);
+    }
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity 0.5s;
+    }
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
     }
 </style>
