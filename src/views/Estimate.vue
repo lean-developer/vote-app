@@ -5,8 +5,8 @@
       <div v-if="vote">
           <b-row>
               <b-button variant="light" @click="onBack()"><i class="fas fa-chevron-left"></i></b-button>
-            <div class="head-status">
-                    <em><small>{{vote.status}}</small></em>
+            <div class="head-status" :style=stateColor>
+                    <em>{{vote.status}}</em>
             </div>
           </b-row>
            <b-card class="mb-4 text-left" bg-variant="dark" text-variant="white">
@@ -92,7 +92,7 @@ export default class Estimate extends Vue {
     }
 
     onBack() {
-        this.$router.go(-1);
+        this.$router.push({ name: 'Estimates' });
     }
 
     get Points(): string {
@@ -261,12 +261,35 @@ export default class Estimate extends Vue {
             }
         }
     }
+
+     get stateColor() {
+        if (this.isRunning) {
+            return { 
+                'color': '#28a745'
+            }    
+        }
+        if (this.isDone) {
+            return {
+                'color': '#0275d8'
+            }
+        }
+        if (this.isOpen) {
+            return {
+                'color': '#d9534f'
+            }
+        }
+        return {
+            'color': 'black'
+        }
+     }
 }
 </script>
 
 <style scoped>
     .head-status {
-        margin-top: 1rem;
+        margin-top: 0.5rem;
         text-align: left;
+        font-size: 14px;
+        font-weight: 700;
     }
 </style>

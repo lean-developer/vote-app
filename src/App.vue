@@ -70,6 +70,7 @@ export default class App extends Vue {
   private loading: boolean = false;
 
   async created() {
+    document.title = process.env.VUE_APP_TITLE;
     StoreService.$store = this.$store;
     SocketService.$socket = this.$socket;
     if (this.$route.name === 'MemberLogin') {

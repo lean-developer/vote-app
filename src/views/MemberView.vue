@@ -147,10 +147,10 @@ export default class MemberView extends Vue {
         await StoreService.logoutMember();
         SocketService.emitMemberLogout(this.myMember);
         if (this.IsMaster) {
-            this.$router.push({ name: 'Estimates' })
+            this.$router.push({ name: 'Estimates' });
         }
         else {
-            this.$router.push({ name: 'Login' })
+            this.$router.push({ name: 'Login' });
         }
     }
 
