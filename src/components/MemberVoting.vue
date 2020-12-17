@@ -64,8 +64,6 @@ export default class MemberVoting extends Vue {
     }
     .point {
         margin: 0;
-        font-weight: 900;
         font-size: 24px;
-        font-family: Helvetica, sans-serif;
     }
 </style>
