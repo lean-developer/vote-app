@@ -3,7 +3,7 @@
     <div v-if="loading" class="lds-ripple"><div></div><div></div></div>
     <div v-if="!loading">
       <div v-if="vote">
-          <b-row>
+          <b-row :key=componentKey>
               <b-button variant="light" @click="onBack()"><i class="fas fa-chevron-left"></i></b-button>
             <div class="head-status" :style=stateColor>
                     <em>{{vote.status}}</em>
@@ -159,9 +159,11 @@ export default class Estimate extends Vue {
             // 1) memberVotes löschen!
             const isDeleted: boolean | undefined = await MemberService.deleteMemberVotesByVote(this.vote);
             if (isDeleted) {
-                // 2) Vote: Status auf open setzen und StoryPoints löschen!
-                const newStateVote: Vote | undefined = await VoteService.setOpenAndDeletePoints(this.vote);
+                // 2) Vote: Status auf running setzen und StoryPoints löschen!
+                const newStateVote: Vote | undefined = await VoteService.setRunningAndDeletePoints(this.vote);
                 if (newStateVote) {
+                    this.vote = newStateVote;
+                    this.points = '';
                     // 3) Clients benachrichtigen
                     SocketService.emitMasterVoteChanged(this.master, this.vote);
                     // 4) Store updaten
