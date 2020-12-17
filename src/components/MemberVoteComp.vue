@@ -1,9 +1,6 @@
 <template>
     <div>
         <b-row>
-            <!--
-            <b-button :disabled=Disabled class="row-mb row-mr" size="lg" variant="success" @click="onExpand()"><i class="fas fa-angle-double-down"></i></b-button>
-            -->
             <b-col class="row-mb row-mr vote-row vote-name" :style=rowState @click="onExpand()">
                 <div style="display: inline;" class="text-head">
                     {{vote.name}} 
@@ -20,7 +17,6 @@
                     <p>{{Points}}</p>
                 </div>
             </b-col>
-            <b-button v-if="ShowPoints" :disabled=Disabled  :style=saveBtnState class="row-mb" variant="outline-success" @click="onSave()"><i class="fas fa-check"></i></b-button>
         </b-row>
         <transition name="fade" :duration="{ enter: 1200, leave: 200 }">
             <b-row v-if="showVoting">
@@ -130,7 +126,7 @@ export default class MemberVoteComp extends Vue {
     @Emit('save')
     onSave(): SaveVotePoints {
         this.showVoting = false;
-        this.disabled = true;
+        // this.disabled = true;
         let saveVotePoints = {
             vote: this.vote,
             points: this.points 
@@ -140,7 +136,7 @@ export default class MemberVoteComp extends Vue {
 
     onClickPoints(p: string) {
         this.points = p;
-        this.showVoting = false;
+        this.onSave();
     }
 
     get saveBtnState() {

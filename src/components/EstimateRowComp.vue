@@ -2,26 +2,14 @@
     <b-container>
         <div class="mt-1" v-if="memberVote">
             <b-row class="m">
-                <b-col class="left m-success" cols="6">
+                <b-col class="left m-success" :style="rowState" cols="6">
                     <span>{{memberVote.member.name}}</span>
                 </b-col>
-                <b-col class="right m-success" cols="4">
-                    <span>{{memberVote.points}}</span>
+                <b-col class="right m-success" :style="rowState" cols="4">
+                    <span>{{Points}}</span>
                 </b-col>
                 <b-col class="right" cols="2">
                     <b-button v-if="ShowAcceptButton" variant="light" @click=onAcceptVote><i class="fas fa-chevron-right"></i></b-button>
-                </b-col>
-            </b-row>
-        </div>
-        <div class="mt-1" v-if="member">
-            <b-row class="m">
-                <b-col class="left m-no" cols="6">
-                    <span>{{member.name}}</span>
-                </b-col>
-                <b-col class="right m-no" cols="4">
-                    <span>-</span>
-                </b-col>
-                <b-col cols="2">
                 </b-col>
             </b-row>
         </div>
@@ -54,26 +42,41 @@ export default class EstimateRowComp extends Vue {
     }
 
     get ShowAcceptButton(): boolean {
-        return !this.isDone;
+        return !this.isDone && this.memberVote.points.length > 0;
+    }
+
+    get Points(): string {
+        if (this.hasVoted) {
+            return this.memberVote.points;
+        }
+        return '-';
+    }
+
+    get hasVoted(): boolean {
+        return this.memberVote.points.length > 0;
+    }
+
+    get rowState() {
+         if (this.hasVoted) {
+            return { 
+                'color': 'green'
+            }    
+        }
+        return { 
+            'color': 'darkgray'
+        }   
     }
 }
 </script>
 
 <style scoped>
     .m {
-        padding: 0.6rem;
+        padding: 0.4rem;
         background-color: whitesmoke;
         border: darkgray;
         border-radius: 10px;
     }
     .m-success {
-        margin-top: 5px;
-        color: green;
-        font-weight:800;
-        font-size: 18px;
-    }
-     .m-no {
-        color: darkgray;
         margin-top: 5px;
         font-weight:800;
         font-size: 18px;

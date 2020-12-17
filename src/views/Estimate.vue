@@ -9,7 +9,7 @@
                     <em>{{vote.status}}</em>
             </div>
           </b-row>
-           <b-card class="mb-4 text-left" bg-variant="dark" text-variant="white">
+           <b-card class="text-left" bg-variant="dark" text-variant="white">
            <b-card-title class="ml-2">{{vote.name}}
                <b-badge v-if="Points" class="ml-2 mb-2" pill variant="info">{{Points}}</b-badge>
             </b-card-title>
@@ -20,26 +20,12 @@
               <b-button v-if="isDone" class="ml-2" variant="secondary" @click="onNeuSchaetzen()">neu schätzen</b-button>
               <b-button v-if="isRunning" class="ml-2" :disabled=!hasPoints variant="success" @click="onSaveStoryPoints()">Abschließen</b-button>
           </b-card>
-          <div v-if="isOpen">
-                 <b-card v-if="MembersOhneVote" bg-variant="secondary" text-variant="white" class="mb-4" title="offen">
-                    <div v-for="m in MembersOhneVote" :key="m.id">
-                        <estimate-row-comp :member=m></estimate-row-comp>
-                    </div>
-                </b-card>
-          </div>
-          <div v-if="MemberVoteResult && !isOpen">
-              <div>
-                  <b-card v-if="hasMemberVotes" bg-variant="success" text-variant="white" class="mb-4" title="geschätzt">
-                    <div v-for="mv in MemberVoteResult.memberVotes" :key="mv.member.id">
-                        <estimate-row-comp :memberVote=mv :isDone=isDone @acceptVote=onAcceptVote></estimate-row-comp>
-                    </div>
-                  </b-card>
-                  <b-card v-if="hasMemberUnvoted" bg-variant="secondary" text-variant="white" class="mb-4" title="offen">
-                      <div v-for="m in MembersOhneVote" :key="m.id">
-                          <estimate-row-comp :member=m></estimate-row-comp>
-                      </div>
-                  </b-card>
-              </div>
+          <div v-if="MemberVoteResult">
+              <b-card bg-variant="success" text-variant="white">
+                <div v-for="mv in MemberVoteResult.memberVotes" :key="mv.member.id">
+                    <estimate-row-comp :key=componentKey :memberVote=mv :isDone=isDone @acceptVote=onAcceptVote></estimate-row-comp>
+                </div>
+              </b-card>
           </div>
       </div>
     </div>
@@ -67,6 +53,7 @@ import { MemberVote } from '@/domain/models/memberVote';
   },
 })
 export default class Estimate extends Vue {
+    private componentKey: number = 0;
     private voteId!: number;
     private vote: Vote | undefined;
     private loading: boolean = false;
@@ -91,6 +78,10 @@ export default class Estimate extends Vue {
         this.loading = false;
     }
 
+    forceRerender() {
+        this.componentKey += 1;
+    }
+
     onBack() {
         this.$router.push({ name: 'Estimates' });
     }
@@ -101,21 +92,6 @@ export default class Estimate extends Vue {
 
     get hasPoints(): boolean {
         return this.points.length > 0;
-    }
-
-    get MembersOhneVote(): Member[] {
-        let membersOhneVote: Member[] = [];
-        for (let m of this.master.members) {
-            if (this.hasMemberVoted(m)) {
-                continue;
-            }
-            membersOhneVote.push(m);
-        }
-        return membersOhneVote;
-    }
-
-    get hasMemberUnvoted(): boolean {
-        return this.MembersOhneVote.length > 0;
     }
 
     get hasMemberVotes(): boolean {
@@ -143,21 +119,20 @@ export default class Estimate extends Vue {
     }
 
     @Socket('memberVoteChanged')
-    onMemberVoteChanged(result: any) {
+    async onMemberVoteChanged(result: any) {
         let currentMember: Member = result[0];
         let currentVote: Vote = result[1];
         let newPoints: string = result[2];
-        console.log('## Socket.membeVoteChanged'); 
         this.loading = true;
         if (this.master && this.vote) {
             if (this.vote.id === currentVote.id) {
-                this.$router.go(0);
+                this.updateChangedVote(currentMember, currentVote, newPoints);
+                this.forceRerender();
             }
         }
         this.loading = false;
     }
 
-    /** ist diese Methode noch nötig? -> aktuell wird bei einer Änderung einfach die Seite neu geladen */
     updateChangedVote(currentMember: Member, changedVote: Vote, newPoints: string) {
         let newMemberVotes: MemberVote[] = [];
         if (!this.memberVoteResult) {
@@ -191,10 +166,18 @@ export default class Estimate extends Vue {
                     SocketService.emitMasterVoteChanged(this.master, this.vote);
                     // 4) Store updaten
                     await StoreService.reloadMember();
-                    // 5) Stories anzeigen          
-                    this.$router.go(0); // relaod Page
+                    // 5) Members mit leeren Schätzungen anzeigen
+                    this.deleteMemberVotes();
+                    this.forceRerender();
                 }
             }
+        }
+    }
+
+    deleteMemberVotes() {
+        if (this.memberVoteResult) {
+            this.memberVoteResult.memberVotes = [];
+            this.setUnvotedMembers();
         }
     }
 
@@ -203,6 +186,7 @@ export default class Estimate extends Vue {
             await VoteService.setDone(this.vote, this.points);
             await StoreService.reloadMemberVotesIsRunning();
             SocketService.emitMasterVoteChanged(this.master, this.vote);
+            this.$router.push({ name: 'Estimates' });
         }
     }
 
@@ -220,6 +204,19 @@ export default class Estimate extends Vue {
             if (result) {
                 this.memberVoteResult = result;
                 console.log('LoadMemberVoteResult: ', this.memberVoteResult);
+                this.setUnvotedMembers();
+            }
+        }
+    }
+
+    setUnvotedMembers() {
+        for (let m of this.master.members) {
+            if (this.hasMemberVoted(m)) {
+                continue;
+            }
+            if (this.memberVoteResult) {
+                let unvotedMemberVote: MemberVote = { vote: this.vote, member: m, points: '', note: '' };
+                this.memberVoteResult.memberVotes.push(unvotedMemberVote);
             }
         }
     }

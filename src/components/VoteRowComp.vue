@@ -9,6 +9,9 @@
             <div class="text-sub">
                 <em>{{vote.status}}</em>
             </div>
+            <div v-if="votedMembers" class="text-voted">
+                ({{votedMembers}})
+            </div>
         </b-col>
         <b-button v-if="isNew" :disabled=Disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
         <b-button v-if="isOpen" :disabled=Disabled class="row-mb" variant="secondary" @click="onClickVote()"><i class="fas fa-angle-double-right"></i></b-button>
@@ -20,6 +23,7 @@
 import { Component, Vue, Model, Prop, Emit } from 'vue-property-decorator';
 import { Vote } from '@/domain/models/vote';
 import VoteService from '@/domain/api/vote.service';
+import { Member } from '@/domain/models/member';
 
 @Component({
   components: {
@@ -27,6 +31,7 @@ import VoteService from '@/domain/api/vote.service';
 })
 export default class VoteRowComp extends Vue {
     @Prop({ required: true }) vote!: Vote;
+    @Prop({ required: true }) runningVotesVotedMembers!: Map<number, Member[]>;
     private disabled: boolean = false;
     private touchstartX!: number;
     private touchstartY!: number;
@@ -56,6 +61,24 @@ export default class VoteRowComp extends Vue {
 
     handleGesture() {
         // TODO ?
+    }
+
+    get votedMembers(): string {
+        if (!this.runningVotesVotedMembers.has(this.vote.id)) {
+            return '';
+        }
+        let votedMembers: Member[] | undefined = this.runningVotesVotedMembers.get(this.vote.id);
+        if (votedMembers) {
+            let text = '';
+            for (let vm of votedMembers) {
+                if (text.length > 0) {
+                    text += ', ';
+                }
+                text += vm.name;
+            }
+            return text;
+        }
+        return '';
     }
 
     get stateVariant(): string {
@@ -178,6 +201,11 @@ export default class VoteRowComp extends Vue {
     }
     .text-sub {
         font-size: 10px;
+    }
+    .text-voted {
+        color: whitesmoke;
+        font-weight: bold;
+        font-size: 14px;
     }
     .btn-min {
         width: 50px;
