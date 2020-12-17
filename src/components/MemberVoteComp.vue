@@ -140,6 +140,7 @@ export default class MemberVoteComp extends Vue {
 
     onClickPoints(p: string) {
         this.points = p;
+        this.showVoting = false;
     }
 
     get saveBtnState() {
