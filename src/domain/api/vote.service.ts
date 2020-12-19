@@ -1,6 +1,7 @@
 import http from './server/http'
 import { Vote } from '../models/vote'
 import { DeleteResult } from '../models/deleteResult'
+import { MasterResult } from '../models/masterResult';
 
 class VoteService {
   static STATUS_OPEN = 'OPEN';
@@ -23,9 +24,19 @@ class VoteService {
 
   async getVote (id: number): Promise<Vote | undefined> {
     try {
-      const api = 'vote/' + id
-      const resp = await http.get(api)
-      return resp.data as Vote
+      const api = 'vote/' + id;
+      const resp = await http.get(api);
+      return resp.data as Vote;
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  async getVotesMasterResult (masterId: number): Promise<MasterResult | undefined> {
+    try {
+      const api = 'vote/master/' + masterId + '/result';
+      const resp = await http.get(api);
+      return resp.data as MasterResult;
     } catch (e) {
       console.error(e)
     }

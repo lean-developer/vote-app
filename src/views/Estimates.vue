@@ -3,7 +3,9 @@
       <new-vote-comp v-if="IsMaster" @createVote="onCreateVote"></new-vote-comp>
       <div v-if="Master.votes">
           <div v-for="v in SortedVotes" :key="v.id">
-            <vote-row-comp class="ml-1 mr-1" :key=componentKey :vote=v :runningVotesVotedMembers=runningVotesVotedMembers
+            <vote-row-comp class="ml-1 mr-1" :key=componentKey 
+                :vote=v 
+                :memberVoteMap=MyMemberVoteMap
                 @checkVote="onCheckVote"
                 @deleteVote="onDeleteVote" 
                 @archivVote="onArchivVote">
@@ -24,6 +26,9 @@ import { DeleteResult } from '@/domain/models/deleteResult';
 import { Master } from '@/domain/models/master';
 import { Member } from '@/domain/models/member';
 import { Socket } from 'vue-socket.io-extended';
+import { MasterResult } from '../domain/models/masterResult';
+import { MemberVoteResult } from '../domain/models/memberVoteResult';
+import { MemberVote } from '@/domain/models/memberVote';
 
 @Component({
   components: {
@@ -32,9 +37,43 @@ import { Socket } from 'vue-socket.io-extended';
   },
 })
 export default class Estimates extends Vue {
+    private masterResult!: MasterResult | undefined;
     private componentKey: number = 0;
-    private runningVotesVotedMembers = new Map();   // Key = Vote, Value = votedMembers
+    private memberVoteMap: Map<number, MemberVote[]> = new Map();
     
+    async created() {
+        if (this.IsMaster) {
+            this.masterResult = await VoteService.getVotesMasterResult(this.Master.id);
+            if (this.masterResult) {
+                this.initRunningVotesVotedMembers();
+                this.forceRerender();
+            }
+        }
+    }
+
+    initRunningVotesVotedMembers() {
+        for (let v of this.Master.votes) {
+            let memberVoteResult: MemberVoteResult | undefined = this.getVoteResults(v.id);
+            if (memberVoteResult) {
+                this.memberVoteMap.set(v.id, memberVoteResult.memberVotes);
+            }
+        }
+    }
+
+    get MyMemberVoteMap(): Map<number, MemberVote[]> {
+        return this.memberVoteMap;
+    }
+
+    getVoteResults(voteId: number): MemberVoteResult | undefined {
+        if (this.masterResult) {
+            for (let res of this.masterResult.memberVoteResults) {
+                if (res.vote.id === voteId) {
+                    return res;
+                }
+            }
+        }
+    }
+
     get Master(): Master {
         return this.$store.getters.master;
     }
@@ -81,19 +120,23 @@ export default class Estimates extends Vue {
         let currentMember: Member = result[0];
         let currentVote: Vote = result[1];
         let newPoints: string = result[2];
-        if (!this.runningVotesVotedMembers.has(currentVote.id)) {
+        let currentMemberVote: MemberVote = { points: newPoints, note: '', member: currentMember, vote: currentVote };
+        if (!this.memberVoteMap.has(currentVote.id)) {
             // Vote für die bisher noch keiner geschätzt hat
-            this.runningVotesVotedMembers.set(currentVote.id, []);
+            this.memberVoteMap.set(currentVote.id, []);
         }
-        if (this.runningVotesVotedMembers.has(currentVote.id)) {
-            let votedMembers: Member[] = this.runningVotesVotedMembers.get(currentVote.id);
-            if (votedMembers.indexOf(currentMember) > 0) {
-                // Member hat bereits geschätzt!
-            }
-            else {
-                // Member in Map aufnehmen
-                votedMembers.push(currentMember);
-                this.forceRerender();
+        if (this.memberVoteMap.has(currentVote.id)) {
+            let myMemberVotes: MemberVote[] | undefined = this.memberVoteMap.get(currentVote.id);
+            if (myMemberVotes) {
+                if (myMemberVotes.indexOf(currentMemberVote) > 0) {
+                    // bereits geschätzt; Points aktualisieren
+                    // TODO
+                }
+                else {
+                    // MemberVote aufnehmen
+                    myMemberVotes.push(currentMemberVote);
+                     this.forceRerender();
+                }
             }
         }
         console.log('## Socket.memberVoteChanged'); 

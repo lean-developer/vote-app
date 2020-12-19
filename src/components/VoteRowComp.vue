@@ -9,8 +9,11 @@
             <div class="text-sub">
                 <em>{{vote.status}}</em>
             </div>
-            <div v-if="votedMembers" class="text-voted">
-                ({{votedMembers}})
+        </b-col>
+        <b-col v-if="isRunning && hasMemberVotes" class="row-mb row-mr vote-row" :style="rowState" cols="2" @click="onClickShowVoting()">
+         <div v-if="memberVotes" class="mt-2 text-voted">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                {{memberVotes.length}}
             </div>
         </b-col>
         <b-button v-if="isNew" :disabled=Disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
@@ -24,6 +27,7 @@ import { Component, Vue, Model, Prop, Emit } from 'vue-property-decorator';
 import { Vote } from '@/domain/models/vote';
 import VoteService from '@/domain/api/vote.service';
 import { Member } from '@/domain/models/member';
+import { MemberVote } from '@/domain/models/memberVote';
 
 @Component({
   components: {
@@ -31,12 +35,24 @@ import { Member } from '@/domain/models/member';
 })
 export default class VoteRowComp extends Vue {
     @Prop({ required: true }) vote!: Vote;
-    @Prop({ required: true }) runningVotesVotedMembers!: Map<number, Member[]>;
+    @Prop({ required: true }) memberVoteMap!: Map<number, MemberVote[]>;
+    private memberVotes: MemberVote[] = [];
     private disabled: boolean = false;
     private touchstartX!: number;
     private touchstartY!: number;
     private touchendX!: number;
     private touchendY!: number;
+
+    created() {
+        let voteMemberVotes: MemberVote[] | undefined;
+        if (this.memberVoteMap.has(this.vote?.id)) {
+            voteMemberVotes = this.memberVoteMap.get(this.vote?.id);
+        }
+        if (voteMemberVotes) {
+            console.log('VoteMemberVotes', voteMemberVotes);
+            this.memberVotes = voteMemberVotes;
+        }
+    }
 
     mounted() {
         window.addEventListener('touchstart', this.touchstartEventHandler, false);
@@ -63,22 +79,25 @@ export default class VoteRowComp extends Vue {
         // TODO ?
     }
 
-    get votedMembers(): string {
-        if (!this.runningVotesVotedMembers.has(this.vote.id)) {
-            return '';
-        }
-        let votedMembers: Member[] | undefined = this.runningVotesVotedMembers.get(this.vote.id);
-        if (votedMembers) {
-            let text = '';
-            for (let vm of votedMembers) {
+    get hasMemberVotes(): boolean {
+        return this.memberVotes.length > 0;
+    }
+
+    onClickShowVoting() {
+        let text = '';
+        if (this.MyMemberVotes) {
+            for (let mv of this.MyMemberVotes) {
                 if (text.length > 0) {
                     text += ', ';
                 }
-                text += vm.name;
+                text += mv.member?.name;
             }
-            return text;
         }
-        return '';
+        console.log('Voting', text);
+    }
+
+    get MyMemberVotes(): MemberVote[] {
+        return this.memberVotes;
     }
 
     get stateVariant(): string {
