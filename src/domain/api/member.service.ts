@@ -1,6 +1,6 @@
 import http from './server/http'
 import { Master } from '../models/master'
-import { Member } from '../models/member';
+import { Member, MemberState } from '../models/member';
 import { Vote } from '../models/vote';
 import { MemberVote } from '../models/memberVote';
 import { MemberVoteValue } from '../models/memberVoteValue';
@@ -22,6 +22,16 @@ class MemberService {
             const api = 'member/membervote/' + vote.id;
             const resp = await http.get(api)
             return resp.data as MemberVoteResult;
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    async updateMember (member: Member): Promise<Member | undefined> {
+        try {
+            const api = 'member/' + member.id;
+            const resp = await http.patch(api, member);
+            return resp.data as Member;
         } catch (e) {
             console.error(e)
         }

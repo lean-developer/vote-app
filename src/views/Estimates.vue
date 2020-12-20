@@ -115,6 +115,11 @@ export default class Estimates extends Vue {
         return 0;
     }
 
+    @Socket('memberStateChanged')
+    onMemberLogin(result: any) {
+        console.log('memberStateChanged', result);
+    }
+
     @Socket('memberVoteChanged')
     onMemberVoteChanged(result: any) {
         let currentMember: Member = result[0];

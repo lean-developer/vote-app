@@ -9,8 +9,8 @@
             <div class="mt-2">
                 <b-button block variant="success" @click="onLogin()">Login</b-button>
             </div>
-            <div v-if="errorMsg" class="message-error mt-2">
-                <small>{{errorMsg}}</small>
+            <div v-if="ErrorMsg" class="message-error mt-2">
+                <small>{{ErrorMsg}}</small>
             </div>
         </div>
     </div>
@@ -20,7 +20,7 @@
 import { Component, Vue, Model, Prop } from 'vue-property-decorator'
 import MasterService from '@/domain/api/master.service'
 import { Master } from '@/domain/models/master';
-import { Member } from '@/domain/models/member';
+import { Member, MemberState } from '@/domain/models/member';
 import { StoreActions } from '@/store';
 import { StoreMember } from '@/domain/models/storeMember';
 import MemberService from '@/domain/api/member.service';
@@ -38,7 +38,7 @@ export default class MemberSignIn extends Vue {
     private memberPin!: number;
     private memberKey!: string;
     private masterUid!: string;
-    @Model() private errorMsg: string = '';
+    private errorMsg: string = '';
     private master: Master | undefined;
     @Model() private member: Member | undefined;
 
@@ -61,21 +61,34 @@ export default class MemberSignIn extends Vue {
         }
     }
 
+    get ErrorMsg(): string {
+        return this.errorMsg;
+    }
+
     onChange() {
         this.errorMsg = '';
     }
 
     async onLogin (): Promise<void> {
         if (this.master) {
-            if (this.member?.pin === this.memberPin) {
-                if (this.memberKey === this.member.name) {
-                    let memberVotes: MemberVote[] | undefined = await this.loadMemberVotes();
-                    if (!memberVotes) {
-                        memberVotes = [];
+            if (this.member) {
+                if (this.member.pin === this.memberPin) {
+                    if (this.memberKey === this.member.name) {
+                        let memberVotes: MemberVote[] | undefined = await this.loadMemberVotes();
+                        if (!memberVotes) {
+                            memberVotes = [];
+                        }
+                        // MemberState ändern
+                        this.member.state = MemberState.ONLINE;
+                        const onlineMember: Member | undefined = await MemberService.updateMember(this.member);
+                        if (onlineMember) {
+                            await StoreService.setStoreMember(onlineMember, this.master.uid, memberVotes);
+                            // Clients benachrichtigen
+                            SocketService.emitMemberStateChanged(onlineMember);
+                            // zur Member-Ansicht wechseln
+                            this.$router.push({ name: 'Member' })
+                        }
                     }
-                    await StoreService.setStoreMember(this.member, this.master.uid, memberVotes);
-                    SocketService.emitMemberLogin(this.member);
-                    this.$router.push({ name: 'Member' })
                 }
             }
         }

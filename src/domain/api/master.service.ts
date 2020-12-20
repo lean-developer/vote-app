@@ -43,7 +43,7 @@ class MasterService {
       const resp = await http.post(api);
       const member: Member = {
         id: resp.data.id,
-        name: resp.data.name
+        name: resp.data.name,
       }
       return member;
     } catch (e) {

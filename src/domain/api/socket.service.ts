@@ -5,24 +5,11 @@ import { Vote } from '../models/vote';
 
 class SocketService {
     public $socket: any;
-    
-    /** 
-     * noch nicht ganz funktionsfähig; Login-State der Member muss noch persistiert werden
-     * (sonst verschwindet der Login-Status nach einem Reload der Seite)
-     */
-    emitMemberLogin(member?: Member) {
-        if (member) {
-            this.$socket.client.emit('memberLogin', member);
-        }
-    }
 
-     /** 
-      * noch nicht ganz funktionsfähig; Logout-State der Member muss noch persistiert werden
-      * (sonst verschwindet der Logout-Status nach einem Reload der Seite)
-     */
-    emitMemberLogout(member?: Member) {
+    emitMemberStateChanged(member?: Member) {
         if (member) {
-            this.$socket.client.emit('memberLogout', member);
+            console.log('emitMemberStateChanged', member);
+            this.$socket.client.emit('memberStateChanged', member);
         }
     }
 

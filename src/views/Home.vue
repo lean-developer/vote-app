@@ -41,13 +41,9 @@ export default class Home extends Vue {
     return this.$store.getters.master
   }
 
-  @Socket('memberLogin')
-  onMemberLogin(member: Member) {
-    console.log('### Socket.memberlogin', member);
-  }
-  @Socket('memberLogout')
-  onMemberLogout(member: Member) {
-    console.log('### Socket.memberlogout', member);
+  @Socket('memberStateChanged')
+  onMemberLogin(result: any) {
+    console.log('### Socket.memberStateChanged', result);
   }
   
   async onCreateMember(membername: string) {

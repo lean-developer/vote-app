@@ -12,8 +12,7 @@ import VueSocketIOExt from 'vue-socket.io-extended'
 import io from 'socket.io-client';
 import titleMixin from './mixins/titleMixin'
 
-// export const socketIo = io('http://localhost:3200/');
-export const socketIo = io('https://icl-vote-service.herokuapp.com/');
+export const socketIo = io(process.env.VUE_APP_SERVICE);
 
 Vue.config.productionTip = false;
 

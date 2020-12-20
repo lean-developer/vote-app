@@ -5,8 +5,9 @@ import VoteService from './vote.service';
 import { StoreActions } from '@/store';
 import { StoreMember } from '../models/storeMember';
 import { MemberVote } from '../models/memberVote';
-import { Member } from '../models/member';
+import { Member, MemberState } from '../models/member';
 import StoreModel from '@/store/storeModel';
+import SocketService from './socket.service';
 
 class StoreService {
     public $store: any;
@@ -53,8 +54,17 @@ class StoreService {
     }
 
     public async logoutMember() {
-        const initStoreModel: StoreModel = new StoreModel();
-        await this.$store.commit(StoreActions.SaveMember, initStoreModel.member);
+        // MemberState ändern
+        const member: Member | undefined = await this.getMember();
+        if (member) {
+            member.state = MemberState.OFFLINE;
+            const offlineMember: Member | undefined = await MemberService.updateMember(member);
+            // Member im Store löschen
+            const initStoreModel: StoreModel = new StoreModel();
+            await this.$store.commit(StoreActions.SaveMember, initStoreModel.member);
+            // Clients benachrichtigen
+            SocketService.emitMemberStateChanged(offlineMember);
+        }
     }
 
     /**
