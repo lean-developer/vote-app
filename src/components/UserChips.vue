@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-col>
-            <div class="chip" v-if="name">
+            <div class="chip" v-if="name" :style="rowState">
                 <b-avatar>
                     {{initials}}
                 </b-avatar>
@@ -23,6 +23,7 @@ import MasterService from '@/domain/api/master.service';
 import StoreService from '@/domain/api/store.service';
 import { DeleteResult } from '@/domain/models/deleteResult';
 import { Member } from '@/domain/models/member';
+import { Socket } from 'vue-socket.io-extended';
 
 @Component({
   components: {
@@ -38,6 +39,20 @@ export default class UserChips extends Vue {
                 await StoreService.reloadMaster();
             }
         }
+    }
+
+    @Socket('memberStateChanged')
+    onMemberStateChanged(currentMember: Member) {
+        if (currentMember.id === this.member?.id) {
+            this.member.state = currentMember.state;
+        }
+    }
+
+    get state(): string {
+        if (this.member.state) {
+            return this.member.state;
+        }
+        return '';
     }
 
     get name(): string {
@@ -58,6 +73,19 @@ export default class UserChips extends Vue {
     get initials(): string {
         return this.member.name.substring(0, 2).toUpperCase();
     }
+
+     get rowState() {
+        if (this.state) {
+            return { 
+                 'color': 'white',
+                 'background-color': '#28a745',
+            }    
+        }
+        return {
+            'color': 'darkgray',
+            'background-color': '#f1f1f1',
+        }
+     }
 }
 </script>
 
@@ -73,7 +101,6 @@ export default class UserChips extends Vue {
         font-size: 16px;
         line-height: 50px;
         border-radius: 25px;
-        background-color: #f1f1f1;
     }
 
     .link {
