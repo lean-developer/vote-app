@@ -291,4 +291,9 @@ export default class Estimate extends Vue {
         font-size: 14px;
         font-weight: 700;
     }
+    .blur {
+        /* Add the blur effect */
+        filter: blur(4px);
+        -webkit-filter: blur(4px);
+    }
 </style>

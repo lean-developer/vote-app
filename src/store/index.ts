@@ -4,12 +4,14 @@ import StoreModel from './storeModel'
 import { User } from '@/domain/models/user'
 import { Master } from '@/domain/models/master'
 import { StoreMember } from '@/domain/models/storeMember'
+import { Member } from '@/domain/models/member'
 
 Vue.use(Vuex)
 
 export enum StoreActions {
   SaveUser = 'SAVE_USER',
   SaveMaster = 'SAVE_MASTER',
+  SaveMasterMembers = 'SAVE_MASTER_MEMBERS',
   SaveMember = 'SAVE_MEMBER',
   SaveVotesIsRunning = 'SAVE_VOTES_ISRUNNING',
 }
@@ -40,6 +42,10 @@ export default new Vuex.Store({
     [StoreActions.SaveMaster] (state, master: Master) {
       state.storeModel.master = master;
       localStorage.setItem('master', JSON.stringify(master));
+    },
+    [StoreActions.SaveMasterMembers] (state, members: Member[]) {
+      state.storeModel.master.members = members;
+      localStorage.setItem('master', JSON.stringify(state.storeModel.master));
     },
     [StoreActions.SaveMember] (state, member: StoreMember) {
       state.storeModel.member = member;

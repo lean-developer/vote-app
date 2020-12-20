@@ -40,6 +40,7 @@ import { MemberVote } from '@/domain/models/memberVote';
 import { SaveVotePoints } from '@/domain/models/saveVotePoints';
 import SocketService from '../domain/api/socket.service';
 import { Socket } from 'vue-socket.io-extended';
+import { Route } from 'vue-router';
 
 @Component({
   components: {

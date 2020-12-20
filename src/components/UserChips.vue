@@ -1,11 +1,13 @@
 <template>
     <div>
         <b-col>
-            <div class="chip" v-if="name" :style="rowState">
+            <div class="chip" v-if="name">
                 <b-avatar>
                     {{initials}}
                 </b-avatar>
-                <div class="ml-2" style="display: inline;">
+                <div class="ml-2 round-box" :style="rowState">
+                </div>
+                <div class="ml-4" style="display: inline;">
                 {{name}}
                 </div>
                 <span class="closebtn" @click="onClose()">&times;</span>
@@ -41,13 +43,6 @@ export default class UserChips extends Vue {
         }
     }
 
-    @Socket('memberStateChanged')
-    onMemberStateChanged(currentMember: Member) {
-        if (currentMember.id === this.member?.id) {
-            this.member.state = currentMember.state;
-        }
-    }
-
     get state(): string {
         if (this.member.state) {
             return this.member.state;
@@ -74,18 +69,18 @@ export default class UserChips extends Vue {
         return this.member.name.substring(0, 2).toUpperCase();
     }
 
-     get rowState() {
-        if (this.state) {
+    get rowState() {
+         if (this.state) {
             return { 
-                 'color': 'white',
-                 'background-color': '#28a745',
+                'display': 'inline',
+                'background-color': '#54da73'
             }    
         }
-        return {
-            'color': 'darkgray',
-            'background-color': '#f1f1f1',
-        }
-     }
+        return { 
+            'display': 'inline',
+            'background-color': 'rgb(182, 182, 182)'
+        }  
+    }
 }
 </script>
 
@@ -101,6 +96,7 @@ export default class UserChips extends Vue {
         font-size: 16px;
         line-height: 50px;
         border-radius: 25px;
+        background-color: #f1f1f1;
     }
 
     .link {
@@ -127,5 +123,14 @@ export default class UserChips extends Vue {
 
     .closebtn:hover {
         color: #000;
+    }
+
+    .round-box {
+        position: absolute;
+        margin-top: 20px;
+        width: 10px;
+        height: 10px;
+        border: 1px solid whitesmoke;
+        border-radius: 5px;
     }
 </style>

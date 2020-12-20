@@ -17,6 +17,10 @@ class StoreService {
         return this.$store.getters.master;
     }
 
+    public get isMaster(): boolean {
+        return (this.master && this.master.uid !== '');
+    }
+
     public get storeMember(): StoreMember {
         return this.$store.getters.member;
     }
@@ -62,9 +66,25 @@ class StoreService {
             // Member im Store löschen
             const initStoreModel: StoreModel = new StoreModel();
             await this.$store.commit(StoreActions.SaveMember, initStoreModel.member);
-            // Clients benachrichtigen
-            SocketService.emitMemberStateChanged(offlineMember);
+            if (offlineMember) {
+                this.updateMemberState(offlineMember);
+                // Clients benachrichtigen
+                SocketService.emitMemberStateChanged(offlineMember);
+            }
         }
+    }
+
+    public updateMemberState(currentMember: Member) {
+        if (this.isMaster) {
+            let masterMembers: Member[] = [];
+            for (let m of this.master.members) {
+              if (m.id === currentMember.id) {
+                m.state = currentMember.state;
+              }
+              masterMembers.push(m);
+            }
+            this.$store.commit(StoreActions.SaveMasterMembers, masterMembers);
+          }
     }
 
     /**

@@ -51,11 +51,27 @@ export default class MemberSignIn extends Vue {
         this.loading = false;
     }
 
+    get storeMember(): StoreMember {
+        return this.$store.getters.StoreMember;
+    }
+
     findMasterMember() {
         if (this.master) {
             for (let m of this.master.members) {
                 if (m.pin === this.memberPin) {
                     this.member = m;
+                }
+            }
+        }
+    }
+
+    get MasterMemberFromStore(): Member | undefined {
+        if (this.storeMember) {
+            if (this.master) {
+                for (let m of this.master.members) {
+                    if (m.pin === this.storeMember.pin) {
+                        return m;
+                    }
                 }
             }
         }
@@ -78,11 +94,19 @@ export default class MemberSignIn extends Vue {
                         if (!memberVotes) {
                             memberVotes = [];
                         }
-                        // MemberState ändern
+                        // wenn bereits ein anderer Member eingeloggt war, muss der hier ausgeloggt und offline gesetzt werden
+                        if (this.MasterMemberFromStore) {
+                            this.MasterMemberFromStore.state = MemberState.OFFLINE;
+                            await MemberService.updateMember(this.MasterMemberFromStore);
+                            StoreService.updateMemberState(this.MasterMemberFromStore);
+                            SocketService.emitMemberStateChanged(this.MasterMemberFromStore);
+                        }
+                        // jetzt den MemberState des neu eingeloggten Members ändern
                         this.member.state = MemberState.ONLINE;
                         const onlineMember: Member | undefined = await MemberService.updateMember(this.member);
                         if (onlineMember) {
                             await StoreService.setStoreMember(onlineMember, this.master.uid, memberVotes);
+                            StoreService.updateMemberState(onlineMember);
                             // Clients benachrichtigen
                             SocketService.emitMemberStateChanged(onlineMember);
                             // zur Member-Ansicht wechseln

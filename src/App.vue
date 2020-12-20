@@ -57,10 +57,12 @@ import StoreModel from './store/storeModel';
 import StoreService from './domain/api/store.service';
 import SocketService from './domain/api/socket.service';
 import { StoreMember } from './domain/models/storeMember';
-import { Member } from './domain/models/member';
+import { Member, MemberState } from './domain/models/member';
 import voteService from './domain/api/vote.service';
 import { Vote } from './domain/models/vote';
 import { MemberVote } from './domain/models/memberVote';
+import { Socket } from 'vue-socket.io-extended';
+import MemberService from './domain/api/member.service';
 
 @Component({
   components: {
@@ -92,6 +94,23 @@ export default class App extends Vue {
           await StoreService.reloadMember();
           this.loading = false;
         }
+        /**
+         * Check ob die Member mit LoginState tatsächlich noch erreichbar sind
+         * wenn nicht: State updaten
+         */
+        for (let m of this.Master.members) {
+          if (m.pin !== this.StoreMember.pin) {
+            // alle eingeloggten Member durchlaufen ...
+            if (m.state === MemberState.ONLINE) {
+              // Status auf Offline
+              m.state = MemberState.OFFLINE;
+              // MasterMember im Store aktualisieren
+              StoreService.updateMemberState(m);
+              // Client benachrichtigen (kommt die Message an; wird dieser Client den Status wieder auf Online setzen)
+              SocketService.emitMemberStateChanged(m);
+            }
+          }
+        }
       }
       else {
         if (this.IsMember) {
@@ -106,6 +125,24 @@ export default class App extends Vue {
         }
       }
     }
+  }
+
+  async onClose() {
+    if (this.IsMember) {
+      let member: Member | undefined = await StoreService.getMember();
+      if (member) {
+        member.state = MemberState.OFFLINE;
+        const offlineMember: Member | undefined = await MemberService.updateMember(member);
+        if (offlineMember) {
+          StoreService.updateMemberState(offlineMember);
+        }
+      }
+    }
+  }
+
+  @Socket('memberStateChanged')
+  onMemberStateChanged(currentMember: Member) {
+    StoreService.updateMemberState(currentMember);
   }
 
   get VotesIsRunning(): string {
