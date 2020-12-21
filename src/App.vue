@@ -98,6 +98,8 @@ export default class App extends Vue {
          * Check ob die Member mit LoginState tatsächlich noch erreichbar sind
          * wenn nicht: State updaten
          */
+        // TODO
+        /*
         for (let m of this.Master.members) {
           if (m.pin !== this.StoreMember.pin) {
             // alle eingeloggten Member durchlaufen ...
@@ -111,6 +113,7 @@ export default class App extends Vue {
             }
           }
         }
+        */
       }
       else {
         if (this.IsMember) {
