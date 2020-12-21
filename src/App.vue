@@ -3,7 +3,7 @@
     <b-navbar toogleable="lg" type="dark" variant="dark">
       <b-navbar-nav>
         <b-navbar-brand href="/">
-          Vote
+          <img src="./assets/story_point.svg" width="32" height="32" alt="">
         </b-navbar-brand>
         <b-nav-item v-if="IsMaster" to="/team">
           Team

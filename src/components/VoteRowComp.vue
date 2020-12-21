@@ -10,10 +10,11 @@
                 <em>{{vote.status}}</em>
             </div>
         </b-col>
-        <b-col v-if="isRunning && hasMemberVotes" class="row-mb row-mr vote-row" :style="rowState" cols="2" @click="onClickShowVoting()">
-         <div v-if="memberVotes" class="mt-2 text-voted">
-                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                {{memberVotes.length}}
+        <b-col v-if="isRunning && hasMemberVotes" class="row-mb row-mr vote-row" :style="rowStateVoting" cols="3" @click="onClickShowVoting()">
+         <div v-if="memberVotes" class="mt-2">
+             <img src="./../assets/story_point_32.png" width="32" height="32" alt="…">
+                <!-- <i class="fa fa-thumbs-up" aria-hidden="true"></i> -->
+                <span class="text-voted">{{VotingInPercent}} %</span>
             </div>
         </b-col>
         <b-button v-if="isNew" :disabled=Disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
@@ -40,6 +41,7 @@ import { Vote } from '@/domain/models/vote';
 import VoteService from '@/domain/api/vote.service';
 import { Member } from '@/domain/models/member';
 import { MemberVote } from '@/domain/models/memberVote';
+import StoreService from '@/domain/api/store.service';
 
 @Component({
   components: {
@@ -102,6 +104,15 @@ export default class VoteRowComp extends Vue {
 
     get MyMemberVotes(): MemberVote[] {
         return this.memberVotes;
+    }
+
+    get VotingInPercent(): string {
+        if (StoreService.isMaster && this.hasMemberVotes) {
+             const membersLen: number = StoreService.master.members.length;
+             const votesLen: number = this.MyMemberVotes.length;
+             return Math.round((100 / membersLen * votesLen)).toString();
+        }
+        return '';
     }
 
     get stateVariant(): string {
@@ -172,6 +183,21 @@ export default class VoteRowComp extends Vue {
         return this.vote.status === '';
     }
 
+    get rowStateVoting() {
+         if (this.isRunning) {
+            return { 
+                'color': 'darkgrey',
+                'background-color': 'whitesmoke',
+                'cursor': 'pointer'
+            }    
+        }
+         return { 
+            'color': 'darkgrey',
+            'background-color': 'rgb(237, 237, 237)',
+            'cursor': 'auto'
+        }
+    }
+
     get rowState() {
          if (this.isDone) {
             return { 
@@ -226,9 +252,11 @@ export default class VoteRowComp extends Vue {
         font-size: 10px;
     }
     .text-voted {
-        color: whitesmoke;
+        margin-left: 5px;
+        color: darkgray;
         font-weight: bold;
-        font-size: 14px;
+        font-size: 12px;
+        white-space: nowrap;
     }
     .btn-min {
         width: 50px;
