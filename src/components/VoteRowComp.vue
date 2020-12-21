@@ -19,6 +19,18 @@
         <b-button v-if="isNew" :disabled=Disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
         <b-button v-if="isOpen" :disabled=Disabled class="row-mb" variant="secondary" @click="onClickVote()"><i class="fas fa-angle-double-right"></i></b-button>
         <b-button v-if="isDone" class="row-mb" variant="secondary" @click="onArchiv()"><i class="fas fa-archive"></i></b-button>
+        <b-modal v-model="showVotingModal" title="bisherige Schätzungen" ok-only>
+            <div v-for="mv in MyMemberVotes" :key="mv.member.id">
+                <b-row class="mt-1">
+                    <b-col class="ml-4" cols="4">
+                        {{mv.member.name}}
+                    </b-col> 
+                    <b-col style="text-align: center">
+                        {{mv.points}}
+                    </b-col>
+                </b-row>
+            </div>
+        </b-modal>
     </b-row>
 </template>
 
@@ -38,6 +50,7 @@ export default class VoteRowComp extends Vue {
     @Prop({ required: true }) memberVoteMap!: Map<number, MemberVote[]>;
     private memberVotes: MemberVote[] = [];
     private disabled: boolean = false;
+    private showVotingModal: boolean = false;
     private touchstartX!: number;
     private touchstartY!: number;
     private touchendX!: number;
@@ -84,17 +97,8 @@ export default class VoteRowComp extends Vue {
     }
 
     onClickShowVoting() {
-        let text = '';
-        if (this.MyMemberVotes) {
-            for (let mv of this.MyMemberVotes) {
-                if (text.length > 0) {
-                    text += ', ';
+        this.showVotingModal = !this.showVotingModal;
                 }
-                text += mv.member?.name;
-            }
-        }
-        console.log('Voting', text);
-    }
 
     get MyMemberVotes(): MemberVote[] {
         return this.memberVotes;
