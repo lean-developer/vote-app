@@ -12,8 +12,7 @@
         </b-col>
         <b-col v-if="isRunning && hasMemberVotes" class="row-mb row-mr vote-row" :style="rowStateVoting" cols="3" @click="onClickShowVoting()">
          <div v-if="memberVotes" class="mt-2">
-             <img src="./../assets/story_point_32.png" width="32" height="32" alt="…">
-                <!-- <i class="fa fa-thumbs-up" aria-hidden="true"></i> -->
+             <img src="./../assets/story_point_64.png" width="32" height="32" alt="…">
                 <span class="text-voted">{{VotingInPercent}} %</span>
             </div>
         </b-col>
