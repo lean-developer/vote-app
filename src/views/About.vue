@@ -1,22 +1,80 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-    <b-button @click="onEmit()">Socket-Test</b-button>
+  <div>
+    <nav class="main-nav">
+      <div class="logo">
+        my.company
+      </div>
+      <Burger></Burger>
+    </nav>
+
+    <Sidebar>
+      <div>Eins</div>
+      <div>Zwei</div>
+      <div>Drei</div>
+      <!--
+      <ul class="sidebar-panel-nav">
+        <li><a href="">Home</a></li>
+        <li><a href="">About</a></li>
+        <li><a href="">Contact</a></li>
+      </ul>
+      -->
+    </Sidebar>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Model } from 'vue-property-decorator'
+import Burger from '@/components/menu/Burger.vue';
+import Sidebar from '@/components/menu/Sidebar.vue';
 
 @Component({
   components: {
+    Burger,
+    Sidebar
   }
 })
 export default class About extends Vue {
-
-  onEmit() {
-     // Client benachrichtigen
-    this.$socket.client.emit('memberLogin', null);
-  }
 }
 </script>
+
+<style>
+html {
+   height: 100%;
+   overflow:hidden;
+ }
+
+ /*
+ body {
+   border: 0; margin: 0; padding: 0;
+   font-family: 'Lato';
+   height: 100%;
+   background: rgb(101,31,87);
+   background: linear-gradient(45deg, rgba(101,31,87,1) 0%, rgba(225,113,87,1) 48%, rgba(249,248,113,1) 100%);
+ }
+ */
+
+ .logo {
+   align-self: center;
+   color: #fff;
+   font-weight: bold;
+   font-family: 'Lato'
+ }
+
+ .main-nav {
+   display: flex;
+   justify-content: space-between;
+   padding: 0.5rem 0.8rem;
+ }
+
+ ul.sidebar-panel-nav {
+   list-style-type: none;
+ }
+
+ ul.sidebar-panel-nav > li > a {
+   color: #fff;
+   text-decoration: none;
+   font-size: 1.5rem;
+   display: block;
+   padding-bottom: 0.5em;
+ }
+</style>

@@ -8,6 +8,17 @@ import { Member } from '@/domain/models/member'
 
 Vue.use(Vuex)
 
+/** Store bzgl. UI-Steuerung */
+export const uiStore = Vue.observable({
+  isNavOpen: false
+});
+// We call toggleNav anywhere we need it in our app
+export const mutations = {
+  toggleNav() {
+      uiStore.isNavOpen = !uiStore.isNavOpen;
+  }
+};
+
 export enum StoreActions {
   SaveUser = 'SAVE_USER',
   SaveMaster = 'SAVE_MASTER',
@@ -16,6 +27,10 @@ export enum StoreActions {
   SaveVotesIsRunning = 'SAVE_VOTES_ISRUNNING',
 }
 
+/** Persistenter Store (local storage) bzgl. Caching der DB-Operationen 
+ * Mutations should be synchronous transactions. 
+ * If you need to handle asynchronous operations use Actions.
+*/
 export default new Vuex.Store({
   state: {
     storeModel: new StoreModel()
