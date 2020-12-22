@@ -10,9 +10,8 @@
                 <em>{{vote.status}}</em>
             </div>
         </b-col>
-        <b-col v-if="isRunning && hasMemberVotes" class="row-mb row-mr vote-row" :style="rowStateVoting" cols="3" @click="onClickShowVoting()">
-         <div v-if="memberVotes" class="mt-2">
-             <img src="./../assets/story_point_64.png" width="32" height="32" alt="…">
+        <b-col v-if="isRunning && hasMemberVotes" class="row-mb row-mr vote-row" :style="rowStateVoting" cols="2" @click="onClickShowVoting()">
+            <div v-if="memberVotes" class="mt-2">
                 <span class="text-voted">{{VotingInPercent}} %</span>
             </div>
         </b-col>
@@ -251,10 +250,9 @@ export default class VoteRowComp extends Vue {
         font-size: 10px;
     }
     .text-voted {
-        margin-left: 5px;
-        color: darkgray;
-        font-weight: bold;
-        font-size: 12px;
+        color: rgb(255, 64, 64);
+        font-weight: 900;
+        font-size: 14px;
         white-space: nowrap;
     }
     .btn-min {
