@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig, Route } from 'vue-router'
 import Home from '../views/Home.vue'
 import Estimates from '../views/Estimates.vue'
 import Estimate from '../views/Estimate.vue'
+import EstimateChart from '../views/EstimateChart.vue'
 import Login from '../views/Login.vue'
 import MemberLogin from '../views/MemberLogin.vue'
 import MemberView from '../views/MemberView.vue'
@@ -49,6 +50,11 @@ const routes: Array<RouteConfig> = [
     path: '/estimate/:voteId',
     name: 'Estimate',
     component: Estimate
+  },
+  {
+    path: '/estimatechart',
+    name: 'EstimateChart',
+    component: EstimateChart
   },
   {
     path: '/about',
