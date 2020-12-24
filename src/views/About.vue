@@ -8,9 +8,18 @@
     </nav>
 
     <Sidebar>
-      <div>Eins</div>
-      <div>Zwei</div>
-      <div>Drei</div>
+      <div>
+        <h1>Geolocation</h1>
+        <p>Your location is:</p>
+        <p>
+          Latitude: <span v-if="loc">{{ loc.coords.latitude }}</span>
+        </p>
+        <p>
+          Longitude: <span v-if="loc">{{ loc.coords.longitude }}</span>
+        </p>
+        <b-button block @click="getCurrentPosition">Get Current Location</b-button>
+        <b-button block @click="scheduleNotification">Local Notifications</b-button>
+    </div>
       <!--
       <ul class="sidebar-panel-nav">
         <li><a href="">Home</a></li>
@@ -26,6 +35,7 @@
 import { Component, Vue, Model } from 'vue-property-decorator'
 import Burger from '@/components/menu/Burger.vue';
 import Sidebar from '@/components/menu/Sidebar.vue';
+import { Plugins } from '@capacitor/core';
 
 @Component({
   components: {
@@ -34,6 +44,19 @@ import Sidebar from '@/components/menu/Sidebar.vue';
   }
 })
 export default class About extends Vue {
+  private loc: any = null;
+
+  getCurrentPosition() {
+    const { Geolocation } = Plugins;
+    Geolocation.getCurrentPosition().then(
+      loc => (this.loc = loc),
+      e => console.log("there was an error", e)
+    );
+  }
+
+  async scheduleNotification() {
+
+  }
 }
 </script>
 

@@ -1,14 +1,20 @@
 <template>
-    <div class="small">
+    <b-container>
         <div>MyChart-Test</div>
-        <chart :chartdata="chartdata" :options="options"></chart>
-    </div>
+        <canvas id="canvas" width="250" height="100"></canvas>
+        <b-row>
+            <b-col class="mr-3">
+                <chart></chart>
+            </b-col>
+        </b-row>
+    </b-container>
 </template>
 
 <script lang="ts">
 import { mixins } from 'vue-class-component';
 import { Component, Model, Vue, Prop } from 'vue-property-decorator';
 import Chart from '@/components/Chart.vue';
+import { Doughnut } from 'vue-chartjs';
 
 
 @Component({
@@ -17,38 +23,12 @@ import Chart from '@/components/Chart.vue';
   },
 })
 export default class EstimateChart extends Vue {
-   
-    get chartdata() {
-        return {
-            labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-            datasets: [
-                {
-                label: "Population (millions)",
-                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-                data: [2478,5267,734,784,433]
-                }
-            ]
-        }
-    };
-
-    get options() {
-        return {
-            responsive: true,
-            maintainAspectRatio: false,
-            /** links */
-            // circumference:1 * Math.PI,
-            // rotation: -1.5 * Math.PI,
-            /** rechts */
-            // circumference:1 * Math.PI,
-            // rotation: -0.5 * Math.PI,
-              /** oben */
-            circumference:1 * Math.PI,
-            rotation: 1 * Math.PI,
-            title: {
-                display: true,
-                text: 'Predicted world population (millions) in 2050'
-            }
-        }
+   setChartText() {    
+        var chart: any = document.getElementById('doughnut-chart');
+        var context = chart.getContext("2d");
+        context.fillStyle = "red";
+        context.font = "bold 18px Arial";
+        context.fillText("myChart", (chart.width / 2) - 17, (chart.height / 2) + 8);
     }
 }
 </script>
