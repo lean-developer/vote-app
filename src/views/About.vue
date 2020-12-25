@@ -35,7 +35,7 @@
 import { Component, Vue, Model } from 'vue-property-decorator'
 import Burger from '@/components/menu/Burger.vue';
 import Sidebar from '@/components/menu/Sidebar.vue';
-import { Plugins } from '@capacitor/core';
+import { Plugins, LocalNotifications } from '@capacitor/core';
 
 @Component({
   components: {
@@ -55,8 +55,25 @@ export default class About extends Vue {
   }
 
   async scheduleNotification() {
-
+    const canSend = await LocalNotifications.requestPermission();
+    if (canSend) {
+      const notifs = await LocalNotifications.schedule({
+        notifications: [
+          {
+            title: "Title",
+            body: "AnLocalNotification",
+            id: 1,
+            schedule: { at: new Date(Date.now() + 1000 * 5) },
+            sound: undefined,
+            attachments: undefined,
+            actionTypeId: "",
+            extra: null
+          }
+        ]
+      });
+    }
   }
+  
 }
 </script>
 
