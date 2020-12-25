@@ -1,6 +1,6 @@
 <script lang="ts">
 import { mixins } from 'vue-class-component';
-import { Component, Model, Vue, Prop } from 'vue-property-decorator';
+import { Component, Model, Vue, Prop, Emit } from 'vue-property-decorator';
 import { Line, Bar, Doughnut } from 'vue-chartjs'
 
 @Component({
@@ -8,8 +8,11 @@ import { Line, Bar, Doughnut } from 'vue-chartjs'
   },
 })
 export default class Chart extends mixins(Doughnut) {
+    @Prop({ required: true }) labels!: string[];
+    @Prop({ required: true }) datas!: number[];
     private chartdata: any = null;
     private options: any = null;
+    
 
     mounted() {
         this.init();
@@ -19,12 +22,12 @@ export default class Chart extends mixins(Doughnut) {
 
     init() {
         this.chartdata = {
-            labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+            labels: this.labels,
             datasets: [
                 {
-                label: "Population (millions)",
-                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-                data: [2478,5267,734,784,433]
+                    label: "Population (millions)",
+                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                    data: this.datas
                 }
             ]
         };
@@ -41,7 +44,7 @@ export default class Chart extends mixins(Doughnut) {
             circumference:1 * Math.PI,
             rotation: 1 * Math.PI,
             title: {
-                display: true,
+                display: false,
                 text: 'Predicted world population (millions) in 2050'
             },
             onClick: this.handle,
@@ -66,12 +69,25 @@ export default class Chart extends mixins(Doughnut) {
         return this.options;
     }
 
+    @Emit('clickPoints')
     handle(point: any, event: any) {
-        let index = event[0]._index;
-        let label = this.chartdata.labels[index];
-        let backgroundColor = this.chartdata.datasets[0].backgroundColor[index];
-        let value = this.chartdata.datasets[0].data[index];
-        console.log('Clicked-labelValue', label, backgroundColor, value);
+        if (event[0]) {
+            let index = event[0]._index;
+            let label = this.chartdata.labels[index];
+            let backgroundColor = this.chartdata.datasets[0].backgroundColor[index];
+            let value = this.chartdata.datasets[0].data[index];
+            console.log('Clicked-labelValue', label, backgroundColor, value);
+            return this.getStoryPointsFromLabel(label);
+        }
+    }
+
+    getStoryPointsFromLabel(label: string): string {
+        let indexEnd: number = label.indexOf('Story Points');
+        let indexStart: number = label.indexOf('x');
+        if (indexEnd > 0 && indexStart > 0) {
+            return label.substring(indexStart + 1, indexEnd);
+        }
+        return '';
     }
 }
 </script>

@@ -1,0 +1,13 @@
+{
+  "appId": "de.scrumplanning",
+  "appName": "VOTE-APP",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}

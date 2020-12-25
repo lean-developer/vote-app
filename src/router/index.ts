@@ -52,7 +52,7 @@ const routes: Array<RouteConfig> = [
     component: Estimate
   },
   {
-    path: '/estimatechart',
+    path: '/estimatechart/:voteId',
     name: 'EstimateChart',
     component: EstimateChart
   },
