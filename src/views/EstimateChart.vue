@@ -198,6 +198,7 @@ export default class EstimateChart extends Vue {
                     // 5) Members mit leeren Schätzungen anzeigen
                     this.deleteMemberVotes();
                     this.forceRerender();
+                    this.$router.push({ name: 'Estimates' });
                 }
             }
         }

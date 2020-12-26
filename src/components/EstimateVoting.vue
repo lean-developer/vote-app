@@ -1,20 +1,20 @@
 <template>
-    <b-container>
-        <b-row>
-            <b-col>
-                <div v-if="points" class="label">{{Points}}</div>
-                <div v-if="!points" class="label">-</div>
-            </b-col>
-        </b-row>
-        <b-row>
-             <b-col>
-                <b-button variant="outline-danger" block @click="onNeuSchaetzen()">Neu schätzen</b-button>
-            </b-col>
-            <b-col>
-                <b-button variant="success" block @click="onSaveStoryPoints()">Übernehmen</b-button>
-            </b-col>
-        </b-row>
-    </b-container>
+        <div class="voting">
+            <b-row>
+                <b-col>
+                    <div v-if="points" class="label">{{Points}}</div>
+                    <div v-if="!points" class="label">-</div>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <b-button variant="outline-danger" block @click="onNeuSchaetzen()">Neu schätzen</b-button>
+                </b-col>
+                <b-col>
+                    <b-button variant="success" block @click="onSaveStoryPoints()">Übernehmen</b-button>
+                </b-col>
+            </b-row>
+        </div>
 </template>
 
 <script lang="ts">
@@ -62,4 +62,13 @@ export default class EstimateVoting extends Vue {
         font-size: 60px;
         color: blue;
     }
+    .voting {
+        position: relative;
+        margin-top: -30px;
+    }
+    @media only screen and (max-width: 700px) {
+    .voting {
+        margin-top: -120px;
+    }
+}
 </style>
