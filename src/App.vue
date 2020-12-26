@@ -1,5 +1,9 @@
 <template>
   <div id="app">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Krona+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
     <b-navbar toogleable="lg" type="dark" variant="dark">
       <b-navbar-nav>
         <b-navbar-brand href="/">

@@ -1,6 +1,9 @@
 <template>
     <b-container v-if="vote">
-        <div class="mt-4 mb-3 vote">{{vote.name}}</div>
+        <b-row>
+            <b-button variant="light" @click="onBack()"><i class="fas fa-chevron-left"></i></b-button>
+            <div class="mt-4 mb-4 vote">{{vote.name}}</div>
+        </b-row>
         <b-row>
             <b-col class="mr-3">
                 <chart v-if="!loading" 
@@ -9,7 +12,7 @@
                     @clickPoints="onClickPoints"></chart>
             </b-col>
         </b-row>
-        <div class="label">{{points}}</div>
+        <estimate-voting :points="points"></estimate-voting>
     </b-container>
 </template>
 
@@ -17,6 +20,7 @@
 import { mixins } from 'vue-class-component';
 import { Component, Model, Vue, Prop } from 'vue-property-decorator';
 import Chart from '@/components/Chart.vue';
+import EstimateVoting from '@/components/EstimateVoting.vue';
 import { Doughnut } from 'vue-chartjs';
 import { Vote } from '@/domain/models/vote';
 import { MemberVoteResult } from '@/domain/models/memberVoteResult';
@@ -32,7 +36,8 @@ import { Master } from '@/domain/models/master';
 
 @Component({
   components: {
-      Chart
+      Chart,
+      EstimateVoting
   },
 })
 export default class EstimateChart extends Vue {
@@ -323,12 +328,5 @@ export default class EstimateChart extends Vue {
     .vote {
         font-size: 26px;
         font-weight: 700;
-    }
-    .label {
-        position: relative;
-        font-size: 40px;
-        font-weight: 900;
-        color: blue;
-        top: -130px;
     }
 </style>

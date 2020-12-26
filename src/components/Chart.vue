@@ -43,10 +43,12 @@ export default class Chart extends mixins(Doughnut) {
               /** oben */
             circumference:1 * Math.PI,
             rotation: 1 * Math.PI,
+            /*
             title: {
                 display: false,
                 text: 'Predicted world population (millions) in 2050'
             },
+            */
             onClick: this.handle,
             elements: {
                 center: {

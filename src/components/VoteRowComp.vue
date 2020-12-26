@@ -160,7 +160,10 @@ export default class VoteRowComp extends Vue {
     }
 
     onClickVote() {
-        if (this.isOpen || this.isRunning || this.isDone) {
+        if (this.isRunning) {
+            this.$router.push("/estimatechart/" + this.vote.id);
+        }
+        else if (this.isOpen || this.isDone) {
             this.$router.push("/estimate/" + this.vote.id);
         }
     }
