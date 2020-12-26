@@ -17,7 +17,12 @@ export default class Chart extends mixins(Doughnut) {
     mounted() {
         this.init();
         this.renderChart(this.myChartdata, this.myOptions);
-        
+        this.isRendered();
+    }
+
+    @Emit('render')
+    isRendered() {
+        return true;
     }
 
     init() {

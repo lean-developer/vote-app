@@ -9,10 +9,11 @@
                 <chart v-if="!loading" 
                     :labels="chartLabels"
                     :datas="chartDatas"
-                    @clickPoints="onClickPoints"></chart>
+                    @clickPoints="onClickPoints"
+                    @render="onChartRender"></chart>
             </b-col>
         </b-row>
-        <estimate-voting 
+        <estimate-voting v-if="showVoting"
             :points="points" 
             @neuSchaetzen="onNeuSchaetzen"
             @saveStoryPoints="onSaveStoryPoints"></estimate-voting>
@@ -52,10 +53,15 @@ export default class EstimateChart extends Vue {
     private points: string = '';
     private chartLabels: string[] = [];
     private chartDatas: number[] = [];
+    private showVoting = false;
     
     async created() {
         this.voteId = +this.$route.params.voteId;
         await this.init();
+    }
+
+    onChartRender() {
+        this.showVoting = true;
     }
 
     async init() {
