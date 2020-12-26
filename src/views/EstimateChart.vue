@@ -12,7 +12,10 @@
                     @clickPoints="onClickPoints"></chart>
             </b-col>
         </b-row>
-        <estimate-voting :points="points"></estimate-voting>
+        <estimate-voting 
+            :points="points" 
+            @neuSchaetzen="onNeuSchaetzen"
+            @saveStoryPoints="onSaveStoryPoints"></estimate-voting>
     </b-container>
 </template>
 
@@ -207,9 +210,9 @@ export default class EstimateChart extends Vue {
         }
     }
 
-    async onSaveStoryPoints() {
+    async onSaveStoryPoints(storyPoints: string) {
         if (this.vote) {
-            await VoteService.setDone(this.vote, this.points);
+            await VoteService.setDone(this.vote, storyPoints);
             await StoreService.reloadMemberVotesIsRunning();
             SocketService.emitMasterVoteChanged(this.master, this.vote);
             this.$router.push({ name: 'Estimates' });

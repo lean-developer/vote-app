@@ -8,10 +8,10 @@
         </b-row>
         <b-row>
              <b-col>
-                <b-button variant="outline-danger" block>Neu schätzen</b-button>
+                <b-button variant="outline-danger" block @click="onNeuSchaetzen()">Neu schätzen</b-button>
             </b-col>
             <b-col>
-                <b-button variant="success" block>Übernehmen</b-button>
+                <b-button variant="success" block @click="onSaveStoryPoints()">Übernehmen</b-button>
             </b-col>
         </b-row>
     </b-container>
@@ -40,6 +40,16 @@ export default class EstimateVoting extends Vue {
             return this.points;
         }
         return '-';
+    }
+
+    @Emit('neuSchaetzen')
+    onNeuSchaetzen() {
+        return true;
+    }
+
+    @Emit('saveStoryPoints')
+    onSaveStoryPoints() {
+        return this.points;
     }
 }
 </script>
