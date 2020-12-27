@@ -124,6 +124,11 @@ export default class VoteRowComp extends Vue {
         }
     }
 
+    @Emit('deleteVote')
+    onDelete() {
+        return this.vote;
+    }
+
     get rowStateVoting() {
         return { 
             'color': 'darkgrey',

@@ -6,7 +6,8 @@
         </vote-row-done>
         <vote-row-running class="ml-3 mr-3" v-if="isRunning"
             :vote="vote"
-            :memberVoteMap="memberVoteMap">
+            :memberVoteMap="memberVoteMap"
+            @deleteVote="onDelete">
         </vote-row-running>
          <vote-row-open class="ml-3 mr-3" v-if="isOpen"
             :vote="vote"

@@ -97,8 +97,8 @@ export default class VoteRowComp extends Vue {
     get rowState() {
          return { 
                 'color': 'rgb(59, 59, 59)',
-                'background-color': 'rgb(200, 200, 200)',
-                'cursor': 'pointer'
+                'background-color': 'rgb(215, 215, 215)',
+                'cursor': 'auto'
          }
     }
 
