@@ -107,10 +107,11 @@ export default class VoteRowComp extends Vue {
 <style scoped>
     .points {
          font-family: 'Krona One', sans-serif;
+         font-size: 14px;
          font-stretch: ultra-expanded;
     }
     .btn-w {
-        width: 70px;
+        width: 60px;
     }
 </style>
 
