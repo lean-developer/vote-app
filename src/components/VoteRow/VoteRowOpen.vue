@@ -1,8 +1,8 @@
 <template>
     <div>
         <b-row v-if="vote">
-            <b-button :disabled=Disabled style="background-color: rgb(200, 200, 200);"  class="row-mb mr-1" variant="light" @click="onStartVote()"><i style="color: green;" class="fas fa-play"></i></b-button>
-            <b-col class="row-mb row-mr vote-row vote-name" :style=rowState>
+            <b-button :disabled=Disabled class="bcolor row-mb mr-1" variant="light" @click="onStartVote()"><i style="color: green;" class="fas fa-play"></i></b-button>
+            <b-col class="bcolor row-mb row-mr vote-row vote-name" :style=rowState>
                 <b-row>
                     <b-col @click="onClickVote()">
                          <div v-if="!IsVotingDone && !IsVoting" class="text-head mt-1 mb-1">
@@ -22,7 +22,7 @@
                     </div>
                 </b-row>
             </b-col>
-            <b-button :disabled=Disabled style="background-color: rgb(200, 200, 200);" variant="light" class="row-mb" @click="onDelete()"><i style="color: red;" class="fas fa-ban"></i></b-button>
+            <b-button :disabled=Disabled variant="light" class="bcolor row-mb" @click="onDelete()"><i style="color: red;" class="fas fa-ban"></i></b-button>
         </b-row>
     </div>
 </template>
@@ -97,7 +97,6 @@ export default class VoteRowComp extends Vue {
     get rowState() {
          return { 
                 'color': 'rgb(59, 59, 59)',
-                'background-color': 'rgb(215, 215, 215)',
                 'cursor': 'auto'
          }
     }
@@ -121,3 +120,9 @@ export default class VoteRowComp extends Vue {
     }
 }
 </script>
+
+<style scoped>
+    .bcolor {
+        background-color: rgb(210, 210, 210);
+    }
+</style>

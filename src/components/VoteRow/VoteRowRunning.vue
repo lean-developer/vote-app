@@ -21,7 +21,7 @@
                 <b-row>
                     <b-col @click="onClickVote()">
                         <div v-if="IsVoting">
-                            <b-progress class="mt-2 mb-2" style="background-color: darkgray;"  :value=VotingInPercent max=100 height="5px" :variant=ProgressVariant></b-progress>
+                            <b-progress class="bcolor mt-2 mb-2" :value=VotingInPercent max=100 height="5px" :variant=ProgressVariant></b-progress>
                         </div>
                     </b-col>
                 </b-row>
@@ -38,7 +38,7 @@
                     </b-row>
                 </div>
             </b-modal>
-            <b-button v-if="showDelete" :disabled=Disabled style="background-color: rgb(215, 215, 215);" variant="light" class="row-mb" @click="onDelete()"><i style="color: red;" class="fas fa-ban"></i></b-button>
+            <b-button v-if="showDelete" :disabled=Disabled variant="light" class="bcolor row-mb" @click="onDelete()"><i style="color: red;" class="fas fa-ban"></i></b-button>
         </b-row>
     </div>
 </template>
@@ -147,4 +147,10 @@ export default class VoteRowComp extends Vue {
 }
 </script>
 
+
+<style scoped>
+    .bcolor {
+        background-color: rgb(210, 210, 210);
+    }
+</style>
 
