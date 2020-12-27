@@ -1,36 +1,49 @@
 <template>
-    <b-row v-if="vote">
-        <b-button v-if="ShowCheckButton" class="btn-min row-mb row-mr" :disabled=Disabled :variant=stateVariant @click="onCheck()"><i class="fas fa-check"></i></b-button>
-        <b-button v-if="isDone" variant="danger" class="btn-min row-mb row-mr" disabled>{{StoryPoints}}</b-button>
-        <b-col class="row-mb row-mr vote-row vote-name" :style=rowState @click="onClickVote()">
-            <div class="text-head">
-                 {{vote.name}}
-            </div>
-            <div class="text-sub">
-                <em>{{vote.status}}</em>
-            </div>
-        </b-col>
-        <b-col v-if="isRunning && hasMemberVotes" class="row-mb row-mr vote-row" :style="rowStateVoting" cols="2" @click="onClickShowVoting()">
-            <div v-if="memberVotes" class="mt-2">
-                <span class="text-voted">{{VotingInPercent}} %</span>
-            </div>
-        </b-col>
-        <b-button v-if="isNew" :disabled=Disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
-        <b-button v-if="isOpen" :disabled=Disabled class="row-mb" variant="secondary" @click="onClickVote()"><i class="fas fa-angle-double-right"></i></b-button>
-        <b-button v-if="isDone" class="row-mb" variant="secondary" @click="onArchiv()"><i class="fas fa-archive"></i></b-button>
-        <b-modal v-model="showVotingModal" title="bisherige Schätzungen" ok-only>
-            <div v-for="mv in MyMemberVotes" :key="mv.member.id">
-                <b-row class="mt-1">
-                    <b-col class="ml-4" cols="4">
-                        {{mv.member.name}}
-                    </b-col> 
-                    <b-col style="text-align: center">
-                        {{mv.points}}
+    <div class="ml-3 mr-3">
+        <b-row v-if="vote">
+            <b-button v-if="ShowCheckButton" class="btn-min row-mb row-mr" :disabled=Disabled :variant=stateVariant @click="onCheck()"><i class="fas fa-check"></i></b-button>
+            <b-button v-if="isDone" variant="danger" class="btn-min row-mb row-mr" disabled>{{StoryPoints}}</b-button>
+            <b-col class="row-mb row-mr vote-row vote-name" :style=rowState>
+                <b-row>
+                    <b-col @click="onClickVote()">
+                        <div class="text-head">
+                            {{vote.name}}
+                        </div>
+                    </b-col>
+                    <b-col v-if="isRunning && hasMemberVotes" cols="2" style="text-align: right;" @click="onClickShowVoting()">
+                        <i class="fas fa-user-friends"></i>
                     </b-col>
                 </b-row>
-            </div>
-        </b-modal>
-    </b-row>
+                <b-row>
+                    <b-col @click="onClickVote()">
+                        <div v-if="isRunning && hasMemberVotes">
+                            <b-progress class="mt-1" :value=VotingInPercent max=100 height="5px" :variant=ProgressVariant></b-progress>
+                        </div>
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <div v-if="isDone" class="text-sub">
+                        <em class="ml-3">{{vote.status}}</em>
+                    </div>
+                </b-row>
+            </b-col>
+            <b-button v-if="isNew" :disabled=Disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
+            <b-button v-if="isOpen" :disabled=Disabled class="row-mb" variant="secondary" @click="onClickVote()"><i class="fas fa-angle-double-right"></i></b-button>
+            <b-button v-if="isDone" class="row-mb" variant="secondary" @click="onArchiv()"><i class="fas fa-archive"></i></b-button>
+            <b-modal v-model="showVotingModal" title="bisherige Schätzungen" ok-only>
+                <div v-for="mv in MyMemberVotes" :key="mv.member.id">
+                    <b-row class="mt-1">
+                        <b-col class="ml-4" cols="4">
+                            {{mv.member.name}}
+                        </b-col> 
+                        <b-col style="text-align: center">
+                            {{mv.points}}
+                        </b-col>
+                    </b-row>
+                </div>
+            </b-modal>
+        </b-row>
+    </div>
 </template>
 
 <script lang="ts">
@@ -104,13 +117,20 @@ export default class VoteRowComp extends Vue {
         return this.memberVotes;
     }
 
-    get VotingInPercent(): string {
+    get ProgressVariant(): string {
+        if (this.VotingInPercent >= 80) {
+            return "success";
+        }
+        return "warning";
+    }
+
+    get VotingInPercent(): number {
         if (StoreService.isMaster && this.hasMemberVotes) {
              const membersLen: number = StoreService.master.members.length;
              const votesLen: number = this.MyMemberVotes.length;
-             return Math.round((100 / membersLen * votesLen)).toString();
+             return Math.round((100 / membersLen * votesLen));
         }
-        return '';
+        return 0;
     }
 
     get stateVariant(): string {
