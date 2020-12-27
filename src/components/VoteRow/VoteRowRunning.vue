@@ -38,7 +38,7 @@
                     </b-row>
                 </div>
             </b-modal>
-            <b-button v-if="showDelete" :disabled=Disabled style="background-color: rgb(200, 200, 200);" variant="light" class="row-mb" @click="onDelete()"><i style="color: red;" class="fas fa-ban"></i></b-button>
+            <b-button v-if="showDelete" :disabled=Disabled style="background-color: rgb(215, 215, 215);" variant="light" class="row-mb" @click="onDelete()"><i style="color: red;" class="fas fa-ban"></i></b-button>
         </b-row>
     </div>
 </template>
