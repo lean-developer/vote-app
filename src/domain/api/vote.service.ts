@@ -49,7 +49,6 @@ class VoteService {
       }
       const api = 'vote/master/' + masterId + '?name=' + name
       const resp = await http.post(api)
-      console.log('RESP', resp)
       return resp.data as Vote
     } catch (e) {
       console.error(e)

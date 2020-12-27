@@ -151,6 +151,8 @@ export default class Estimates extends Vue {
         if (StoreService.isLogin) {
         const newVote: Vote | undefined = await VoteService.createVoteForMaster(this.Master.id, votename);
         if (newVote) {
+            // State auf Open setzen (TODO: braucht man den State=New überhaupt noch?)
+            await VoteService.setOpen(newVote);
             await StoreService.reloadMaster();
         }
         }

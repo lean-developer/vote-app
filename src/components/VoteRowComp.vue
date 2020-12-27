@@ -1,57 +1,16 @@
 <template>
-    <div class="ml-3 mr-3">
-        <b-row v-if="vote">
-            <b-button v-if="ShowCheckButton" class="btn-min row-mb row-mr" :disabled=Disabled :variant=stateVariant @click="onCheck()"><i class="fas fa-check"></i></b-button>
-            <b-button v-if="isDone" variant="danger" class="btn-min row-mb row-mr" disabled>{{StoryPoints}}</b-button>
-            <b-col class="row-mb row-mr vote-row vote-name" :style=rowState>
-                <b-row>
-                    <b-col @click="onClickVote()">
-                         <div v-if="!IsVotingDone && !IsVoting" class="text-head mt-1 mb-1">
-                            {{vote.name}}
-                        </div>
-                        <div v-if="!IsVotingDone && IsVoting" class="text-head">
-                            {{vote.name}}
-                        </div>
-                        <div v-if="IsVotingDone" class="text-head mt-1">
-                            {{vote.name}}
-                        </div>
-                    </b-col>
-                    <b-col v-if="IsVoting" cols="2" style="text-align: right;" @click="onClickShowVoting()">
-                        <i class="fas fa-user-friends"></i>
-                    </b-col>
-                    <b-col v-if="IsVotingDone" cols="2" style="text-align: right;" class="mb-1 mt-1" @click="onClickShowVoting()">
-                        <i class="fas fa-check"></i>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col @click="onClickVote()">
-                        <div v-if="IsVoting">
-                            <b-progress class="mt-2 mb-2" :value=VotingInPercent max=100 height="5px" :variant=ProgressVariant></b-progress>
-                        </div>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <div v-if="isDone" class="text-sub">
-                        <em class="ml-3">{{vote.status}}</em>
-                    </div>
-                </b-row>
-            </b-col>
-            <b-button v-if="isNew" :disabled=Disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
-            <b-button v-if="isOpen" :disabled=Disabled class="row-mb" variant="secondary" @click="onClickVote()"><i class="fas fa-angle-double-right"></i></b-button>
-            <b-button v-if="isDone" class="row-mb" variant="secondary" @click="onArchiv()"><i class="fas fa-archive"></i></b-button>
-            <b-modal v-model="showVotingModal" title="Schätzungen" ok-only>
-                <div v-for="mv in MyMemberVotes" :key="mv.member.id">
-                    <b-row class="mt-1">
-                        <b-col class="ml-4" cols="4">
-                            {{mv.member.name}}
-                        </b-col> 
-                        <b-col style="text-align: center">
-                            {{mv.points}}
-                        </b-col>
-                    </b-row>
-                </div>
-            </b-modal>
-        </b-row>
+    <div>
+        <vote-row-done class="ml-3 mr-3" v-if="isDone"
+            :vote="vote"
+            :memberVoteMap="memberVoteMap">
+        </vote-row-done>
+        <vote-row-running class="ml-3 mr-3" v-if="isRunning"
+            :vote="vote"
+            :memberVoteMap="memberVoteMap">
+        </vote-row-running>
+         <vote-row-open class="ml-3 mr-3" v-if="isOpen"
+            :vote="vote">
+        </vote-row-open>
     </div>
 </template>
 
@@ -59,12 +18,18 @@
 import { Component, Vue, Model, Prop, Emit } from 'vue-property-decorator';
 import { Vote } from '@/domain/models/vote';
 import VoteService from '@/domain/api/vote.service';
+import VoteRowDone from '@/components/VoteRow/VoteRowDone.vue';
+import VoteRowOpen from '@/components/VoteRow/VoteRowOpen.vue';
+import VoteRowRunning from '@/components/VoteRow/VoteRowRunning.vue';
 import { Member } from '@/domain/models/member';
 import { MemberVote } from '@/domain/models/memberVote';
 import StoreService from '@/domain/api/store.service';
 
 @Component({
   components: {
+      VoteRowDone,
+      VoteRowRunning,
+      VoteRowOpen
   },
 })
 export default class VoteRowComp extends Vue {
@@ -120,7 +85,7 @@ export default class VoteRowComp extends Vue {
 
     onClickShowVoting() {
         this.showVotingModal = !this.showVotingModal;
-                }
+    }
 
     get MyMemberVotes(): MemberVote[] {
         return this.memberVotes;
@@ -183,11 +148,6 @@ export default class VoteRowComp extends Vue {
 
     @Emit('deleteVote')
     onDelete() {
-        return this.vote;
-    }
-
-    @Emit('archivVote')
-    onArchiv() {
         return this.vote;
     }
 
@@ -267,7 +227,7 @@ export default class VoteRowComp extends Vue {
 }
 </script>
 
-<style scoped>
+<style>
     .vote-row {
         border-radius: 8px;
         padding-top: 0.5rem;
