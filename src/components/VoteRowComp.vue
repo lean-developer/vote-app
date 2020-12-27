@@ -6,18 +6,27 @@
             <b-col class="row-mb row-mr vote-row vote-name" :style=rowState>
                 <b-row>
                     <b-col @click="onClickVote()">
-                        <div class="text-head">
+                         <div v-if="!IsVotingDone && !IsVoting" class="text-head mt-1 mb-1">
+                            {{vote.name}}
+                        </div>
+                        <div v-if="!IsVotingDone && IsVoting" class="text-head">
+                            {{vote.name}}
+                        </div>
+                        <div v-if="IsVotingDone" class="text-head mt-1">
                             {{vote.name}}
                         </div>
                     </b-col>
-                    <b-col v-if="isRunning && hasMemberVotes" cols="2" style="text-align: right;" @click="onClickShowVoting()">
+                    <b-col v-if="IsVoting" cols="2" style="text-align: right;" @click="onClickShowVoting()">
                         <i class="fas fa-user-friends"></i>
+                    </b-col>
+                    <b-col v-if="IsVotingDone" cols="2" style="text-align: right;" class="mb-1 mt-1" @click="onClickShowVoting()">
+                        <i class="fas fa-check"></i>
                     </b-col>
                 </b-row>
                 <b-row>
                     <b-col @click="onClickVote()">
-                        <div v-if="isRunning && hasMemberVotes">
-                            <b-progress class="mt-1" :value=VotingInPercent max=100 height="5px" :variant=ProgressVariant></b-progress>
+                        <div v-if="IsVoting">
+                            <b-progress class="mt-2 mb-2" :value=VotingInPercent max=100 height="5px" :variant=ProgressVariant></b-progress>
                         </div>
                     </b-col>
                 </b-row>
@@ -30,7 +39,7 @@
             <b-button v-if="isNew" :disabled=Disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
             <b-button v-if="isOpen" :disabled=Disabled class="row-mb" variant="secondary" @click="onClickVote()"><i class="fas fa-angle-double-right"></i></b-button>
             <b-button v-if="isDone" class="row-mb" variant="secondary" @click="onArchiv()"><i class="fas fa-archive"></i></b-button>
-            <b-modal v-model="showVotingModal" title="bisherige Schätzungen" ok-only>
+            <b-modal v-model="showVotingModal" title="Schätzungen" ok-only>
                 <div v-for="mv in MyMemberVotes" :key="mv.member.id">
                     <b-row class="mt-1">
                         <b-col class="ml-4" cols="4">
@@ -118,10 +127,18 @@ export default class VoteRowComp extends Vue {
     }
 
     get ProgressVariant(): string {
-        if (this.VotingInPercent >= 80) {
+        if (this.VotingInPercent >= 100) {
             return "success";
         }
         return "warning";
+    }
+
+    get IsVoting(): boolean {
+        return this.isRunning && this.hasMemberVotes && (this.VotingInPercent < 100);
+    }
+
+    get IsVotingDone(): boolean {
+        return this.isRunning && this.hasMemberVotes && (this.VotingInPercent >= 100);
     }
 
     get VotingInPercent(): number {
