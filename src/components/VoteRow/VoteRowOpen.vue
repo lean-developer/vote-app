@@ -5,25 +5,22 @@
             <b-col class="bcolor row-mb row-mr vote-row vote-name" :style=rowState>
                 <b-row>
                     <b-col @click="onClickVote()">
-                         <div v-if="!IsVotingDone && !IsVoting" class="text-head mt-1">
+                        <div class="text-head mt-1 mb-1">
                             {{vote.name}}
-                        </div>
-                        <div v-if="!IsVotingDone && IsVoting" class="text-head">
-                            {{vote.name}}
-                        </div>
-                        <div v-if="IsVotingDone" class="text-head mt-1">
-                            {{vote.name}}
-                        </div>
+                        </div>  
                     </b-col>
                 </b-row>
+                <!--
                 <b-row>
                     <div class="text-sub">
                         <em class="ml-3">{{vote.status}}</em>
                     </div>
                 </b-row>
-            </b-col>
-            <b-button :disabled=Disabled variant="light" class="bcolor row-mb" @click="onDelete()">
-                <i class="fas fa-times"></i>
+                -->
+            </b-col> 
+            <b-button :disabled=Disabled variant="light" class="bcolor row-mb btn-w-sm" @click="onDelete()">
+                <!-- <i class="fas fa-times"></i> -->
+                <b-icon-x></b-icon-x>
             </b-button>
         </b-row>
     </div>
@@ -124,10 +121,13 @@ export default class VoteRowComp extends Vue {
 </script>
 
 <style scoped>
-    .bcolor {
-        background-color: rgb(230, 230, 230);
-    }
     .btn-w {
         width: 60px;
+    }
+    .btn-w-sm {
+        width: 40px;
+    }
+    .bcolor {
+        background-color: rgb(230, 230, 230);
     }
 </style>

@@ -16,19 +16,7 @@
                     </div>
                 </b-row>
             </b-col>
-            <b-button class="row-mb" variant="secondary" @click="onArchiv()"><i class="fas fa-archive"></i></b-button>
-            <b-modal v-model="showVotingModal" title="Schätzungen" ok-only>
-                <div v-for="mv in MyMemberVotes" :key="mv.member.id">
-                    <b-row class="mt-1">
-                        <b-col class="ml-4" cols="4">
-                            {{mv.member.name}}
-                        </b-col> 
-                        <b-col style="text-align: center">
-                            {{mv.points}}
-                        </b-col>
-                    </b-row>
-                </div>
-            </b-modal>
+            <b-button class="row-mb btn-w-sm" variant="secondary" @click="onArchiv()"><i class="fas fa-archive"></i></b-button>
         </b-row>
     </div>
 </template>
@@ -111,6 +99,9 @@ export default class VoteRowComp extends Vue {
     }
     .btn-w {
         width: 60px;
+    }
+    .btn-w-sm {
+        width: 40px;
     }
 </style>
 

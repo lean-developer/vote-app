@@ -38,7 +38,7 @@
                     </b-row>
                 </div>
             </b-modal>
-            <b-button v-if="showClose" :disabled=Disabled variant="light" class="bcolor row-mb" @click="onClose()"><i class="fas fa-ban"></i></b-button>
+            <b-button v-if="showClose" :disabled=Disabled variant="light" class="bcolor row-mb btn-w-sm" @click="onClose()"><i class="fas fa-ban"></i></b-button>
         </b-row>
     </div>
 </template>
@@ -150,6 +150,9 @@ export default class VoteRowComp extends Vue {
 <style scoped>
     .bcolor {
         background-color: rgb(230, 230, 230);
+    }
+    .btn-w-sm {
+        width: 40px;
     }
 </style>
 
