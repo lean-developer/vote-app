@@ -150,7 +150,7 @@ export default class VoteRowComp extends Vue {
 
 <style scoped>
     .bcolor {
-        background-color: rgb(210, 210, 210);
+        background-color: rgb(230, 230, 230);
     }
 </style>
 
