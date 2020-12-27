@@ -7,7 +7,7 @@
         <vote-row-running class="ml-3 mr-3" v-if="isRunning"
             :vote="vote"
             :memberVoteMap="memberVoteMap"
-            @deleteVote="onDelete">
+            @closeVote="onClose">
         </vote-row-running>
          <vote-row-open class="ml-3 mr-3" v-if="isOpen"
             :vote="vote"
@@ -150,6 +150,11 @@ export default class VoteRowComp extends Vue {
 
     @Emit('deleteVote')
     onDelete() {
+        return this.vote;
+    }
+
+    @Emit('closeVote')
+    onClose() {
         return this.vote;
     }
 

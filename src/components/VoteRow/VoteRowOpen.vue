@@ -22,7 +22,9 @@
                     </div>
                 </b-row>
             </b-col>
-            <b-button :disabled=Disabled variant="light" class="bcolor row-mb" @click="onDelete()"><i style="color: red;" class="fas fa-ban"></i></b-button>
+            <b-button :disabled=Disabled variant="light" class="bcolor row-mb" @click="onDelete()">
+                <i class="fas fa-times"></i>
+            </b-button>
         </b-row>
     </div>
 </template>

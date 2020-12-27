@@ -38,7 +38,7 @@
                     </b-row>
                 </div>
             </b-modal>
-            <b-button v-if="showDelete" :disabled=Disabled variant="light" class="bcolor row-mb" @click="onDelete()"><i style="color: red;" class="fas fa-ban"></i></b-button>
+            <b-button v-if="showClose" :disabled=Disabled variant="light" class="bcolor row-mb" @click="onClose()"><i class="fas fa-ban"></i></b-button>
         </b-row>
     </div>
 </template>
@@ -62,7 +62,7 @@ export default class VoteRowComp extends Vue {
     private memberVotes: MemberVote[] = [];
     private disabled: boolean = false;
     private showVotingModal: boolean = false;
-    private showDelete: boolean = false;
+    private showClose: boolean = false;
 
     created() {
         let voteMemberVotes: MemberVote[] | undefined;
@@ -119,13 +119,12 @@ export default class VoteRowComp extends Vue {
             this.$router.push("/estimatechart/" + this.vote.id);
         }
         else {
-            // TODO: Löschen-Button anzeigen?
-            this.showDelete = !this.showDelete;
+            this.showClose = !this.showClose;
         }
     }
 
-    @Emit('deleteVote')
-    onDelete() {
+    @Emit('closeVote')
+    onClose() {
         return this.vote;
     }
 

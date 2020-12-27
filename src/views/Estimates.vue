@@ -8,6 +8,7 @@
                 :memberVoteMap=MyMemberVoteMap
                 @checkVote="onCheckVote"
                 @deleteVote="onDeleteVote" 
+                @closeVote="onCloseVote"
                 @archivVote="onArchivVote">
             </vote-row-comp>
           </div>
@@ -92,6 +93,13 @@ export default class Estimates extends Vue {
             if (deleteResult.affected > 0) {
                 await StoreService.reloadMaster();
             }
+        }
+    }
+
+    async onCloseVote(vote: Vote) {
+        const openedVote: Vote | undefined = await VoteService.setOpen(vote);
+        if (openedVote) {
+            await StoreService.reloadMaster();
         }
     }
 
