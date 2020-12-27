@@ -9,7 +9,8 @@
             :memberVoteMap="memberVoteMap">
         </vote-row-running>
          <vote-row-open class="ml-3 mr-3" v-if="isOpen"
-            :vote="vote">
+            :vote="vote"
+            @deleteVote="onDelete">
         </vote-row-open>
     </div>
 </template>

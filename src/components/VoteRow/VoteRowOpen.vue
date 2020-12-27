@@ -1,6 +1,7 @@
 <template>
     <div>
         <b-row v-if="vote">
+            <b-button :disabled=Disabled style="background-color: rgb(200, 200, 200);"  class="row-mb mr-1" variant="light" @click="onStartVote()"><i style="color: green;" class="fas fa-play"></i></b-button>
             <b-col class="row-mb row-mr vote-row vote-name" :style=rowState>
                 <b-row>
                     <b-col @click="onClickVote()">
@@ -21,8 +22,7 @@
                     </div>
                 </b-row>
             </b-col>
-            <b-button :disabled=Disabled class="row-mb" variant="light" @click="onDelete()"><i class="fas fa-ban"></i></b-button>
-            <!-- <b-button v-if="isOpen" :disabled=Disabled class="row-mb" variant="secondary" @click="onClickVote()"><i class="fas fa-angle-double-right"></i></b-button> -->
+            <b-button :disabled=Disabled style="background-color: rgb(200, 200, 200);" variant="light" class="row-mb" @click="onDelete()"><i style="color: red;" class="fas fa-ban"></i></b-button>
         </b-row>
     </div>
 </template>
@@ -37,6 +37,8 @@ import VoteRowRunning from '@/components/VoteRow/VoteRowRunning.vue';
 import { Member } from '@/domain/models/member';
 import { MemberVote } from '@/domain/models/memberVote';
 import StoreService from '@/domain/api/store.service';
+import SocketService from '@/domain/api/socket.service';
+import { Master } from '@/domain/models/master';
 
 @Component({
   components: {
@@ -95,9 +97,27 @@ export default class VoteRowComp extends Vue {
     get rowState() {
          return { 
                 'color': 'rgb(59, 59, 59)',
-                'background-color': ' rgb(180, 255, 255)',
+                'background-color': 'rgb(200, 200, 200)',
                 'cursor': 'pointer'
          }
+    }
+
+    get master(): Master {
+        return this.$store.getters.master;
+    }
+
+    async onStartVote() {
+        if (!this.vote) {
+            return;
+        }
+        if (VoteService.isOpen(this.vote)) {
+            const newVote = await VoteService.setRunning(this.vote);
+            if (newVote) {
+                SocketService.emitMasterVoteChanged(this.master, this.vote);
+                this.vote = newVote;
+                await StoreService.reloadMaster();
+            }
+        }
     }
 }
 </script>
