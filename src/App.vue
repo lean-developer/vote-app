@@ -10,7 +10,7 @@
           <img src="./assets/story_point.svg" width="32" height="32" alt="">
         </b-navbar-brand>
         <b-nav-item v-if="IsMaster">
-           <b-button v-b-toggle.sidebar size="sm" variant="dark"><i class="fas fa-bars"></i></b-button>
+           <b-button v-b-toggle.sidebar variant="dark"><i class="fas fa-bars"></i></b-button>
          </b-nav-item>
       </b-navbar-nav>
       <div class="ml-auto mt-1">
