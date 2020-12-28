@@ -4,28 +4,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Krona+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
-    <b-navbar toogleable="lg" type="dark" variant="dark">
+    <b-navbar toogleable="lg" type="dark" variant="dark" sticky>
       <b-navbar-nav>
-        <b-navbar-brand href="/">
+        <b-navbar-brand class="show" href="/">
           <img src="./assets/story_point.svg" width="32" height="32" alt="">
         </b-navbar-brand>
         <b-nav-item v-if="IsMaster">
            <b-button v-b-toggle.sidebar size="sm" variant="dark"><i class="fas fa-bars"></i></b-button>
          </b-nav-item>
-        <b-nav-item class="mt-1" v-if="IsMember" to="/member">
-          {{StoreMember.name}}
-          <b-badge v-if="Votes" variant="danger">{{VotesIsRunning}}</b-badge>
-        </b-nav-item>
-        <!-- <b-nav-item v-if="IsMaster" to="/about">About</b-nav-item> -->
+      </b-navbar-nav>
+      <b-navbar-nav class="ml-auto mt-1">
+        <b-nav-item center><h5>Scrum Planning Poker</h5></b-nav-item>
       </b-navbar-nav>
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
-        <!--
-        <b-nav-form>
-          <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
-          <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
-        </b-nav-form>
-        -->
         <b-nav-item-dropdown right v-if="IsMaster">
             <!-- Using 'button-content' slot -->
             <template #button-content>
@@ -259,6 +251,17 @@ export default class App extends Vue {
     width: 72px;
     height: 72px;
     opacity: 0;
+  }
+}
+
+.show {
+  display: inline-block;
+}
+
+/* the given size or smaller */
+@media (max-width: 767.98px) {
+  .show {
+    display: none!important;
   }
 }
 </style>

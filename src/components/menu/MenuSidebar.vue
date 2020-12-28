@@ -23,6 +23,17 @@
                             </b-col>
                         </b-row>
                     </b-list-group-item>
+
+                    <b-list-group-item v-if="IsMember" variant="dark" to="/member">
+                        <b-row>
+                            <b-col>
+                                {{StoreMember.name}}
+                            </b-col>
+                            <b-col>
+                                <b-badge v-if="Votes" variant="danger" pill>{{VotesIsRunning}}</b-badge>
+                            </b-col>
+                        </b-row>
+                    </b-list-group-item>
                 </b-list-group>
             </div>
         </transition>
@@ -33,6 +44,7 @@
 import { Component, Vue, Model, Prop, Emit } from 'vue-property-decorator';
 import { uiStore, mutations } from '@/store';
 import { Master } from '@/domain/models/master';
+import { StoreMember } from '@/domain/models/storeMember';
 
 @Component({
   components: {
@@ -51,6 +63,14 @@ export default class MenuSidebar extends Vue {
         }
         return '';
     }
+
+    get VotesIsRunning(): string {
+        return this.$store.getters.votesIsRunning;
+    }
+
+    get StoreMember(): StoreMember {
+        return this.$store.getters.member;
+    }
   
     get Members(): string {
         if (this.IsMaster) {
@@ -59,6 +79,10 @@ export default class MenuSidebar extends Vue {
             }
         }
         return '';
+    }
+
+    get IsMember(): boolean {
+        return this.StoreMember.uid !== '';
     }
 
     get IsMaster(): boolean {

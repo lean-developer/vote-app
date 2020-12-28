@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-row>
-            <b-col class="row-mb row-mr vote-row vote-name" :style=rowState @click="onExpand()">
+            <b-col v-if="!isOpen" class="row-mb row-mr vote-row vote-name" :style=rowState @click="onExpand()">
                 <div style="display: inline;" class="text-head">
                     {{vote.name}} 
                 </div>
