@@ -9,15 +9,18 @@
         <b-navbar-brand href="/">
           <img src="./assets/story_point.svg" width="32" height="32" alt="">
         </b-navbar-brand>
-        <b-nav-item v-if="IsMaster" to="/team">
+        <b-nav-item v-if="IsMaster">
+           <b-button v-b-toggle.sidebar size="sm" variant="dark"><i class="fas fa-bars"></i></b-button>
+         </b-nav-item>
+        <b-nav-item class="mt-1" v-if="IsMaster" to="/team">
           Team
           <b-badge variant="primary">{{Members}}</b-badge>
         </b-nav-item>
-        <b-nav-item v-if="IsMaster" to="/estimates">
+        <b-nav-item class="mt-1" v-if="IsMaster" to="/estimates">
           Stories
           <b-badge v-if="Votes" variant="success">{{Votes}}</b-badge>
         </b-nav-item>
-        <b-nav-item v-if="IsMember" to="/member">
+        <b-nav-item class="mt-1" v-if="IsMember" to="/member">
           {{StoreMember.name}}
           <b-badge v-if="Votes" variant="danger">{{VotesIsRunning}}</b-badge>
         </b-nav-item>
@@ -45,6 +48,9 @@
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
+    <b-sidebar id="sidebar" title="Sidebar" bg-variant="dark" text-variant="light" shadow>
+      <menu-sidebar></menu-sidebar>
+    </b-sidebar>
     <router-view/>
     <div v-if="loading" class="lds-ripple"><div></div><div></div></div>
   </div>
@@ -67,9 +73,11 @@ import { Vote } from './domain/models/vote';
 import { MemberVote } from './domain/models/memberVote';
 import { Socket } from 'vue-socket.io-extended';
 import MemberService from './domain/api/member.service';
+import MenuSidebar from '@/components/menu/MenuSidebar.vue';
 
 @Component({
   components: {
+    MenuSidebar
   },
 })
 export default class App extends Vue {

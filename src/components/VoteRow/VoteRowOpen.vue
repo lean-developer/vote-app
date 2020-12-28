@@ -18,10 +18,7 @@
                 </b-row>
                 -->
             </b-col> 
-            <b-button :disabled=Disabled variant="light" class="bcolor row-mb btn-w-sm" @click="onDelete()">
-                <!-- <i class="fas fa-times"></i> -->
-                <b-icon-x></b-icon-x>
-            </b-button>
+            <span class="closebtn" @click="onDelete()">&times;</span>
         </b-row>
     </div>
 </template>
@@ -129,5 +126,17 @@ export default class VoteRowComp extends Vue {
     }
     .bcolor {
         background-color: rgb(230, 230, 230);
+    }
+    .closebtn {
+        padding-left: 10px;
+        color: #888;
+        font-weight: bold;
+        float: right;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .closebtn:hover {
+        color: #000;
     }
 </style>
