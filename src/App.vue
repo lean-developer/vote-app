@@ -13,9 +13,10 @@
            <b-button v-b-toggle.sidebar size="sm" variant="dark"><i class="fas fa-bars"></i></b-button>
          </b-nav-item>
       </b-navbar-nav>
-      <b-navbar-nav class="ml-auto mt-1">
-        <b-nav-item center><h5>Scrum Planning Poker</h5></b-nav-item>
-      </b-navbar-nav>
+      <div class="ml-auto mt-1">
+          <div class="caption-t">Scrum Planning Poker</div>
+          <div class="caption-b"><strong>Team</strong></div>
+      </div>
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right v-if="IsMaster">
@@ -252,6 +253,18 @@ export default class App extends Vue {
     height: 72px;
     opacity: 0;
   }
+}
+
+.caption-t {
+  color: silver;
+  padding: 0;
+  font-size: 14px;
+}
+
+.caption-b {
+  color: red;
+  padding: 0;
+  font-size: 20px;
 }
 
 .display-mobile {
