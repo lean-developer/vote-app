@@ -9,7 +9,7 @@
                                 Team
                             </b-col>
                             <b-col>
-                                <b-badge v-if="Members" variant="success">{{Members}}</b-badge>
+                                <b-badge v-if="Members" variant="success" pill>{{Members}}</b-badge>
                             </b-col>
                         </b-row>
                     </b-list-group-item>
@@ -19,7 +19,7 @@
                                 Stories
                             </b-col>
                             <b-col>
-                                <b-badge v-if="Members" variant="primary">{{Votes}}</b-badge>
+                                <b-badge v-if="Members" variant="primary" pill>{{Votes}}</b-badge>
                             </b-col>
                         </b-row>
                     </b-list-group-item>
