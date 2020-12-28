@@ -12,14 +12,6 @@
         <b-nav-item v-if="IsMaster">
            <b-button v-b-toggle.sidebar size="sm" variant="dark"><i class="fas fa-bars"></i></b-button>
          </b-nav-item>
-        <b-nav-item class="mt-1" v-if="IsMaster" to="/team">
-          Team
-          <b-badge variant="primary">{{Members}}</b-badge>
-        </b-nav-item>
-        <b-nav-item class="mt-1" v-if="IsMaster" to="/estimates">
-          Stories
-          <b-badge v-if="Votes" variant="success">{{Votes}}</b-badge>
-        </b-nav-item>
         <b-nav-item class="mt-1" v-if="IsMember" to="/member">
           {{StoreMember.name}}
           <b-badge v-if="Votes" variant="danger">{{VotesIsRunning}}</b-badge>
