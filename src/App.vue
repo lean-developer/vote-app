@@ -6,7 +6,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Krona+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
     <b-navbar toogleable="lg" type="dark" variant="dark" sticky>
       <b-navbar-nav>
-        <b-navbar-brand class="show" href="/">
+        <b-navbar-brand class="display-mobile" href="/">
           <img src="./assets/story_point.svg" width="32" height="32" alt="">
         </b-navbar-brand>
         <b-nav-item v-if="IsMaster">
@@ -254,13 +254,13 @@ export default class App extends Vue {
   }
 }
 
-.show {
+.display-mobile {
   display: inline-block;
 }
 
 /* the given size or smaller */
 @media (max-width: 767.98px) {
-  .show {
+  .display-mobile {
     display: none!important;
   }
 }
