@@ -23,7 +23,6 @@
                             </b-col>
                         </b-row>
                     </b-list-group-item>
-
                     <b-list-group-item v-if="IsMember" variant="dark" to="/member">
                         <b-row>
                             <b-col>
@@ -31,6 +30,16 @@
                             </b-col>
                             <b-col>
                                 <b-badge v-if="Votes" variant="danger" pill>{{VotesIsRunning}}</b-badge>
+                            </b-col>
+                        </b-row>
+                    </b-list-group-item>
+                    <b-list-group-item v-if="HasProducts" variant="dark">
+                        <b-row>
+                            <b-col>
+                                Projekte
+                            </b-col>
+                            <b-col>
+                                <b-badge variant="primary" pill>{{Products}}</b-badge>
                             </b-col>
                         </b-row>
                     </b-list-group-item>
@@ -45,6 +54,7 @@ import { Component, Vue, Model, Prop, Emit } from 'vue-property-decorator';
 import { uiStore, mutations } from '@/store';
 import { Master } from '@/domain/models/master';
 import { StoreMember } from '@/domain/models/storeMember';
+import { Product } from '@/domain/models/product';
 
 @Component({
   components: {
@@ -87,6 +97,17 @@ export default class MenuSidebar extends Vue {
 
     get IsMaster(): boolean {
         return this.Master.uid !== '';
+    }
+
+    get HasProducts(): boolean {
+        return this.Master.products && this.Master.products.length > 0;
+    }
+
+    get Products(): string{
+        if (this.HasProducts) {
+            return this.Master.products.length.toString();
+        }
+        return '';
     }
 
     get Name(): string {

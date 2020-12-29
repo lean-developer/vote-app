@@ -24,7 +24,8 @@ export default class StoreModel {
           name: '',
           uid: '',
           members: [],
-          votes: []
+          votes: [],
+          products: []
       };
       this.member = {
         pin: 0,
