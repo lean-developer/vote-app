@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
 import Home from '../views/Home.vue'
 import Estimates from '../views/Estimates.vue'
+import Products from '../views/Products.vue';
 import Help from '../views/Help.vue';
 import Estimate from '../views/Estimate.vue'
 import EstimateChart from '../views/EstimateChart.vue'
@@ -46,6 +47,11 @@ const routes: Array<RouteConfig> = [
     path: '/estimates',
     name: 'Estimates',
     component: Estimates
+  },
+  {
+    path: '/products',
+    name: 'Products',
+    component: Products
   },
   {
     path: '/help',

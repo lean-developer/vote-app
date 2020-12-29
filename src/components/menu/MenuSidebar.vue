@@ -5,7 +5,7 @@
                 <b-list-group>
                     <b-list-group-item variant="dark" to="/team">
                         <b-row>
-                            <b-col>
+                            <b-col class="left ml-2">
                                 Team
                             </b-col>
                             <b-col>
@@ -15,7 +15,7 @@
                     </b-list-group-item>
                     <b-list-group-item variant="dark" to="/estimates">
                         <b-row>
-                            <b-col>
+                            <b-col class="left ml-2">
                                 Stories
                             </b-col>
                             <b-col>
@@ -33,15 +33,26 @@
                             </b-col>
                         </b-row>
                     </b-list-group-item>
-                    <b-list-group-item v-if="HasProducts" variant="dark">
+                    <b-list-group-item v-if="HasProducts" variant="dark" to="/products">
                         <b-row>
-                            <b-col>
+                            <b-col class="left ml-2">
                                 Projekte
                             </b-col>
-                            <b-col>
-                                <b-badge variant="primary" pill>{{Products}}</b-badge>
+                            <b-col @click="clickCollapseProducts()">
+                                <i class="fas fa-chevron-down"></i>
+                                <!-- <b-badge variant="primary" pill>{{Products}}</b-badge> -->
                             </b-col>
                         </b-row>
+                            <b-collapse id="productsCollapse" v-model="collapseProducts" class="mt-2">
+                                <b-row v-for="p in Products" :key="p.id">
+                                    <b-col class="left ml-4">
+                                        {{p.name}}
+                                    </b-col>
+                                    <b-col>
+                                        bbb
+                                    </b-col>
+                                </b-row>
+                            </b-collapse>
                     </b-list-group-item>
                 </b-list-group>
             </div>
@@ -61,6 +72,8 @@ import { Product } from '@/domain/models/product';
   },
 })
 export default class MenuSidebar extends Vue {
+    private collapseProducts: boolean = false;
+
     get Master(): Master {
         return this.$store.getters.master;
     }
@@ -72,6 +85,10 @@ export default class MenuSidebar extends Vue {
             }
         }
         return '';
+    }
+
+    clickCollapseProducts() {
+        this.collapseProducts = !this.collapseProducts;
     }
 
     get VotesIsRunning(): string {
@@ -103,11 +120,11 @@ export default class MenuSidebar extends Vue {
         return this.Master.products && this.Master.products.length > 0;
     }
 
-    get Products(): string{
+    get Products(): Product[] {
         if (this.HasProducts) {
-            return this.Master.products.length.toString();
+            return this.Master.products;
         }
-        return '';
+        return [];
     }
 
     get Name(): string {
@@ -130,6 +147,12 @@ export default class MenuSidebar extends Vue {
     .slide-leave-to {
         transform: translateX(-100%);
         transition: all 150ms ease-in 0s
+    }
+    .collapse {
+        cursor: 'pointer';
+    }
+    .left {
+        text-align: left;
     }
 
 </style>
