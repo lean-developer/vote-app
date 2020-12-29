@@ -36,7 +36,7 @@ import { Member } from '@/domain/models/member';
 import { Socket } from 'vue-socket.io-extended';
 import { MemberVote } from '@/domain/models/memberVote';
 import { Master } from '@/domain/models/master';
-
+import { mutations } from '@/store';
 
 @Component({
   components: {
@@ -56,6 +56,7 @@ export default class EstimateChart extends Vue {
     private showVoting = false;
     
     async created() {
+        mutations.setSiteCaption('Story Points');
         this.voteId = +this.$route.params.voteId;
         await this.init();
     }

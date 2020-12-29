@@ -15,7 +15,7 @@
       </b-navbar-nav>
       <div class="ml-auto mt-1">
           <div class="caption-t">Scrum Planning Poker</div>
-          <div class="caption-b"><strong>Team</strong></div>
+          <div class="caption-b"><strong>{{Caption}}</strong></div>
       </div>
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
@@ -59,6 +59,7 @@ import { MemberVote } from './domain/models/memberVote';
 import { Socket } from 'vue-socket.io-extended';
 import MemberService from './domain/api/member.service';
 import MenuSidebar from '@/components/menu/MenuSidebar.vue';
+import { uiStore, mutations } from '@/store';
 
 @Component({
   components: {
@@ -126,6 +127,10 @@ export default class App extends Vue {
       }
     }
   }
+
+   get Caption(): string {
+     return uiStore.siteCaption;
+   }
 
   async onClose() {
     if (this.IsMember) {

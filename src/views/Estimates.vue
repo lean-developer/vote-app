@@ -30,6 +30,7 @@ import { Socket } from 'vue-socket.io-extended';
 import { MasterResult } from '../domain/models/masterResult';
 import { MemberVoteResult } from '../domain/models/memberVoteResult';
 import { MemberVote } from '@/domain/models/memberVote';
+import { mutations } from '@/store';
 
 @Component({
   components: {
@@ -43,6 +44,7 @@ export default class Estimates extends Vue {
     private memberVoteMap: Map<number, MemberVote[]> = new Map();
     
     async created() {
+        mutations.setSiteCaption('Stories');
         if (this.IsMaster) {
             this.masterResult = await VoteService.getVotesMasterResult(this.Master.id);
             if (this.masterResult) {

@@ -10,12 +10,16 @@ Vue.use(Vuex)
 
 /** Store bzgl. UI-Steuerung */
 export const uiStore = Vue.observable({
-  isNavOpen: false
+  isNavOpen: false,
+  siteCaption: '',
 });
 // We call toggleNav anywhere we need it in our app
 export const mutations = {
   toggleNav() {
       uiStore.isNavOpen = !uiStore.isNavOpen;
+  },
+  setSiteCaption(caption: string) {
+      uiStore.siteCaption = caption;
   }
 };
 

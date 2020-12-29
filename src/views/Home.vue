@@ -26,6 +26,7 @@ import { Member } from '@/domain/models/member';
 import VoteService from '@/domain/api/vote.service';
 import StoreService from '@/domain/api/store.service';
 import { Socket } from 'vue-socket.io-extended';
+import { mutations } from '@/store';
 
 @Component({
   components: {
@@ -36,6 +37,10 @@ import { Socket } from 'vue-socket.io-extended';
 })
 export default class Home extends Vue {
   private users: string[] = [];
+
+  created() {
+    mutations.setSiteCaption('Team');
+  }
 
   get Master(): Master {
     return this.$store.getters.master
