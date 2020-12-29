@@ -1,7 +1,7 @@
 <template>
     <div class="ml-3 mr-3">
         <b-row v-if="vote">
-            <b-button variant="danger" class="btn-w row-mb row-mr" disabled><span class="points">{{StoryPoints}}</span></b-button>
+            <b-button style="background-color: var(--main-cherry-4)" class="btn-w row-mb row-mr" disabled><span class="points">{{StoryPoints}}</span></b-button>
             <b-col class="row-mb row-mr vote-row vote-name" :style=rowState>
                 <b-row>
                     <b-col @click="onClickVote()">
@@ -16,7 +16,7 @@
                     </div>
                 </b-row>
             </b-col>
-            <b-button class="row-mb btn-w-sm" variant="secondary" @click="onArchiv()"><i class="fas fa-archive"></i></b-button>
+            <b-button class="row-mb btn-w-sm" style="background-color: var(--main-dark)" @click="onArchiv()"><i class="fas fa-archive"></i></b-button>
         </b-row>
     </div>
 </template>
@@ -85,7 +85,7 @@ export default class VoteRowComp extends Vue {
      get rowState() {
         return { 
             'color': 'white',
-            'background-color': '#6c757d',
+            'background-color': 'var(--main-dark)',
             'cursor': 'pointer'
         }
      }    

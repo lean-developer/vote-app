@@ -5,7 +5,10 @@
         <b-col>
           <b-input-group>
             <b-input type="text" v-model="abstimmung"></b-input>
-            <b-button variant="primary" @click="onCreate()"><b-icon-plus></b-icon-plus></b-button>
+            <b-button variant="success" @click="onCreate()">
+              <i class="fas fa-plus"></i>
+              <!-- <b-icon-plus></b-icon-plus> -->
+            </b-button>
           </b-input-group>
           <div class="ml-2" style="text-align: left">
             <small>Story anlegen</small>

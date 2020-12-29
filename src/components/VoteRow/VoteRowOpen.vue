@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-row v-if="vote">
-            <b-button :disabled=Disabled class="btn-w bcolor row-mb mr-1" variant="light" @click="onStartVote()"><i style="color: green;" class="fas fa-play"></i></b-button>
+            <b-button :disabled=Disabled class="btn-w bcolor row-mb mr-1" variant="light" @click="onStartVote()"><i style="color: var(--main-green-3);" class="fas fa-play"></i></b-button>
             <b-col class="bcolor row-mb row-mr vote-row vote-name" :style=rowState>
                 <b-row>
                     <b-col @click="onClickVote()">
@@ -92,7 +92,7 @@ export default class VoteRowComp extends Vue {
 
     get rowState() {
          return { 
-                'color': 'rgb(59, 59, 59)',
+                'color': 'var(--main-green-3)',
                 'cursor': 'auto'
          }
     }
@@ -125,7 +125,7 @@ export default class VoteRowComp extends Vue {
         width: 40px;
     }
     .bcolor {
-        background-color: rgb(230, 230, 230);
+        background-color: var(--main-green-1);
     }
     .closebtn {
         padding-left: 10px;

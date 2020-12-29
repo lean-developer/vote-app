@@ -21,7 +21,7 @@
                 <b-row>
                     <b-col @click="onClickVote()">
                         <div v-if="IsVoting">
-                            <b-progress class="bcolor mt-2 mb-2" :value=VotingInPercent max=100 height="5px" :variant=ProgressVariant></b-progress>
+                            <b-progress class="bcolor mt-2 mb-2" :value=VotingInPercent max=100 height="7px" :variant=ProgressVariant></b-progress>
                         </div>
                     </b-col>
                 </b-row>
@@ -128,18 +128,10 @@ export default class VoteRowComp extends Vue {
         return this.vote;
     }
 
-    get rowStateVoting() {
-        return { 
-            'color': 'darkgrey',
-            'background-color': 'whitesmoke',
-            'cursor': 'pointer'
-        }    
-    }
-
     get rowState() {
         return { 
             'color': 'white',
-            'background-color': '#28a745',
+            'background-color': 'var(--main-green-3)',
             'cursor': 'pointer'
         }    
     }
@@ -149,7 +141,7 @@ export default class VoteRowComp extends Vue {
 
 <style scoped>
     .bcolor {
-        background-color: rgb(230, 230, 230);
+        background-color: var(--main-green-3),
     }
     .btn-w-sm {
         width: 40px;

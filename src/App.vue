@@ -282,4 +282,28 @@ export default class App extends Vue {
     display: none!important;
   }
 }
+
+:root {
+  --main-beige: #EAE1CD;
+  --main-dark: #404C50;
+  --main-green-3: #639F95;
+  --main-green-2: #89BEB5;
+  --main-green-1: #C5E3DB;
+  --main-gray: #E6ECE8;
+
+  --main-blue-lila: #6E5C97;
+  --main-blue-4: #1A2244;
+  --main-blue-3: #192F5E;
+  --main-blue-2: #275793;
+  --main-blue-1: #4C82B4;
+  --main-blue-0: #77B2C5;
+
+  --main-cherry-5: #BDB964;
+  --main-cherry-4: #7C1C23;
+  --main-cherry-3: #3D1322;
+  --main-cherry-2: #317380;
+  --main-cherry-1: #8FC4C6;
+  --main-cherry-0: #E2D8CE;
+}
+/* color: var(--main-green-2); */
 </style>
