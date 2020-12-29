@@ -2,18 +2,12 @@
   <b-container>
       <new-product-comp v-if="IsMaster" @createProduct="onCreateProduct"></new-product-comp>
       <div v-if="Master.products">
-          <!--
-          <div v-for="v in SortedVotes" :key="v.id">
-            <vote-row-comp class="ml-1 mr-1" :key=componentKey 
-                :vote=v 
-                :memberVoteMap=MyMemberVoteMap
-                @checkVote="onCheckVote"
-                @deleteVote="onDeleteVote" 
-                @closeVote="onCloseVote"
-                @archivVote="onArchivVote">
-            </vote-row-comp>
+          <div v-for="p in SortedProducts" :key="p.id">
+            <product-row-comp class="ml-1 mr-1" 
+                :product=p
+                @deleteProduct="onDeleteProduct">
+            </product-row-comp>
           </div>
-          -->
       </div>
   </b-container>
 </template>
@@ -34,10 +28,13 @@ import { MemberVoteResult } from '../domain/models/memberVoteResult';
 import { MemberVote } from '@/domain/models/memberVote';
 import { mutations } from '@/store';
 import NewProductComp from '@/components/NewProductComp.vue';
+import ProductRowComp from '@/components/ProductRowComp.vue';
+import { Product } from '@/domain/models/product';
 
 @Component({
   components: {
-      NewProductComp
+      NewProductComp,
+      ProductRowComp
   },
 })
 export default class Products extends Vue {
@@ -54,7 +51,14 @@ export default class Products extends Vue {
         return this.Master.uid !== '';
     }
 
-     async onCreateProduct(productname: string) {
+    get SortedProducts(): Product[] | undefined {
+        return this.Master.products.sort((a, b) => 
+            (a.name > b.name) ? 1 : (
+                    (a.name < b.name ? -1 : 0)
+                ));
+    }
+
+    async onCreateProduct(productname: string) {
         if (StoreService.isLogin) {
             /*
             const newVote: Vote | undefined = await VoteService.createVoteForMaster(this.Master.id, votename);
@@ -65,6 +69,10 @@ export default class Products extends Vue {
             }
             */
         }
+    }
+
+    onDeleteProduct() {
+        console.log('DeleteProduct...');
     }
 }
 </script>
