@@ -16,6 +16,7 @@
 import { Component, Model, Vue } from 'vue-property-decorator';
 import VoteService from '@/domain/api/vote.service';
 import StoreService from '@/domain/api/store.service';
+import ProductService from '@/domain/api/product.service';
 import { Vote } from '@/domain/models/vote';
 import NewVoteComp from '@/components/NewVoteComp.vue';
 import VoteRowComp from '@/components/VoteRowComp.vue';
@@ -60,19 +61,20 @@ export default class Products extends Vue {
 
     async onCreateProduct(productname: string) {
         if (StoreService.isLogin) {
-            /*
-            const newVote: Vote | undefined = await VoteService.createVoteForMaster(this.Master.id, votename);
-            if (newVote) {
-                // State auf Open setzen (TODO: braucht man den State=New überhaupt noch?)
-                await VoteService.setOpen(newVote);
+            const newProduct: Product | undefined = await ProductService.createProductForMaster(this.Master.id, productname);
+            if (newProduct) {
                 await StoreService.reloadMaster();
             }
-            */
         }
     }
 
-    onDeleteProduct() {
-        console.log('DeleteProduct...');
+    async onDeleteProduct(product: Product) {
+        const deleteResult: DeleteResult | undefined = await ProductService.deleteProduct(product.id);
+        if(deleteResult?.affected) {
+            if(deleteResult.affected) {
+                await StoreService.reloadMaster();
+            }
+        }
     }
 }
 </script>
