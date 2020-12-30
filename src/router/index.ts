@@ -4,7 +4,7 @@ import Home from '../views/Home.vue'
 import Estimates from '../views/Estimates.vue'
 import Products from '../views/Products.vue';
 import Help from '../views/Help.vue';
-import Estimate from '../views/Estimate.vue'
+import EstimateEdit from '../views/EstimateEdit.vue'
 import EstimateChart from '../views/EstimateChart.vue'
 import Login from '../views/Login.vue'
 import MemberLogin from '../views/MemberLogin.vue'
@@ -60,8 +60,8 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/estimate/:voteId',
-    name: 'Estimate',
-    component: Estimate
+    name: 'EstimateEdit',
+    component: EstimateEdit
   },
   {
     path: '/estimatechart/:voteId',

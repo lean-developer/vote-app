@@ -49,7 +49,6 @@
                                         {{p.name}}
                                     </b-col>
                                     <b-col>
-                                        bbb
                                     </b-col>
                                 </b-row>
                             </b-collapse>
